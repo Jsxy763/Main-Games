@@ -119,7 +119,7 @@ end
 
 -- GUI
 local ui = game:GetService("CoreGui"):FindFirstChild("AstroHub") if ui then ui:Destroy() end
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroStorage/MainGames/main/Library/FluxUI-Remake.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroStorage/Main-Games/main/FluxLib-Remake.lua"))()
 local Main = library:Window("ASTRO HUB", "--[ "..subTitle.." v2.0 ]--", Color3.fromRGB(237, 52, 52), Enum.KeyCode.RightControl)
 
 -- Noclip & Float Fix
