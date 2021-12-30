@@ -114,7 +114,7 @@ end
 
 -- GUI
 local UI = game:GetService("CoreGui"):FindFirstChild("AstroHub") if UI then UI:Destroy() end
-local library = loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/AstroHubMax/main/FluxUI-Remake.lua')()
+local library = loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/Main-Games/main/FluxLib-Remake.lua')()
 local Main = library:Window("ASTRO HUB", "TIME | N/A", Color3.fromRGB(20, 137, 227), Enum.KeyCode.RightControl)
 spawn(function () wait()
     while wait(.1) do
