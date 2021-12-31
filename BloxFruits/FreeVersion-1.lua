@@ -2283,6 +2283,7 @@ Player:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1
 end)
 
 Player:Button("Disable God Mode", "", function ()
+    GodModeIsDone = false
     game.Players.LocalPlayer.Character:BreakJoints()
 end)
 
