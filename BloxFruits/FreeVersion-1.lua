@@ -3798,7 +3798,7 @@ function All(type)
                             Position = Vector3.new(-744.19, 65.85, -11317.73)
                         elseif RandomMob == 2 then
                             CandyMob = "Ice Cream Chef [Lv. 2125]"
-                            Position = Vector3.new(-858.44, 65.85, -10957.89)
+                            Position = Vector3.new(-941.36, 65.85, -11048.44)
                         elseif RandomMob == 3 then
                             CandyMob = "Peanut President [Lv. 2100]"
                             Position = Vector3.new(-2135.85, 70.3, -10521.58)
@@ -3807,7 +3807,7 @@ function All(type)
                             Position = Vector3.new(-2203.7, 38.13, -10124.15)
                         end
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if v.Name == CandyMob then
+                            if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                                     if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
