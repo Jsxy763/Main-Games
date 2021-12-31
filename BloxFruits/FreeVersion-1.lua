@@ -858,13 +858,27 @@ function levelCheck() -- Check Level
             nameMon = "Demonic Soul"
             waitPos = Vector3.new(-9274.07, 204.696, 6042.18)
             posQuest = Vector3.new(-9516.99, 172.017, 6078.47)
-        elseif MyLevel >= 2050 and MyLevel <= 2124 then
+        elseif MyLevel >= 2050 and MyLevel <= 2074 then
             nameMob = "Posessed Mummy [Lv. 2050]"
             nameQuest = "HauntedQuest2"
             levelQuest = 2
             nameMon = "Posessed Mummy"
             waitPos = Vector3.new(-9743.21, 68.6489, 6165.13)
             posQuest = Vector3.new(-9516.99, 172.017, 6078.47)
+        elseif MyLevel >= 2075 and MyLevel <= 2099 then
+            nameMob = "Peanut Scout [Lv. 2075]"
+            nameQuest = "NutsIslandQuest"
+            levelQuest = 1
+            nameMon = "Peanut Scout"
+            waitPos = Vector3.new(-2166.72, 90.5295, -10179.9)
+            posQuest = Vector3.new(-2102.57, 38.1038, -10192.5)            
+        elseif MyLevel >= 2100 and MyLevel <= 2124 then
+            nameMob = "Peanut President [Lv. 2100]"
+            nameQuest = "NutsIslandQuest"
+            levelQuest = 2
+            nameMon = "Peanut President"
+            waitPos = Vector3.new(-2379.61, 140.666, -10427.6)
+            posQuest = Vector3.new(-2102.57, 38.1038, -10192.5)
         elseif MyLevel >= 2125 and MyLevel <= 2149 then
             nameMob = "Ice Cream Chef [Lv. 2125]"
             nameQuest = "IceCreamIslandQuest"
