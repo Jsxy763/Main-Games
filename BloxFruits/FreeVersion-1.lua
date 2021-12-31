@@ -4961,7 +4961,7 @@ spawn(function () -- Magnet
         elseif _G.CandyFarm then
             for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                 if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                    if v.Name == CandyMob then
+                    if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
                         v.HumanoidRootPart.Transparency = 1
