@@ -1310,6 +1310,30 @@ function MobCheck() -- Check Mob
         nameMon = "Posessed Mummy"
         waitPos = Vector3.new(-9743.21, 68.6489, 6165.13)
         posQuest = Vector3.new(-9516.99, 172.017, 6078.47)
+    elseif mobSelect == "Peanut Scout [Lv. 2075]" then
+        nameQuest = "NutsIslandQuest"
+        levelQuest = 1
+        nameMon = "Peanut Scout"
+        waitPos = Vector3.new(-2166.72, 90.5295, -10179.9)
+        posQuest = Vector3.new(-2102.57, 38.1038, -10192.5)            
+    elseif mobSelect == "Peanut President [Lv. 2100]" then
+        nameQuest = "NutsIslandQuest"
+        levelQuest = 2
+        nameMon = "Peanut President"
+        waitPos = Vector3.new(-2379.61, 140.666, -10427.6)
+        posQuest = Vector3.new(-2102.57, 38.1038, -10192.5)
+    elseif mobSelect == "Ice Cream Chef [Lv. 2125]" then
+        nameQuest = "IceCreamIslandQuest"
+        levelQuest = 1
+        nameMon = "Ice Cream Chef"
+        waitPos = Vector3.new(-901.45, 120.715, -10942.8)
+        posQuest = Vector3.new(-821.255, 65.8195, -10965.2)
+    elseif mobSelect == "Ice Cream Commander [Lv. 2150]" then
+        nameQuest = "IceCreamIslandQuest"
+        levelQuest = 2
+        nameMon = "Ice Cream Commander"
+        waitPos = Vector3.new(-653.074, 143.481, -11347.5)
+        posQuest = Vector3.new(-821.255, 65.8195, -10965.2)
     end
 end
 
@@ -1328,6 +1352,35 @@ end)
 AutoFarm:Button("Set Spawn Near", "", function ()
     local args = {[1] = "SetSpawnPoint"}
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+end)
+
+AutoFarm:Toggle("Auto God Mode [OP!] (Read Des - Beta)", "Make Sure You Have 1 Defense Point (100 HP)", false, function (bool)
+    GodMode = bool
+    if GodMode then
+        GodModeIsDone = false
+        StartGodMode()
+        while GodMode do wait(1)
+            if GodModeIsDone then
+                repeat wait() until game.Players.LocalPlayer.Character.Humanoid.Health > 10
+                game.Players.LocalPlayer.Character:BreakJoints()
+                repeat wait() until game.Players.LocalPLayer.Character
+                GodModeIsDone = false
+                StartGodMode()
+            end
+        end
+    end
+end)
+
+AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP)", function ()
+    GodModeIsDone = false
+    StartGodMode()
+    repeat wait(3) until game.Players.LocalPlayer.Character.Humanoid.Health <= 0
+    library:Notification("Player Has God Mode xD", "Ok Thanks")
+end)
+
+AutoFarm:Button("Disable God Mode", "", function ()
+    GodModeIsDone = false
+    game.Players.LocalPlayer.Character:BreakJoints()
 end)
 
 spawn(function ()
@@ -1399,7 +1452,11 @@ elseif Thirdsea then
         "Reborn Skeleton [Lv. 1975]",
         "Living Zombie [Lv. 2000]",
         "Demonic Soul [Lv. 2025]",
-        "Posessed Mummy [Lv. 2050]"
+        "Posessed Mummy [Lv. 2050]",
+        "Peanut Scout [Lv. 2075]",
+        "Peanut President [Lv. 2100]",
+        "Ice Cream Chef [Lv. 2125]",
+        "Ice Cream Commander [Lv. 2150]"
     }
 end
 if Secondsea or Thirdsea then
@@ -1472,7 +1529,6 @@ elseif Thirdsea then
     AutoFarm:Toggle("Auto Bone Farm", "Third Sea Only [OP!]", _G.BoneFarm, function (bool)
         _G.BoneFarm = bool
         All("Bone Farm")
-        MagnetBone()
         if _G.BoneFarm == false then wait(.5)
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
         end
@@ -1767,98 +1823,98 @@ Teleport:Label("--[ World ]--")
 if Firstsea then
     Teleport:Button("Pirate Start Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1027.59, 19.3245, 1367.29)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1027.59, 19.3245, 1367.29)
         else
             TweenTo(Vector3.new(1027.59, 19.3245, 1367.29), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Marine Start Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2684.3, 26.327, 1985.23)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2684.3, 26.327, 1985.23)
         else
             TweenTo(Vector3.new(-2684.3, 26.327, 1985.23), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Middle Town", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-655.824, 7.85204, 1436.68)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-655.824, 7.85204, 1436.68)
         else
             TweenTo(Vector3.new(-655.824, 7.85204, 1436.68), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Jungle", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1249.77, 11.852, 341.356)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1249.77, 11.852, 341.356)
         else
             TweenTo(Vector3.new(-1249.77, 11.852, 341.356), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Pirate Village", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1122.35, 4.75205, 3855.92)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1122.35, 4.75205, 3855.92)
         else
             TweenTo(Vector3.new(-1122.35, 4.75205, 3855.92), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Desert", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1094.15, 6.43847, 4192.89)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1094.15, 6.43847, 4192.89)
         else
             TweenTo(Vector3.new(1094.15, 6.43847, 4192.89), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Frozen Village", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1198.01, 26.9725, -1211.73)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1198.01, 26.9725, -1211.73)
         else
             TweenTo(Vector3.new(1198.01, 26.9725, -1211.73), _G.TweenSpeed)
         end
     end)
     Teleport:Button("MarineFord", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-4505.38, 20.6523, 4260.56)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4505.38, 20.6523, 4260.56)
         else
             TweenTo(Vector3.new(-4505.38, 20.6523, 4260.56), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Magma Village", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5231.76, 8.59013, 8467.88)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5231.76, 8.59013, 8467.88)
         else
             TweenTo(Vector3.new(-5231.76, 8.59013, 8467.88), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Sky 1st Floor", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-4970.22, 717.672, -2622.35)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4970.22, 717.672, -2622.35)
         else
             TweenTo(Vector3.new(-4970.22, 717.672, -2622.35), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Sky 2nd Floor", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-4720.46, 854.517, -1943.15)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-4720.46, 854.517, -1943.15)
         else
             TweenTo(Vector3.new(-4720.46, 854.517, -1943.15), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Sky 3rd Floor", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-7886.96, 5545.53, -394.544)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-7886.96, 5545.53, -394.544)
         else
             TweenTo(Vector3.new(-7886.96, 5545.53, -394.544), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Colosseum", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1428.35, 7.38934, -3014.37)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1428.35, 7.38934, -3014.37)
         else
             TweenTo(Vector3.new(-1428.35, 7.38934, -3014.37), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Prison", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(4874.81, 5.65199, 735.57)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(4874.81, 5.65199, 735.57)
         else
             TweenTo(Vector3.new(4874.81, 5.65199, 735.57), _G.TweenSpeed)
         end
@@ -1871,14 +1927,14 @@ if Firstsea then
     end)
     Teleport:Button("Fountain City", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(5213.1, 38.5011, 4095.69)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5213.1, 38.5011, 4095.69)
         else
             TweenTo(Vector3.new(5213.1, 38.5011, 4095.69), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Mob Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2850.2, 7.39225, 5354.99)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2850.2, 7.39225, 5354.99)
         else
             TweenTo(Vector3.new(-2850.2, 7.39225, 5354.99), _G.TweenSpeed)
         end
@@ -1890,7 +1946,7 @@ elseif Secondsea then
             for i,v in pairs(game.Workspace:GetDescendants()) do
                 if v.Name == "Flower2" then
                     if GodModeIsDone then
-                        game.Players.LocalPlayer.Character.Humanoid.CFrame = v.CFrame * CFrame.new(0, 0, 5)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame * CFrame.new(0, 0, 5)
                     else
                         TweenTo(v.Position, _G.TweenSpeed)
                     end
@@ -1901,7 +1957,7 @@ elseif Secondsea then
             for i,v in pairs(game.Workspace:GetDescendants()) do
                 if v.Name == "Flower1" then
                     if GodModeIsDone then
-                        game.Players.LocalPlayer.Character.Humanoid.CFrame = v.CFrame * CFrame.new(0, 0, 5)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame * CFrame.new(0, 0, 5)
                     else
                         TweenTo(v.Position, _G.TweenSpeed)
                     end
@@ -1911,98 +1967,98 @@ elseif Secondsea then
     end)
     Teleport:Button("First Spot", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2850.2, 7.39225, 5354.99)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(82.9491, 19.2667, 2834.99)
         else
             TweenTo(Vector3.new(82.9491, 19.2667, 2834.99), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Cafe", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-385.251, 73.0201, 297.388)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-385.251, 73.0201, 297.388)
         else
             TweenTo(Vector3.new(-385.251, 73.0201, 297.388), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Kingdom Of Rose", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-195.1, 121.579, 279.9)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-195.1, 121.579, 279.9)
         else
             TweenTo(Vector3.new(-195.1, 121.579, 279.9), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Factory", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(427.452, 211.494, -429.336)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(427.452, 211.494, -429.336)
         else
             TweenTo(Vector3.new(427.452, 211.494, -429.336), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Mansion", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-390.096, 331.861, 673.465)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-390.096, 331.861, 673.465)
         else
             TweenTo(Vector3.new(-390.096, 331.861, 673.465), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Swan Room", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(2302.19, 15.152, 663.811)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2302.19, 15.152, 663.811)
         else
             TweenTo(Vector3.new(2302.19, 15.152, 663.811), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Dark Arena", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(3807.1, 14.6502, -3452.2)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3807.1, 14.6502, -3452.2)
         else
             TweenTo(Vector3.new(3807.1, 14.6502, -3452.2), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Green Bit", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2372.15, 72.9661, -3166.51)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2372.15, 72.9661, -3166.51)
         else
             TweenTo(Vector3.new(-2372.15, 72.9661, -3166.51), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Colosseum", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1836.58, 45.7947, 1360.31)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1836.58, 45.7947, 1360.31)
         else
             TweenTo(Vector3.new(-1836.58, 45.7947, 1360.31), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Ghost Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5571.84, 196.388, -795.433)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5571.84, 196.388, -795.433)
         else
             TweenTo(Vector3.new(-5571.84, 196.388, -795.433), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Ghost Island 2nd", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5930.73, 6.4027, -1189.42)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5930.73, 6.4027, -1189.42)
         else
             TweenTo(Vector3.new(-5930.73, 6.4027, -1189.42), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Snow Mountain", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1384.68, 453.512, -4990.1)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1384.68, 453.512, -4990.1)
         else
             TweenTo(Vector3.new(1384.68, 453.512, -4990.1), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Cold Slide", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-6026.96, 15.9518, -5071.96)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6026.96, 15.9518, -5071.96)
         else
             TweenTo(Vector3.new(-6026.96, 15.9518, -5071.96), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Magma Slide", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5478.39, 15.9518, -5246.91)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5478.39, 15.9518, -5246.91)
         else
             TweenTo(Vector3.new(-5478.39, 15.9518, -5246.91), _G.TweenSpeed)
         end
@@ -2015,49 +2071,49 @@ elseif Secondsea then
     end)
     Teleport:Button("Ice Castle", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(5400.40381, 28.21698, -6236.99219)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5400.40381, 28.21698, -6236.99219)
         else
             TweenTo(Vector3.new(5400.40381, 28.21698, -6236.99219), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Forgotten Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-3043.31543, 238.881271, -10191.5791)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-3043.31543, 238.881271, -10191.5791)
         else
             TweenTo(Vector3.new(-3043.31543, 238.881271, -10191.5791), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Usoapp Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(4748.78857, 8.35370827, 2849.57959)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(4748.78857, 8.35370827, 2849.57959)
         else
             TweenTo(Vector3.new(4748.78857, 8.35370827, 2849.57959), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Minisky Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-260.358917, 49325.7031, -35259.3008)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-260.358917, 49325.7031, -35259.3008)
         else
             TweenTo(Vector3.new(-260.358917, 49325.7031, -35259.3008), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Indra Island", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-26698, 7.06173, 425.623)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-26698, 7.06173, 425.623)
         else
             TweenTo(Vector3.new(-26698, 7.06173, 425.623), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Lap Room", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-6436.61, 250.62, -4500.64)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6436.61, 250.62, -4500.64)
         else
             TweenTo(Vector3.new(-6436.61, 250.62, -4500.64), _G.TweenSpeed)
         end
     end)
     Teleport:Button("l'Église de Prophétie", "", function ()
         if GodModeIsDone then
-            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(239.79, -58.382, 1824.44)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(239.79, -58.382, 1824.44)
         else
             TweenTo(Vector3.new(239.79, -58.382, 1824.44), _G.TweenSpeed)
         end
@@ -2275,33 +2331,6 @@ end)
 
 Player:Line()
 Player:Label("--[ Local Player ]--")
-Player:Toggle("Auto God Mode [OP!] (Read Des - Beta)", "Make Sure You Have 1 Defense Point (100 HP)", false, function (bool)
-    GodMode = bool
-    GodModeIsDone = false
-    StartGodMode()
-    while GodMode do wait(1)
-        if GodModeIsDone then
-            repeat wait() until game.Players.LocalPlayer.Character.Humanoid.Health > 10
-            game.Players.LocalPlayer.Character:BreakJoints()
-            repeat wait() until game.Players.LocalPLayer.Character
-            GodModeIsDone = false
-            StartGodMode()
-        end
-    end
-end)
-
-Player:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP)", function ()
-    GodModeIsDone = false
-    StartGodMode()
-    repeat wait(3) until game.Players.LocalPlayer.Character.Humanoid.Health <= 0
-    library:Notification("Player Has God Mode xD", "Ok Thanks")
-end)
-
-Player:Button("Disable God Mode", "", function ()
-    GodModeIsDone = false
-    game.Players.LocalPlayer.Character:BreakJoints()
-end)
-
 Player:Button("Invisible", "", function ()
     game.Players.LocalPlayer.Character.LowerTorso:Destroy()
 end)
@@ -2686,8 +2715,8 @@ Misc:Button("Open Inventory", "", function ()
         chest1 = Vector3.new(1083.03, 18.8626, 1325.01)
         chest2 = Vector3.new(-2553.69, 9.49121, 2005.98)
     elseif Secondsea then
-        chest1 = Vector3.new()
-        chest2 = Vector3.new()
+        chest1 = Vector3.new(-297.84, 75.66, 297.03)
+        chest2 = Vector3.new(123.57, 21.92, 2849.44)
     elseif Thirdsea then
         chest1 = Vector3.new(-217.493, 9.36051, 5322.15)
         chest2 = Vector3.new(-12571.8, 339.545, -7441.1)
@@ -2961,7 +2990,8 @@ if Secondsea or Thirdsea then
         "String",
         "Rumble",
         "Magma",
-        "Human: Buddha"
+        "Human: Buddha",
+        "Sand"
     }, function (bool)
         _G.FullyChip = bool
     end)
@@ -3016,7 +3046,8 @@ if Secondsea or Thirdsea then
         "String",
         "Rumble",
         "Magma",
-        "Human: Buddha"
+        "Human: Buddha",
+        "Sand"
     }, function (bool)
         SelectChip = bool
     end)
@@ -3031,45 +3062,10 @@ end
 
 local Shop = Main:Tab("Shop", "http://www.roblox.com/asset/?id=1291128077")
 Shop:Label("--[ Update 17 ]--")
-local Bone = Shop:Label("N/A")
 local Candy = Shop:Label("N/A")
 spawn(function ()
     while wait(.1) do
-        Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), Color3.fromRGB(38, 226, 255))
         Candy:Update("Total Candy: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check")), Color3.fromRGB(38, 226, 255))
-    end
-end)
-
-Shop:Button("Buy Surprise", "", function ()
-    local args = {[1] = "Bones", [2] = "Check"}
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    local args = {[1] = "Bones", [2] = "Buy", [3] = 1, [4] = 1}
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-end)
-
-Shop:Button("Buy Reroll Race [Bone]", "", function()
-	game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 3)
-end)
-
-Shop:Button("Buy Refund Stats [Bone]", "", function()
-	game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 2)
-end)
-
-Shop:Toggle("Auto Buy Surprise", "", false, function (bool)
-    AutoSurprise = bool
-    while AutoSurprise do wait()
-        if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check") >= 50 then
-            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
-        end
-    end
-end)
-
-Shop:Toggle("Auto x2 Exp [Bone]", "", false, function (bool)
-    AutoDupeExp = bool
-    while AutoDupeExp do wait(.1)
-        if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Level.Exp.Text, "2x") then
-            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
-        end
     end
 end)
 
@@ -3085,6 +3081,76 @@ Shop:Toggle("Auto Buy x2 Exp [50 Cannies]", "", false, function (bool)
         end
     end
 end)
+
+Shop:Button("Reset Stats [75 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 1, 2)
+end)
+
+Shop:Button("Recoll Race [100 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 1, 3)
+end)
+
+Shop:Button("Buy 300f [50 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 2, 1)
+end)
+
+Shop:Button("Buy 700f [100 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 2, 2)
+end)
+
+Shop:Button("Buy Elf Hat [250 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 3, 1)
+end)
+
+Shop:Button("Buy Santa Hat [500 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 3, 2)
+end)
+
+Shop:Button("Buy Sleigh [1000 Candies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 3, 3)
+end)
+
+if Thirdsea then
+    local Bone = Shop:Label("N/A")
+    spawn(function ()
+        while wait(.1) do
+            Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), Color3.fromRGB(38, 226, 255))
+        end
+    end)
+
+    Shop:Button("Buy Surprise", "", function ()
+        local args = {[1] = "Bones", [2] = "Check"}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+        local args = {[1] = "Bones", [2] = "Buy", [3] = 1, [4] = 1}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end)
+
+    Shop:Button("Buy Reroll Race [Bone]", "", function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 3)
+    end)
+
+    Shop:Button("Buy Refund Stats [Bone]", "", function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 2)
+    end)
+
+    Shop:Toggle("Auto Buy Surprise", "", false, function (bool)
+        AutoSurprise = bool
+        while AutoSurprise do wait()
+            if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check") >= 50 then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
+            end
+        end
+    end)
+
+    Shop:Toggle("Auto x2 Exp [Bone]", "", false, function (bool)
+        AutoDupeExp = bool
+        while AutoDupeExp do wait(.1)
+            if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Level.Exp.Text, "2x") then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
+            end
+        end
+    end)
+end
 
 if Secondsea or Thirdsea then
     Shop:Label("--[ Status ]--")
@@ -3291,22 +3357,17 @@ end)
 
 GameSetting:Line()
 GameSetting:Label("--[ FUN ]--")
-GameSetting:Toggle("Light Mode", "", LightMode, function (bool)
-    LightMode = bool
-    if LightMode then
-        while LightMode do wait()
-            pcall(function ()
-                if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("PointLight") then
-                    local PointLight = Instance.new("PointLight")
-                    PointLight.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
-                    PointLight.Range = 16
-                    PointLight.Color = Color3.fromRGB(255, 167, 31)
-                end
-            end)
+GameSetting:Button("Light Mode", "", function (bool)
+    pcall(function ()
+        if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("PointLight") then
+            local PointLight = Instance.new("PointLight")
+            PointLight.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+            PointLight.Range = 16
+            PointLight.Color = Color3.fromRGB(255, 167, 31)
+        else
+            PointLight:Destroy()
         end
-    else
-        PointLight:Destroy()
-    end
+    end)
 end)
 
 GameSetting:Line()
@@ -3535,22 +3596,29 @@ function Entrance(type)
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     if type == "Go to Underwater" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(61163.8515625, 11.6796875, 1819.7841796875)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Out Underwater" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(3864.6884765625, 6.7369503974915, -1926.2141113281)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Go to Ship" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(923.21252441406, 126.9760055542, 32852.83203125)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Out Ship" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(-6508.5581054688, 89.034996032715, -132.83953857422)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Castle" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(-12463.602539063, 378.32705688477, -7566.0830078125)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Mansion" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(-5089.6645507813, 318.50231933594, -3146.1267089844)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Hydra" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(-5099.0244140625, 318.50231933594, -3169.3083496094)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     elseif type == "Domain" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(5314.58203125, 25.419387817383, -125.94227600098)}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     end
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 end
 
 function TweenTo(Pos, Speed)
@@ -3581,7 +3649,7 @@ function TweenTo(Pos, Speed)
         local Tween, Err = pcall(function ()
             Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
             Tween:Play()
-            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400
+            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 or Pos == game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
             Tween:Pause()
             if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos) end
             if not Tween then return Err end
@@ -3680,11 +3748,6 @@ function All(type)
                                                             TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
                                                         end
                                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                                        if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                                            repeat wait(10) until game:GetService("Players").LocalPlayer.Character
-                                                            local args = {[1] = "AbandonQuest"}
-                                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                                        end
                                                     else levelCheck()
                                                         if GodModeIsDone then
                                                             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
@@ -3988,9 +4051,9 @@ function All(type)
                 repeat wait()
                     Equip(Gun)
                     if GodModeIsDone then
-                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 70, -30)
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Plr2.Character.HumanoidRootPart.CFrame * CFrame.new(0, 70, -30)
                     else
-                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 70, -30), 300)
+                        TweenTo(Plr2.Character.HumanoidRootPart.Position + Vector3.new(0, 70, -30), 300)
                     end
                     Plr2.Character.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                     Click()
@@ -4001,9 +4064,9 @@ function All(type)
                 repeat wait()
                     Equip(WeaponPlayerFarm)
                     if GodModeIsDone then
-                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
+                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Plr2.Character.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
                     else
-                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 15, 0), 300)
+                        TweenTo(Plr2.Character.HumanoidRootPart.Position + Vector3.new(0, 15, 0), 300)
                     end
                     Plr2.Character.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                     Click()
@@ -4560,7 +4623,7 @@ end
 
 function StartGodMode()
     spawn(function ()
-        if not GodModeIsDone then
+        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value = 1 then
             local Players = game:GetService'Players'.LocalPlayer
             local OldFrame;
             local Holding = false
@@ -4612,6 +4675,10 @@ function StartGodMode()
             else
                 StartGodMode()
             end
+        elseif game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value > 1 then
+            library:Notification("Make Sure Your Defense Point = 1", "Ok I Know")
+        elseif GodModeIsDone then
+            library:Notification("Player Has God Mode xD", "Ok Thanks")
         end
     end)
 end
@@ -4737,7 +4804,6 @@ do wait()
     end
     if _G.BoneFarm then
         All("Bone Farm")
-        MagnetBone()
     end
     if _G.MobAura then
         All("Mob Aura")
@@ -4806,7 +4872,7 @@ spawn(function () -- Auto Electric Claw
                             until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-10370.1, 331.654, -10129.5)).magnitude <= 5
                         end
                         wait(1.1)
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectricClaw","Start")
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectricClaw", "Start")
                     end
                 end
             end
