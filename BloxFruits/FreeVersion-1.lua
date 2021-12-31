@@ -2648,6 +2648,17 @@ local FruitList = {
     "Dragon-Dragon"
 }
 
+local LogiaFruit = {
+    "Smoke-Smoke",
+    "Flame-Flame",
+    "Ice-Ice",
+    "Sand-Sand",
+    "Dark-Dark",
+    "Light-Light",
+    "Magma-Magma",
+    "Rumble-Rumble"
+}
+
 fruitSelected = ""
 Misc:Dropdown("Select Fruit Sniper", FruitList, function (bool)
     fruitSelected = bool
@@ -4679,7 +4690,7 @@ local Logia;
 function StartGodMode()
     spawn(function ()
         Logia = false
-        for i, v in pairs(FruitList) do
+        for i, v in pairs(LogiaFruit) do
             if MyFruit == v then
                 Logia = true
             end
