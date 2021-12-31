@@ -1429,6 +1429,7 @@ elseif Thirdsea then
     AutoFarm:Toggle("Auto Bone Farm", "Third Sea Only [OP!]", _G.BoneFarm, function (bool)
         _G.BoneFarm = bool
         All("Bone Farm")
+        MagnetBone()
         if _G.BoneFarm == false then wait(.5)
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
         end
@@ -4658,6 +4659,7 @@ do wait()
     end
     if _G.BoneFarm then
         All("Bone Farm")
+        MagnetBone()
     end
     if _G.MobAura then
         All("Mob Aura")
@@ -4734,6 +4736,53 @@ spawn(function () -- Auto Electric Claw
     end)
 end)
 
+function MagnetBone()
+    spawn(function ()
+        while _G.BoneFarm do wait(.5)
+            if BringMob == "Reborn Skeleton [Lv. 1975]" then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if v.Name == "Reborn Skeleton [Lv. 1975]" then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = CFrame.new(-8762.44, 142.131, 6002.3)
+                        end
+                    end
+                end
+            elseif BringMob == "Posessed Mummy [Lv. 2050]" then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if v.Name == "Posessed Mummy [Lv. 2050]" or v.Name == "Demonic Soul [Lv. 2025]" then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = CFrame.new(-9573.1, 5.81833, 6197.55)
+                        end
+                    end
+                end
+            elseif BringMob == "Living Zombie [Lv. 2000]" then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if v.Name == "Living Zombie [Lv. 2000]" then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = CFrame.new(-10153.4, 139.652, 5936.71)
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
 spawn(function () -- Magnet
     while wait(.4) do
         if _G.AutoFarm and _G.Magnet and PosMon ~= nil then
@@ -4776,52 +4825,6 @@ spawn(function () -- Magnet
                     v.HumanoidRootPart.Transparency = 1
                     v.HumanoidRootPart.CFrame = MobChoosedPos
                     wait(.1)
-                end
-            end
-        elseif _G.BoneFarm and BringMob ~= nil then
-            if BringMob == "Posessed Mummy [Lv. 2050]" then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                        if v.Name == "Posessed Mummy [Lv. 2050]" or v.Name == "Demonic Soul [Lv. 2025]" then
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v.HumanoidRootPart.Transparency = 1
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = CFrame.new(-9573.1, 5.81833, 6197.55)
-                            wait(.1)
-                        end
-                    end
-                end
-            end
-            if BringMob == "Reborn Skeleton [Lv. 1975]" then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                        if v.Name == "Reborn Skeleton [Lv. 1975]" then
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v.HumanoidRootPart.Transparency = 1
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = CFrame.new(-8762.44, 142.131, 6002.3)
-                            wait(.1)
-                        end
-                    end
-                end
-            end
-            if BringMob == "Living Zombie [Lv. 2000]" then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                        if v.Name == "Living Zombie [Lv. 2000]" then
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v.HumanoidRootPart.Transparency = 1
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = CFrame.new(-10153.4, 139.652, 5936.71)
-                            wait(.1)
-                        end
-                    end
                 end
             end
         end
