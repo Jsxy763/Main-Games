@@ -4532,8 +4532,13 @@ function StartGodMode()
 
             repeat wait()
                 TweenTo(Nearest, 300)
-            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest + Vector3.new(0, 0, 5)).magnitude <= 5
-            GodModeIsDone = true
+            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest + Vector3.new(10, 0, 15)).magnitude <= 5
+            wait(3)
+            if game.Players.LocalPlayer.Character.Humanoid.Health < -1 then
+                GodModeIsDone = true
+            else
+                StartGodMode()
+            end
         end
     end)
 end
