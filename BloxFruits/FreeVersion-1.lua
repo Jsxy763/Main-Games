@@ -1060,6 +1060,12 @@ function BossCheck() -- Check Boss
         needQuest = false
     elseif _G.SelectedBoss == "rip_indra True Form [Lv. 5000] [Raid Boss]" then
         needQuest = false
+    elseif _G.SelectedBoss == "Cake Queen [Lv. 2175] [Boss]" then
+        needQuest = true
+        nameBoss = "Cake Queen"
+        nameBossQuest = "IceCreamIslandQuest"
+        levelBossQuest = 3
+        posBossQuest = Vector3.new(-821.255, 65.8195, -10965.2)
     end
 end
 
@@ -1315,6 +1321,15 @@ local AutoFarm = Main:Tab("Main", "http://www.roblox.com/asset/?id=1291127432")
 AutoFarm:Label("--[ Server Status ]--")
 local ServerTime = AutoFarm:Label("Server Time | N/A ")
 local ClientStatus = AutoFarm:Label("Client Status | N/A ")
+AutoFarm:Textbox("Chat Box [Enter To Chat]", "", false, function (message)
+    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+end)
+
+AutoFarm:Button("Set Spawn Near", "", function ()
+    local args = {[1] = "SetSpawnPoint"}
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+end)
+
 spawn(function ()
     while wait(.1) do
         local GameTime = math.floor(workspace.DistributedGameTime + 0.5)
@@ -3015,11 +3030,13 @@ if Secondsea or Thirdsea then
 end
 
 local Shop = Main:Tab("Shop", "http://www.roblox.com/asset/?id=1291128077")
-Shop:Label("--[ Update 16 ]--")
+Shop:Label("--[ Update 17 ]--")
 local Bone = Shop:Label("N/A")
+local Candy = Shop:Label("N/A")
 spawn(function ()
     while wait(.1) do
         Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), Color3.fromRGB(38, 226, 255))
+        Candy:Update("Total Candy: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check")), Color3.fromRGB(38, 226, 255))
     end
 end)
 
@@ -3041,10 +3058,8 @@ end)
 Shop:Toggle("Auto Buy Surprise", "", false, function (bool)
     AutoSurprise = bool
     while AutoSurprise do wait()
-        local args = {[1] = "Bones", [2] = "Check"}
-        if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args)) >= 50 then
-            local args = {[1] = "Bones", [2] = "Buy", [3] = 1, [4] = 1}
-            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+        if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check") >= 50 then
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
         end
     end
 end)
@@ -3054,6 +3069,19 @@ Shop:Toggle("Auto x2 Exp [Bone]", "", false, function (bool)
     while AutoDupeExp do wait(.1)
         if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Level.Exp.Text, "2x") then
             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
+        end
+    end
+end)
+
+Shop:Button("Buy x2 Exp [50 Canndies]", "", function ()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 1, 1)
+end)
+
+Shop:Toggle("Auto Buy x2 Exp [50 Cannies]", "", false, function (bool)
+    AutoCandy1 = bool
+    while AutoCandy1 do wait()
+        if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check") >= 50 then
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 1, 1)
         end
     end
 end)
@@ -3572,37 +3600,37 @@ function All(type)
     spawn(function ()
         pcall(function ()
             if type == "Auto Farm" and _G.AutoFarm then
-                while _G.AutoFarm do game:GetService'RunService'.RenderStepped:Wait()
-                    while _G.AutoFarm do game:GetService("RunService").RenderStepped:Wait()
+                while _G.AutoFarm do wait()
+                    if _G.AutoFarm then
                         if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
                             levelCheck()
-                            local MyLevel = game.Players.localPlayer.Data.Level.Value
-                            if MyLevel >= 375 and MyLevel < 450 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(61163.8515625, 11.6796875, 1819.7841796875)
-                                else
-                                    Entrance("Go to Underwater")
-                                end
-                            elseif MyLevel >= 450 and MyLevel < 700 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3864.6884765625, 6.7369503974915, -1926.2141113281)
-                                else
-                                    Entrance("Out Underwater")
-                                end
-                            elseif MyLevel >= 1250 and MyLevel < 1350 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(923.21252441406, 126.9760055542, 32852.83203125)
-                                else
-                                    Entrance("Go to Ship")
-                                end
-                            elseif MyLevel >= 1350 and MyLevel < 1500 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6508.5581054688, 89.034996032715, -132.83953857422)
-                                else
-                                    Entrance("Out Ship")
-                                end
-                            end
-                            repeat wait() until game:IsLoaded()
+                            -- local MyLevel = game.Players.localPlayer.Data.Level.Value
+                            -- if MyLevel >= 375 and MyLevel < 450 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            --     if GodModeIsDone then
+                            --         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(61163.8515625, 11.6796875, 1819.7841796875)
+                            --     else
+                            --         Entrance("Go to Underwater")
+                            --     end
+                            -- elseif MyLevel >= 450 and MyLevel < 700 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            --     if GodModeIsDone then
+                            --         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3864.6884765625, 6.7369503974915, -1926.2141113281)
+                            --     else
+                            --         Entrance("Out Underwater")
+                            --     end
+                            -- elseif MyLevel >= 1250 and MyLevel < 1350 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            --     if GodModeIsDone then
+                            --         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(923.21252441406, 126.9760055542, 32852.83203125)
+                            --     else
+                            --         Entrance("Go to Ship")
+                            --     end
+                            -- elseif MyLevel >= 1350 and MyLevel < 1500 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            --     if GodModeIsDone then
+                            --         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6508.5581054688, 89.034996032715, -132.83953857422)
+                            --     else
+                            --         Entrance("Out Ship")
+                            --     end
+                            -- end
+                            -- repeat wait() until game:IsLoaded()
                             if GodModeIsDone then
                                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posQuest)
                             else
@@ -3617,59 +3645,67 @@ function All(type)
                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                             end
                         elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true and _G.AutoFarm then levelCheck()
-                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
-                                if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
-                                    pcall(function ()
-                                        for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
-                                            if v.Name == nameMob then
-                                                repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                                        for i, v in pairs(ListMelee) do
-                                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                                _G.Weapon = v
+                            if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
+                                pcall(function ()
+                                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
+                                        if v.Name == nameMob then
+                                            repeat wait() levelCheck()
+                                                if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
+                                                    if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
+                                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                                            for i, v in pairs(ListMelee) do
+                                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                                    _G.Weapon = v
+                                                                end
                                                             end
                                                         end
+                                                        Equip(_G.Weapon)
+                                                        Click()
+                                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                            local args = {[1] = "Buso"}
+                                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                        end
+                                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                            v.Humanoid.WalkSpeed = 1
+                                                            v.HumanoidRootPart.CanCollide = false
+                                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                            v.HumanoidRootPart.Transparency = 1
+                                                            PosMon = v.HumanoidRootPart.CFrame
+                                                        end
+                                                        if GodModeIsDone then
+                                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
+                                                        else
+                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                                        end
+                                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
+                                                        if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
+                                                            repeat wait(10) until game:GetService("Players").LocalPlayer.Character
+                                                            local args = {[1] = "AbandonQuest"}
+                                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                        end
+                                                    else levelCheck()
+                                                        if GodModeIsDone then
+                                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
+                                                        else
+                                                            TweenTo(waitPos, 300)
+                                                        end
                                                     end
-                                                    Equip(_G.Weapon)
-                                                    Click()
-                                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                                        local args = {[1] = "Buso"}
-                                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                                    end
-                                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                                        v.Humanoid.WalkSpeed = 1
-                                                        v.HumanoidRootPart.CanCollide = false
-                                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                                        v.HumanoidRootPart.Transparency = 1
-                                                        PosMon = v.HumanoidRootPart.CFrame
-                                                    end
-                                                    if GodModeIsDone then
-                                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
-                                                    else
-                                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
-                                                    end
-                                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                                until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                                if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                                    repeat wait(10) until game:GetService("Players").LocalPlayer.Character
+                                                else
                                                     local args = {[1] = "AbandonQuest"}
                                                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                                 end
-                                            end
+                                            until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
                                         end
-                                    end)
-                                else levelCheck()
-                                    if GodModeIsDone then
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
-                                    else
-                                        TweenTo(waitPos, 300)
                                     end
+                                end)
+                            else levelCheck()
+                                if GodModeIsDone then
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
+                                else
+                                    TweenTo(waitPos, 300)
                                 end
-                            else
-                                local args = {[1] = "AbandonQuest"}
-                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                             end
                         end
                     end
@@ -4778,27 +4814,6 @@ spawn(function () -- Auto Electric Claw
     end)
 end)
 
-function MagnetBone()
-    spawn(function ()
-        while _G.BoneFarm do wait(.5)
-            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                    if v.Name == BoneMob
-                    or (v.Name == "Demonic Soul [Lv. 2025]" and BoneMob == "Posessed Mummy [Lv. 2050]")
-                    then
-                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                        v.HumanoidRootPart.Transparency = 1
-                        v.HumanoidRootPart.CanCollide = false
-                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                        v.HumanoidRootPart.CFrame = CFrame.new(Position)
-                    end
-                end
-            end
-        end
-    end)
-end
-
 spawn(function () -- Magnet
     while wait(.5) do
         if _G.AutoFarm and _G.Magnet and PosMon ~= nil then
@@ -4812,6 +4827,21 @@ spawn(function () -- Magnet
                     v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                     v.HumanoidRootPart.Transparency = 1
                     v.HumanoidRootPart.CFrame = PosMon
+                end
+            end
+        elseif _G.BoneFarm then
+            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                    if v.Name == BoneMob
+                    or (v.Name == "Demonic Soul [Lv. 2025]" and BoneMob == "Posessed Mummy [Lv. 2050]")
+                    then
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                        v.HumanoidRootPart.Transparency = 1
+                        v.HumanoidRootPart.CanCollide = false
+                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                        v.HumanoidRootPart.CFrame = CFrame.new(Position)
+                    end
                 end
             end
         elseif _G.MobAura and _G.Magnet and AuraBringPos ~= nil then
