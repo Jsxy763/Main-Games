@@ -1655,12 +1655,12 @@ Mouse.Button1Down:Connect(function ()
     if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
     if not Mouse.Target then return end
     if _G.CTRL then
-        if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Mouse.Hit.p).magnitude <= 350 then
+        if GodModeIsDone then
+            Plr.Character:MoveTo(Mouse.Hit.p)
+        elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Mouse.Hit.p).magnitude <= 350 then
             Plr.Character:MoveTo(Mouse.Hit.p)
         else
-            local speedy = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Mouse.Hit.p).magnitude / 300
-            local tween = game:GetService("TweenService"):create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(speedy, Enum.EasingStyle.Linear), {CFrame = CFrame.new(Mouse.Hit.p)})
-            tween:Play()
+            TweenTo(Mouse.Hit.p)
         end
     end
 end)
@@ -1700,11 +1700,13 @@ if Secondsea or Thirdsea then
     Teleport:Button("Tween To Seabeast", "", function ()
         for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
             if v:FindFirstChild("HumanoidRootPart") then
-                repeat wait()
-                    local speedy = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude / 300
-                    local tween = game:GetService("TweenService"):create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(speedy, Enum.EasingStyle.Linear), {CFrame = CFrame.new(v.HumanoidRootPart.Position) * CFrame.new(0, 100, 0)})
-                    tween:Play()
-                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                if GodModeIsDone then
+                    game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 100, 0))
+                else
+                    repeat wait()
+                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 100, 0))
+                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                end
             end
         end
     end)
@@ -1720,46 +1722,102 @@ Teleport:Line()
 Teleport:Label("--[ World ]--")
 if Firstsea then
     Teleport:Button("Pirate Start Island", "", function ()
-        TweenTo(Vector3.new(1027.59, 19.3245, 1367.29), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1027.59, 19.3245, 1367.29)
+        else
+            TweenTo(Vector3.new(1027.59, 19.3245, 1367.29), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Marine Start Island", "", function ()
-        TweenTo(Vector3.new(-2684.3, 26.327, 1985.23), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2684.3, 26.327, 1985.23)
+        else
+            TweenTo(Vector3.new(-2684.3, 26.327, 1985.23), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Middle Town", "", function ()
-        TweenTo(Vector3.new(-655.824, 7.85204, 1436.68), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-655.824, 7.85204, 1436.68)
+        else
+            TweenTo(Vector3.new(-655.824, 7.85204, 1436.68), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Jungle", "", function ()
-        TweenTo(Vector3.new(-1249.77, 11.852, 341.356), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1249.77, 11.852, 341.356)
+        else
+            TweenTo(Vector3.new(-1249.77, 11.852, 341.356), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Pirate Village", "", function ()
-        TweenTo(Vector3.new(-1122.35, 4.75205, 3855.92), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1122.35, 4.75205, 3855.92)
+        else
+            TweenTo(Vector3.new(-1122.35, 4.75205, 3855.92), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Desert", "", function ()
-        TweenTo(Vector3.new(1094.15, 6.43847, 4192.89), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1094.15, 6.43847, 4192.89)
+        else
+            TweenTo(Vector3.new(1094.15, 6.43847, 4192.89), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Frozen Village", "", function ()
-        TweenTo(Vector3.new(1198.01, 26.9725, -1211.73), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1198.01, 26.9725, -1211.73)
+        else
+            TweenTo(Vector3.new(1198.01, 26.9725, -1211.73), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("MarineFord", "", function ()
-        TweenTo(Vector3.new(-4505.38, 20.6523, 4260.56), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-4505.38, 20.6523, 4260.56)
+        else
+            TweenTo(Vector3.new(-4505.38, 20.6523, 4260.56), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Magma Village", "", function ()
-        TweenTo(Vector3.new(-5231.76, 8.59013, 8467.88), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5231.76, 8.59013, 8467.88)
+        else
+            TweenTo(Vector3.new(-5231.76, 8.59013, 8467.88), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Sky 1st Floor", "", function ()
-        TweenTo(Vector3.new(-4970.22, 717.672, -2622.35), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-4970.22, 717.672, -2622.35)
+        else
+            TweenTo(Vector3.new(-4970.22, 717.672, -2622.35), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Sky 2nd Floor", "", function ()
-        TweenTo(Vector3.new(-4720.46, 854.517, -1943.15), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-4720.46, 854.517, -1943.15)
+        else
+            TweenTo(Vector3.new(-4720.46, 854.517, -1943.15), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Sky 3rd Floor", "", function ()
-        TweenTo(Vector3.new(-7886.96, 5545.53, -394.544), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-7886.96, 5545.53, -394.544)
+        else
+            TweenTo(Vector3.new(-7886.96, 5545.53, -394.544), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Colosseum", "", function ()
-        TweenTo(Vector3.new(-1428.35, 7.38934, -3014.37), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1428.35, 7.38934, -3014.37)
+        else
+            TweenTo(Vector3.new(-1428.35, 7.38934, -3014.37), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Prison", "", function ()
-        TweenTo(Vector3.new(4874.81, 5.65199, 735.57), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(4874.81, 5.65199, 735.57)
+        else
+            TweenTo(Vector3.new(4874.81, 5.65199, 735.57), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("In UnderWater City", "", function ()
         Entrance("Go to Underwater")
@@ -1768,10 +1826,18 @@ if Firstsea then
         Entrance("Out Underwater")
     end)
     Teleport:Button("Fountain City", "", function ()
-        TweenTo(Vector3.new(5213.1, 38.5011, 4095.69), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(5213.1, 38.5011, 4095.69)
+        else
+            TweenTo(Vector3.new(5213.1, 38.5011, 4095.69), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Mob Island", "", function ()
-        TweenTo(Vector3.new(-2850.2, 7.39225, 5354.99), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2850.2, 7.39225, 5354.99)
+        else
+            TweenTo(Vector3.new(-2850.2, 7.39225, 5354.99), _G.TweenSpeed)
+        end
     end)
 elseif Secondsea then
     Teleport:Dropdown("Teleport Flower", {"Red Flower", "Blue Flower"}, function (bool)
@@ -1779,59 +1845,123 @@ elseif Secondsea then
         if FlowerSelected == "Red Flower" then
             for i,v in pairs(game.Workspace:GetDescendants()) do
                 if v.Name == "Flower2" then
-                    TweenTo(v.Position, true, _G.TweenSpeed)
+                    if GodModeIsDone then
+                        game.Players.LocalPlayer.Character.Humanoid.CFrame = v.CFrame * CFrame.new(0, 0, 5)
+                    else
+                        TweenTo(v.Position, _G.TweenSpeed)
+                    end
                 end
             end
         end
         if FlowerSelected == "Blue Flower" then
             for i,v in pairs(game.Workspace:GetDescendants()) do
                 if v.Name == "Flower1" then
-                    TweenTo(v.Position, true, _G.TweenSpeed)
+                    if GodModeIsDone then
+                        game.Players.LocalPlayer.Character.Humanoid.CFrame = v.CFrame * CFrame.new(0, 0, 5)
+                    else
+                        TweenTo(v.Position, _G.TweenSpeed)
+                    end
                 end
             end
         end
     end)
     Teleport:Button("First Spot", "", function ()
-        TweenTo(Vector3.new(82.9491, 19.2667, 2834.99), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2850.2, 7.39225, 5354.99)
+        else
+            TweenTo(Vector3.new(82.9491, 19.2667, 2834.99), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Cafe", "", function ()
-        TweenTo(Vector3.new(-385.251, 73.0201, 297.388), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-385.251, 73.0201, 297.388)
+        else
+            TweenTo(Vector3.new(-385.251, 73.0201, 297.388), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Kingdom Of Rose", "", function ()
-        TweenTo(Vector3.new(-195.1, 121.579, 279.9), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-195.1, 121.579, 279.9)
+        else
+            TweenTo(Vector3.new(-195.1, 121.579, 279.9), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Factory", "", function ()
-        TweenTo(Vector3.new(427.452, 211.494, -429.336), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(427.452, 211.494, -429.336)
+        else
+            TweenTo(Vector3.new(427.452, 211.494, -429.336), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Mansion", "", function ()
-        TweenTo(Vector3.new(-390.096, 331.861, 673.465), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-390.096, 331.861, 673.465)
+        else
+            TweenTo(Vector3.new(-390.096, 331.861, 673.465), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Swan Room", "", function ()
-        TweenTo(Vector3.new(2302.19, 15.152, 663.811), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(2302.19, 15.152, 663.811)
+        else
+            TweenTo(Vector3.new(2302.19, 15.152, 663.811), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Dark Arena", "", function ()
-        TweenTo(Vector3.new(3807.1, 14.6502, -3452.2), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(3807.1, 14.6502, -3452.2)
+        else
+            TweenTo(Vector3.new(3807.1, 14.6502, -3452.2), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Green Bit", "", function ()
-        TweenTo(Vector3.new(-2372.15, 72.9661, -3166.51), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-2372.15, 72.9661, -3166.51)
+        else
+            TweenTo(Vector3.new(-2372.15, 72.9661, -3166.51), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Colosseum", "", function ()
-        TweenTo(Vector3.new(-1836.58, 45.7947, 1360.31), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-1836.58, 45.7947, 1360.31)
+        else
+            TweenTo(Vector3.new(-1836.58, 45.7947, 1360.31), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Ghost Island", "", function ()
-        TweenTo(Vector3.new(-5571.84, 196.388, -795.433), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5571.84, 196.388, -795.433)
+        else
+            TweenTo(Vector3.new(-5571.84, 196.388, -795.433), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Ghost Island 2nd", "", function ()
-        TweenTo(Vector3.new(-5930.73, 6.4027, -1189.42), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5930.73, 6.4027, -1189.42)
+        else
+            TweenTo(Vector3.new(-5930.73, 6.4027, -1189.42), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Snow Mountain", "", function ()
-        TweenTo(Vector3.new(1384.68, 453.512, -4990.1), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(1384.68, 453.512, -4990.1)
+        else
+            TweenTo(Vector3.new(1384.68, 453.512, -4990.1), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Cold Slide", "", function ()
-        TweenTo(Vector3.new(-6026.96, 15.9518, -5071.96), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-6026.96, 15.9518, -5071.96)
+        else
+            TweenTo(Vector3.new(-6026.96, 15.9518, -5071.96), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Magma Slide", "", function ()
-        TweenTo(Vector3.new(-5478.39, 15.9518, -5246.91), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-5478.39, 15.9518, -5246.91)
+        else
+            TweenTo(Vector3.new(-5478.39, 15.9518, -5246.91), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("In Cursed Ship", "", function ()
         Entrance("Go to Ship")
@@ -1840,32 +1970,60 @@ elseif Secondsea then
         Entrance("Out Ship")
     end)
     Teleport:Button("Ice Castle", "", function ()
-        TweenTo(Vector3.new(5400.40381, 28.21698, -6236.99219), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(5400.40381, 28.21698, -6236.99219)
+        else
+            TweenTo(Vector3.new(5400.40381, 28.21698, -6236.99219), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Forgotten Island", "", function ()
-        TweenTo(Vector3.new(-3043.31543, 238.881271, -10191.5791), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-3043.31543, 238.881271, -10191.5791)
+        else
+            TweenTo(Vector3.new(-3043.31543, 238.881271, -10191.5791), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Usoapp Island", "", function ()
-        TweenTo(Vector3.new(4748.78857, 8.35370827, 2849.57959), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(4748.78857, 8.35370827, 2849.57959)
+        else
+            TweenTo(Vector3.new(4748.78857, 8.35370827, 2849.57959), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Minisky Island", "", function ()
-        TweenTo(Vector3.new(-260.358917, 49325.7031, -35259.3008), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-260.358917, 49325.7031, -35259.3008)
+        else
+            TweenTo(Vector3.new(-260.358917, 49325.7031, -35259.3008), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Indra Island", "", function ()
-        TweenTo(Vector3.new(-26698, 7.06173, 425.623), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-26698, 7.06173, 425.623)
+        else
+            TweenTo(Vector3.new(-26698, 7.06173, 425.623), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("Lap Room", "", function ()
-        TweenTo(Vector3.new(-6436.61, 250.62, -4500.64), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(-6436.61, 250.62, -4500.64)
+        else
+            TweenTo(Vector3.new(-6436.61, 250.62, -4500.64), _G.TweenSpeed)
+        end
     end)
     Teleport:Button("l'Église de Prophétie", "", function ()
-        TweenTo(Vector3.new(239.79, -58.382, 1824.44), true, _G.TweenSpeed)
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(239.79, -58.382, 1824.44)
+        else
+            TweenTo(Vector3.new(239.79, -58.382, 1824.44), _G.TweenSpeed)
+        end
     end)
 elseif Thirdsea then
     Teleport:Button("Port Town", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-269.081, 6.72994, 5313.31)
         else
-            TweenTo(Vector3.new(-269.081, 6.72994, 5313.31), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-269.081, 6.72994, 5313.31), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Hydra Island (Support Gate Tele)", "", function ()
@@ -1874,28 +2032,28 @@ elseif Thirdsea then
         elseif gateTele and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(5317.27, 643.111, 336.468)).magnitude > 500 then
             Entrance("Hydra")
         else
-            TweenTo(Vector3.new(5317.27, 643.111, 336.468), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(5317.27, 643.111, 336.468), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Secret Temple", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5226.1, 6.87257, 1111.05)
         else
-            TweenTo(Vector3.new(5226.1, 6.87257, 1111.05), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(5226.1, 6.87257, 1111.05), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Friendly Arena", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5227.64, 68.1246, -1453.46)
         else
-            TweenTo(Vector3.new(5227.64, 68.1246, -1453.46), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(5227.64, 68.1246, -1453.46), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Great Tree", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2267.83, 25.8876, -6600.01)
         else
-            TweenTo(Vector3.new(2267.83, 25.8876, -6600.01), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(2267.83, 25.8876, -6600.01), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Castle on the Sea (Support Gate Tele)", "", function ()
@@ -1904,14 +2062,14 @@ elseif Thirdsea then
         elseif gateTele and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-4999.45, 318.181, -3010.54)).magnitude > 500 then
             Entrance("Castle")
         else
-            TweenTo(Vector3.new(-4999.45, 318.181, -3010.54), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-4999.45, 318.181, -3010.54), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Rip Indra Boss Room", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5386.29, 335.627, -2565.9)
         else
-            TweenTo(Vector3.new(-5386.29, 335.627, -2565.9), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-5386.29, 335.627, -2565.9), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Mansion (Support Gate Tele)", "", function ()
@@ -1920,21 +2078,21 @@ elseif Thirdsea then
         elseif gateTele and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-12549.7, 341.781, -7470.36)).magnitude > 500 then
             Entrance("Mansion")
         else
-            TweenTo(Vector3.new(-12549.7, 341.781, -7470.36), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-12549.7, 341.781, -7470.36), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Floating Turtle", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-10038.9, 332.096, -8325.16)
         else
-            TweenTo(Vector3.new(-10038.9, 332.096, -8325.16), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-10038.9, 332.096, -8325.16), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Longma Boss Room", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-10253.8, 375.099, -9525.49)
         else
-            TweenTo(Vector3.new(-10253.8, 375.099, -9525.49), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-10253.8, 375.099, -9525.49), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Beautiful Pirate Domain (Support Gate Tele)", "", function ()
@@ -1943,21 +2101,21 @@ elseif Thirdsea then
         elseif gateTele then
             Entrance("Domain")
         else
-            TweenTo(Vector3.new(5314.58203125, 25.419387817383, -125.94227600098), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(5314.58203125, 25.419387817383, -125.94227600098), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Haunted Castle", "", function ()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9506.11, 142.105, 5526.04)
         else
-            TweenTo(Vector3.new(-9506.11, 142.105, 5526.04), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-9506.11, 142.105, 5526.04), _G.TweenSpeed)
         end
     end)
     Teleport:Button("Soul Reaper Boss Room", "", function()
         if GodModeIsDone then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9524.4, 316.233, 6736.14)
         else
-            TweenTo(Vector3.new(-9524.4, 316.233, 6736.14), true, _G.TweenSpeed)
+            TweenTo(Vector3.new(-9524.4, 316.233, 6736.14), _G.TweenSpeed)
         end
     end)
 end
@@ -2034,9 +2192,13 @@ Player:Toggle("Aimbot Skill (Beta)", "", false, function (bool)
 end)
 
 Player:Button("Tween To Player", "", function ()
-    repeat wait()
-        TweenTo(game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position, 300)
-    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position).magnitude <= 5 or not game.Players:FindFirstChild(selectedPlayer).Character
+    if GodModeIsDone then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.CFrame * CFrame.new(5, 0, 5)
+    else
+        repeat wait()
+            TweenTo(game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position, 300)
+        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position).magnitude <= 5 or not game.Players:FindFirstChild(selectedPlayer).Character
+    end
 end)
 
 local WeaponPlayerDD = Player:Dropdown("Weapon Player", WeaponList, function (bool)
@@ -2479,17 +2641,25 @@ Misc:Button("Open Inventory", "", function ()
         chest2 = Vector3.new(-12571.8, 339.545, -7441.1)
     end
     if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - chest1).magnitude < (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - chest2).magnitude then
-        repeat wait()
-            TweenTo(chest1, 300)
-        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - chest1).magnitude <= 5
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(chest1)
+        else
+            repeat wait()
+                TweenTo(chest1, 300)
+            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - chest1).magnitude <= 5
+        end
         wait(.5)
         local args = {[1] = "getInventoryWeapons"}
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
         game.Players.localPlayer.PlayerGui.Main.Inventory.Visible = true
     else
-        repeat wait()
-            TweenTo(chest2, 300)
-        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - chest1).magnitude <= 5
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(chest2)
+        else
+            repeat wait()
+                TweenTo(chest2, 300)
+            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - chest2).magnitude <= 5
+        end
         wait(.5)
         local args = {[1] = "getInventoryWeapons"}
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
