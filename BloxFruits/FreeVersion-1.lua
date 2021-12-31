@@ -858,13 +858,27 @@ function levelCheck() -- Check Level
             nameMon = "Demonic Soul"
             waitPos = Vector3.new(-9274.07, 204.696, 6042.18)
             posQuest = Vector3.new(-9516.99, 172.017, 6078.47)
-        elseif MyLevel >= 2050 then
+        elseif MyLevel >= 2050 and MyLevel <= 2124 then
             nameMob = "Posessed Mummy [Lv. 2050]"
             nameQuest = "HauntedQuest2"
             levelQuest = 2
             nameMon = "Posessed Mummy"
             waitPos = Vector3.new(-9743.21, 68.6489, 6165.13)
             posQuest = Vector3.new(-9516.99, 172.017, 6078.47)
+        elseif MyLevel >= 2125 and MyLevel <= 2149 then
+            nameMob = "Ice Cream Chef [Lv. 2125]"
+            nameQuest = "IceCreamIslandQuest"
+            levelQuest = 1
+            nameMon = "Ice Cream Chef"
+            waitPos = Vector3.new(-901.45, 120.715, -10942.8)
+            posQuest = Vector3.new(-821.255, 65.8195, -10965.2)
+        elseif MyLevel >= 2150 then
+            nameMob = "Ice Cream Commander [Lv. 2150]"
+            nameQuest = "IceCreamIslandQuest"
+            levelQuest = 2
+            nameMon = "Ice Cream Commander"
+            waitPos = Vector3.new(-653.074, 143.481, -11347.5)
+            posQuest = Vector3.new(-821.255, 65.8195, -10965.2)
         end
     end
 end
@@ -2117,6 +2131,13 @@ elseif Thirdsea then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9524.4, 316.233, 6736.14)
         else
             TweenTo(Vector3.new(-9524.4, 316.233, 6736.14), _G.TweenSpeed)
+        end
+    end)
+    Teleport:Button("Sea Of Treats", "", function ()
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-891.166, 65.8195, -10901.7)
+        else
+            TweenTo(Vector3.new(-891.166, 65.8195, -10901.7), _G.TweenSpeed)
         end
     end)
 end
@@ -3640,7 +3661,7 @@ function All(type)
                     or game:GetService("Workspace").Enemies:FindFirstChild("Reborn Skeleton [Lv. 1975]")
                     or game:GetService("Workspace").Enemies:FindFirstChild("Living Zombie [Lv. 2000]")
                     then
-                        local RandomMob = math.random(1, 3)
+                        RandomMob = math.random(1, 3)
                         if RandomMob == 1 then
                             BoneMob = "Posessed Mummy [Lv. 2050]"
                             Position = Vector3.new(-9573.1, 5.81833, 6197.55)
@@ -3652,10 +3673,7 @@ function All(type)
                             Position = Vector3.new(-10153.4, 139.652, 5936.71)
                         end
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
                             if v.Name == BoneMob then
-                                BringMob = v.Name
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                                     if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
@@ -4531,8 +4549,8 @@ function StartGodMode()
             end
 
             repeat wait()
-                TweenTo(Nearest, 300)
-            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest + Vector3.new(10, 0, 15)).magnitude <= 5
+                TweenTo(Nearest + Vector3.new(5, 0, 0), 300)
+            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest).magnitude <= 25
             wait(3)
             if game.Players.LocalPlayer.Character.Humanoid.Health < -1 then
                 GodModeIsDone = true
@@ -4744,43 +4762,17 @@ end)
 function MagnetBone()
     spawn(function ()
         while _G.BoneFarm do wait(.5)
-            if BringMob == "Reborn Skeleton [Lv. 1975]" then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                        if v.Name == "Reborn Skeleton [Lv. 1975]" then
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v.HumanoidRootPart.Transparency = 1
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = CFrame.new(-8762.44, 142.131, 6002.3)
-                        end
-                    end
-                end
-            elseif BringMob == "Posessed Mummy [Lv. 2050]" then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                        if v.Name == "Posessed Mummy [Lv. 2050]" or v.Name == "Demonic Soul [Lv. 2025]" then
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v.HumanoidRootPart.Transparency = 1
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = CFrame.new(-9573.1, 5.81833, 6197.55)
-                        end
-                    end
-                end
-            elseif BringMob == "Living Zombie [Lv. 2000]" then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                        if v.Name == "Living Zombie [Lv. 2000]" then
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v.HumanoidRootPart.Transparency = 1
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = CFrame.new(-10153.4, 139.652, 5936.71)
-                        end
+            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                    if v.Name == BoneMob
+                    or (v.Name == "Demonic Soul [Lv. 2025]" and BoneMob == "Posessed Mummy [Lv. 2050]")
+                    then
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                        v.HumanoidRootPart.Transparency = 1
+                        v.HumanoidRootPart.CanCollide = false
+                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                        v.HumanoidRootPart.CFrame = CFrame.new(Position)
                     end
                 end
             end
@@ -4789,7 +4781,7 @@ function MagnetBone()
 end
 
 spawn(function () -- Magnet
-    while wait(.4) do
+    while wait(.5) do
         if _G.AutoFarm and _G.Magnet and PosMon ~= nil then
             levelCheck()
             for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -4801,7 +4793,6 @@ spawn(function () -- Magnet
                     v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                     v.HumanoidRootPart.Transparency = 1
                     v.HumanoidRootPart.CFrame = PosMon
-                    wait(.1)
                 end
             end
         elseif _G.MobAura and _G.Magnet and AuraBringPos ~= nil then
@@ -4815,7 +4806,6 @@ spawn(function () -- Magnet
                         v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                         v.HumanoidRootPart.Transparency = 1
                         v.HumanoidRootPart.CFrame = AuraBringPos
-                        wait(.1)
                     end
                 end
             end
@@ -4829,7 +4819,6 @@ spawn(function () -- Magnet
                     v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                     v.HumanoidRootPart.Transparency = 1
                     v.HumanoidRootPart.CFrame = MobChoosedPos
-                    wait(.1)
                 end
             end
         end
