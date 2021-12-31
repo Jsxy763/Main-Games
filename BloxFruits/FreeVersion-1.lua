@@ -329,33 +329,33 @@ spawn(function ()
                 then
                     if Locations:FindFirstChild("Island 5") then
                         if GodModeIsDone then
-                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0))
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Locations:FindFirstChild("Island 5").Position) * CFrame.new(0, _G.RaidHeight, 0)
                         else
-                            TweenTo(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0), 300)
+                            TweenTo(Locations:FindFirstChild("Island 5").Position + Vector3.new(0, _G.RaidHeight, 0), 300)
                         end
                     elseif Locations:FindFirstChild("Island 4") then
                         if GodModeIsDone then
-                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0))
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Locations:FindFirstChild("Island 4").Position) * CFrame.new(0, _G.RaidHeight, 0)
                         else
-                            TweenTo(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0), 300)
+                            TweenTo(Locations:FindFirstChild("Island 4").Position + Vector3.new(0, _G.RaidHeight, 0), 300)
                         end
                     elseif Locations:FindFirstChild("Island 3") then
                         if GodModeIsDone then
-                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0))
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Locations:FindFirstChild("Island 3").Position) * CFrame.new(0, _G.RaidHeight, 0)
                         else
-                            TweenTo(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0), 300)
+                            TweenTo(Locations:FindFirstChild("Island 3").Position + Vector3.new(0, _G.RaidHeight, 0), 300)
                         end
                     elseif Locations:FindFirstChild("Island 2") then
                         if GodModeIsDone then
-                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0))
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Locations:FindFirstChild("Island 2").Position) * CFrame.new(0, _G.RaidHeight, 0)
                         else
-                            TweenTo(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0), 300)
+                            TweenTo(Locations:FindFirstChild("Island 2").Position + Vector3.new(0, _G.RaidHeight, 0), 300)
                         end
                     elseif Locations:FindFirstChild("Island 1") then
                         if GodModeIsDone then
-                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0))
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Locations:FindFirstChild("Island 1").Position) * CFrame.new(0, _G.RaidHeight, 0)
                         else
-                            TweenTo(game.Players.LocalPlayer.Position + Vector3.new(0, _G.RaidHeight, 0), 300)
+                            TweenTo(Locations:FindFirstChild("Island 1").Position + Vector3.new(0, _G.RaidHeight, 0), 300)
                         end
                     end
                 end
@@ -1293,8 +1293,8 @@ spawn(function ()
         local Hour = math.floor(GameTime/(60^2))%24
         local Min = math.floor(GameTime/(60^1))%60
         local Sec = math.floor(GameTime/(60^0))%60
-        ServerTime:Update("Server Time   | Hour: "..Hour.." Minute: "..Min.." Second: "..Sec, Color3.fromRGB(2, 24, 219))
-        ClientStatus:Update("Client Status | FPS: "..tostring(workspace:GetRealPhysicsFPS()).." Ping: "..tostring(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()).."", Color3.fromRGB(2, 24, 219))
+        ServerTime:Update("Server Time   | Hour: "..Hour.." Minute: "..Min.." Second: "..Sec, Color3.fromRGB(38, 226, 255))
+        ClientStatus:Update("Client Status | FPS: "..tostring(workspace:GetRealPhysicsFPS()).." Ping: "..tostring(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()).."", Color3.fromRGB(38, 226, 255))
     end
 end)
 
@@ -1448,7 +1448,7 @@ elseif Thirdsea then
     spawn(function ()
         while wait(.1) do
             local TotalElite = tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter","Progress"))
-            EliteChecker:Update("Total Elites: "..TotalElite, Color3.fromRGB(2, 24, 219))
+            EliteChecker:Update("Total Elites: "..TotalElite, Color3.fromRGB(38, 226, 255))
         end
     end)
 
@@ -1591,13 +1591,13 @@ local StatFruit = Stats:Label("")
 
 spawn(function ()
     while wait(.1) do
-		Level:Update("Level : "..tostring(game:GetService("Players").LocalPlayer.Data.Level.Value), Color3.fromRGB(2, 24, 219))
-		Point:Update("Point : "..tostring(game:GetService("Players").LocalPlayer.Data.Points.Value), Color3.fromRGB(2, 24, 219))
-		StatMelee:Update("Melee : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Melee.Level.Value), Color3.fromRGB(2, 24, 219))
-		StatDefense:Update("Defense : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value), Color3.fromRGB(2, 24, 219))
-		StatSword:Update("Sword : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Sword.Level.Value), Color3.fromRGB(2, 24, 219))
-		StatGun:Update("Gun : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Gun.Level.Value), Color3.fromRGB(2, 24, 219))
-		StatFruit:Update("Devil Fruit : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats["Demon Fruit"].Level.Value), Color3.fromRGB(2, 24, 219))
+		Level:Update("Level : "..tostring(game:GetService("Players").LocalPlayer.Data.Level.Value), Color3.fromRGB(38, 226, 255))
+		Point:Update("Point : "..tostring(game:GetService("Players").LocalPlayer.Data.Points.Value), Color3.fromRGB(38, 226, 255))
+		StatMelee:Update("Melee : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Melee.Level.Value), Color3.fromRGB(38, 226, 255))
+		StatDefense:Update("Defense : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value), Color3.fromRGB(38, 226, 255))
+		StatSword:Update("Sword : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Sword.Level.Value), Color3.fromRGB(38, 226, 255))
+		StatGun:Update("Gun : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Gun.Level.Value), Color3.fromRGB(38, 226, 255))
+		StatFruit:Update("Devil Fruit : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats["Demon Fruit"].Level.Value), Color3.fromRGB(38, 226, 255))
         if game.Players.localPlayer.Data.Points.Value >= _G.PointStats then
             if _G.StatsMelee then
                 local args = {
@@ -2982,7 +2982,7 @@ Shop:Label("--[ Update 16 ]--")
 local Bone = Shop:Label("N/A")
 spawn(function ()
     while wait(.1) do
-        Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), Color3.fromRGB(2, 24, 219))
+        Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), Color3.fromRGB(38, 226, 255))
     end
 end)
 
