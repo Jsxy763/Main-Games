@@ -3526,36 +3526,40 @@ function Entrance(type)
 end
 
 function TweenTo(Pos, Speed)
-    if not _G.AutoFarm
-    or not _G.MobAura
-    or not _G.ChooseMob
-    or not _G.BoneFarm
-    or not _G.AutoElite
-    or not _G.AutoRainbow
-    or not AutoElectric
-    or not _G.BossFarm
-    or not _G.AllBoss
-    or not KillPlr
-    or not KillPlr2
-    or not _G.BringFruit
-    or not NoClip
-    or not NextIsland
-    or not AutoJoinRaid
-    or not Float
-    then
-        Float = true
+    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos)
+    else
+        if not _G.AutoFarm
+        or not _G.MobAura
+        or not _G.ChooseMob
+        or not _G.BoneFarm
+        or not _G.AutoElite
+        or not _G.AutoRainbow
+        or not AutoElectric
+        or not _G.BossFarm
+        or not _G.AllBoss
+        or not KillPlr
+        or not KillPlr2
+        or not _G.BringFruit
+        or not NoClip
+        or not NextIsland
+        or not AutoJoinRaid
+        or not Float
+        then
+            Float = true
+        end
+        local TS = game:GetService("TweenService")
+        local Info = TweenInfo.new((game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude / Speed, Enum.EasingStyle.Linear)
+        local Tween, Err = pcall(function ()
+            Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
+            Tween:Play()
+            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400
+            Tween:Pause()
+            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos) end
+            if not Tween then return Err end
+            if Float then Float = false end
+        end)
     end
-    local TS = game:GetService("TweenService")
-    local Info = TweenInfo.new((game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude / Speed, Enum.EasingStyle.Linear)
-    local Tween, Err = pcall(function ()
-        Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
-		Tween:Play()
-        repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400
-        Tween:Pause()
-        if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos) end
-        if not Tween then return Err end
-        if Float then Float = false end
-    end)
 end
 
 function Equip(toolName)
