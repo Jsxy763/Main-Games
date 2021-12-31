@@ -4701,10 +4701,11 @@ end
 local Logia;
 function StartGodMode()
     spawn(function ()
-        Logia = false
         for i, v in pairs(LogiaFruit) do
             if MyFruit == v then
                 Logia = true
+            else
+                Logia = false
             end
         end
         if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 and not Logia then
