@@ -4623,7 +4623,7 @@ end
 
 function StartGodMode()
     spawn(function ()
-        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value = 1 then
+        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 then
             local Players = game:GetService'Players'.LocalPlayer
             local OldFrame;
             local Holding = false
