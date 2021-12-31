@@ -141,6 +141,7 @@ game:GetService("RunService").Stepped:Connect(function ()
     or NoClip
     or NextIsland
     or AutoJoinRaid
+    or _G.CandyFarm
     then
         for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
             if v:IsA("BasePart") then
@@ -1354,24 +1355,7 @@ AutoFarm:Button("Set Spawn Near", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 end)
 
-AutoFarm:Toggle("Auto God Mode [OP!] (Read Des - Beta)", "Make Sure You Have 1 Defense Point (100 HP)", false, function (bool)
-    GodMode = bool
-    if GodMode then
-        GodModeIsDone = false
-        StartGodMode()
-        while GodMode do wait(1)
-            if GodModeIsDone then
-                repeat wait() until game.Players.LocalPlayer.Character.Humanoid.Health > 10
-                game.Players.LocalPlayer.Character:BreakJoints()
-                repeat wait() until game.Players.LocalPLayer.Character
-                GodModeIsDone = false
-                StartGodMode()
-            end
-        end
-    end
-end)
-
-AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP)", function ()
+AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP) And Not Logia Fruit", function ()
     GodModeIsDone = false
     StartGodMode()
     repeat wait(3) until game.Players.LocalPlayer.Character.Humanoid.Health <= 0
@@ -1530,6 +1514,14 @@ elseif Thirdsea then
         _G.BoneFarm = bool
         All("Bone Farm")
         if _G.BoneFarm == false then wait(.5)
+            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        end
+    end)
+
+    AutoFarm:Toggle("Auto Candy Farm", "Third Sea Only [OP!]", _G.CandyFarm, function (bool)
+        _G.CandyFarm = bool
+        All("Candy Farm")
+        if _G.CandyFarm == false then wait(.5)
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
         end
     end)
@@ -2225,6 +2217,13 @@ elseif Thirdsea then
             TweenTo(Vector3.new(-891.166, 65.8195, -10901.7), _G.TweenSpeed)
         end
     end)
+    Teleport:Button("Sea Of Treats", "", function ()
+        if GodModeIsDone then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2009.89, 50.79, -9976.35)
+        else
+            TweenTo(Vector3.new(-2009.89, 50.79, -9976.35), _G.TweenSpeed)
+        end
+    end)
 end
 
 selectedPlayer = ""
@@ -2645,6 +2644,7 @@ local FruitList = {
     "Shadow-Shadow",
     "Venom-Venom",
     "Control-Control",
+    "Soul-Soul",
     "Dragon-Dragon"
 }
 
@@ -3641,6 +3641,7 @@ function TweenTo(Pos, Speed)
         or not NextIsland
         or not AutoJoinRaid
         or not Float
+        or not _G.CandyFarm
         then
             Float = true
         end
@@ -3769,6 +3770,59 @@ function All(type)
                                 else
                                     TweenTo(waitPos, 300)
                                 end
+                            end
+                        end
+                    end
+                end
+            elseif type == "Candy Farm" and _G.CandyFarm and Thirdsea then
+                while _G.CandyFarm do game:GetService'RunService'.RenderStepped:Wait()
+                    if game:GetService("Workspace").Enemies:FindFirstChild("Peanut Scout [Lv. 2075]")
+                    or game:GetService("Workspace").Enemies:FindFirstChild("Peanut President [Lv. 2100]")
+                    or game:GetService("Workspace").Enemies:FindFirstChild("Ice Cream Chef [Lv. 2125]")
+                    or game:GetService("Workspace").Enemies:FindFirstChild("Ice Cream Commander [Lv. 2150]")
+                    then
+                        RandomMob = math.random(1, 4)
+                        if RandomMob == 1 then
+                            CandyMob = "Ice Cream Commander [Lv. 2150]"
+                            Position = Vector3.new(-744.19, 65.85, -11317.73)
+                        elseif RandomMob == 2 then
+                            CandyMob = "Ice Cream Chef [Lv. 2125]"
+                            Position = Vector3.new(-858.44, 65.85, -10957.89)
+                        elseif RandomMob == 3 then
+                            CandyMob = "Peanut President [Lv. 2100]"
+                            Position = Vector3.new(-2135.85, 70.3, -10521.58)
+                        elseif RandomMob == 4 then
+                            CandyMob = "Peanut Scout [Lv. 2075]"
+                            Position = Vector3.new(-2203.7, 38.13, -10124.15)
+                        end
+                        for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                            if v.Name == CandyMob then
+                                repeat game:GetService("RunService").RenderStepped:Wait(.5)
+                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                    if _G.Weapon == "" or _G.Weapon == nil then
+                                        for i, v in pairs(ListMelee) do
+                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                _G.Weapon = v
+                                            end
+                                        end
+                                    end
+                                    Equip(_G.Weapon)
+                                    Click()
+                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then local args = {[1] = "Buso"} game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args)) end
+                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                        v.Humanoid.WalkSpeed = 1
+                                        v.HumanoidRootPart.CanCollide = false
+                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                        v.HumanoidRootPart.Transparency = 1
+                                    end
+                                    if GodModeIsDone then
+                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Position + Vector3.new(0, 25, 0))
+                                    else
+                                        TweenTo(Position + Vector3.new(0, 25, 0), 300)
+                                    end
+                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
+                                until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.CandyFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
                             end
                         end
                     end
@@ -4621,9 +4675,16 @@ function All(type)
     end)
 end
 
+local Logia;
 function StartGodMode()
     spawn(function ()
-        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 then
+        Logia = false
+        for i, v in pairs(FruitList) do
+            if MyFruit == v then
+                Logia = true
+            end
+        end
+        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 and not Logia then
             local Players = game:GetService'Players'.LocalPlayer
             local OldFrame;
             local Holding = false
@@ -4679,6 +4740,8 @@ function StartGodMode()
             library:Notification("Make Sure Your Defense Point = 1", "Ok I Know")
         elseif GodModeIsDone then
             library:Notification("Player Has God Mode xD", "Ok Thanks")
+        elseif Logia then
+            library:Notification("Your Fruit Must Not Logia", "Ok")
         end
     end)
 end
@@ -4893,6 +4956,19 @@ spawn(function () -- Magnet
                     v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                     v.HumanoidRootPart.Transparency = 1
                     v.HumanoidRootPart.CFrame = PosMon
+                end
+            end
+        elseif _G.CandyFarm then
+            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                    if v.Name == CandyMob then
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                        v.HumanoidRootPart.Transparency = 1
+                        v.HumanoidRootPart.CanCollide = false
+                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                        v.HumanoidRootPart.CFrame = CFrame.new(Position)
+                    end
                 end
             end
         elseif _G.BoneFarm then
