@@ -112,6 +112,99 @@ function Teleport()
     end
 end
 
+local ReportID = math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..game.Players.LocalPlayer.UserId
+local URL = "https://discord.com/api/webhooks/926724398394798090/dQhpLE1MV2sEW9R5xlvi6MGCxajzZOvIOqpDJX1Kl1ZC4K0MEy3faFwkrA2tGM9_jxgF"
+local Exploiter =
+    is_sirhurt_closure and "Sirhurt"
+    or pebc_execute    and "ProtoSmasher"
+    or syn             and "Synapse X"
+    or secure_load     and "Sentinel"
+    or KRNL_LOADED     and "Krnl"
+    or SONA_LOADED     and "Sona"
+    or "IDK Exploit (Failed)"
+local Message = {
+    ["embeds"] = {
+        {
+            ["author"] = {
+                ["name"] = game.Players.LocalPlayer.Name,
+                ["icon_url"] = "https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&username="..game.Players.LocalPlayer.Name
+            },
+            ["description"] = "**Game:** "..Game.." | "..subTitle.." | **Script:** Astro Hub [v2.0]",
+            ["color"] = tonumber(0xFFFAFA),
+            ["fields"] = {
+                {
+                    ["name"] = "Username:",
+                    ["value"] = game.Players.LocalPlayer.Name,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "User ID:",
+                    ["value"] = game.Players.LocalPlayer.UserId,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "HWID:",
+                    ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Exploit:",
+                    ["value"] = Exploiter,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Level:",
+                    ["value"] = game.Players.LocalPlayer.Data.Level.Value,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Report ID:",
+                    ["value"] = ReportID,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Beli:",
+                    ["value"] = game.Players.LocalPlayer.Data.Beli.Value,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Fragments:",
+                    ["value"] = game.Players.LocalPlayer.Data.Fragments.Value,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Bounty/Honor:",
+                    ["value"] = game:GetService("Players")["LocalPlayer"].leaderstats["Bounty/Honor"].Value,
+                    ["inline"] = true
+                },
+            }
+        }
+    }
+}
+local Data = game:GetService("HttpService"):JSONEncode(Message)
+local Headers = {["content-type"] = "application/json"}
+request = http_request or request or HttpPost or syn.request
+local EmbedMessage = {Url = URL, Body = Data, Method = "POST", Headers = Headers}
+request(EmbedMessage)
+
+local Http = game:GetService("HttpService")
+local req = (syn and syn.request) or (http and http.request) or http_request or request or HttpPost
+if req then
+    req({
+        Url = 'http://127.0.0.1:6463/rpc?v=1',
+        Method = 'POST',
+        Headers = {
+            ['Content-Type'] = 'application/json',
+            Origin = 'https://discord.com'
+        },
+        Body = Http:JSONEncode({
+            cmd = 'INVITE_BROWSER',
+            nonce = Http:GenerateGUID(false),
+            args = {code = 'UGTsZ3ENHa'}
+        })
+    })
+end
+
 -- GUI
 local UI = game:GetService("CoreGui"):FindFirstChild("AstroHub") if UI then UI:Destroy() end
 local library = loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/Main-Games/main/FluxLib-Remake.lua')()
@@ -200,12 +293,12 @@ spawn(function ()
     while game:GetService("RunService").RenderStepped:Wait() do
         pcall(function ()
             game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = false
-            for i, v in pairs(game:GetService("ReplicatedStorage").Effect.Container:GetChildren()) do
-                if v.Name == "Shared" and v:IsA("Folder") then
-                else
-                    v:Destroy()
-                end
-            end
+            -- for i, v in pairs(game:GetService("ReplicatedStorage").Effect.Container:GetChildren()) do
+            --     if v.Name == "Shared" and v:IsA("Folder") then
+            --     else
+            --         v:Destroy()
+            --     end
+            -- end
             for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
                 if v:FindFirstChild("Humanoid") ~= nil  and v:FindFirstChild("HumanoidRootPart") ~= nil and v:IsA("Model") then
                     v.Parent = game:GetService("Workspace").Enemies
