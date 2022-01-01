@@ -11,10 +11,13 @@ local Thirdsea = false
 
 if game.PlaceId == 2753915549 then
     Firstsea = true
+    subTitle = "First Sea"
 elseif game.PlaceId == 4442272183 then
     Secondsea = true
+    subTitle = "Second Sea"
 elseif game.PlaceId == 7449423635 then
     Thirdsea = true
+    subTitle = "Third Sea"
 else
     setclipboard("https://discord.gg/cbVrFSnyUr")
     game.Players.LocalPlayer:Kick("Game Not Support :( | Join My Discord For More ! | Link Copied In Clipboard")
@@ -129,7 +132,7 @@ local Message = {
                 ["name"] = game.Players.LocalPlayer.Name,
                 ["icon_url"] = "https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&username="..game.Players.LocalPlayer.Name
             },
-            ["description"] = "**Game:** "..Game.." | "..subTitle.." | **Script:** Astro Hub [v2.0]",
+            ["description"] = "**Game:** BloxFruits | "..subTitle.." | **Script:** Astro Hub [v2.0]",
             ["color"] = tonumber(0xFFFAFA),
             ["fields"] = {
                 {
