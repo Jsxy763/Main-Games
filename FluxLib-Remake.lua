@@ -89,7 +89,7 @@ end
 
 
 function Flux:Window(text, bottom, mainclr, toclose)
-	GuiBind = toclose or CloseBind
+	_G.GuiBind = toclose or CloseBind
 	MainColor = mainclr or PresetColor
 	local fs = false
 	local MainFrame = Instance.new("Frame")
@@ -192,7 +192,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 	local uitoggled = false
 	UserInputService.InputBegan:Connect(
 		function(io, p)
-			if io.KeyCode == GuiBind then
+			if io.KeyCode == _G.GuiBind then
 				if uitoggled == false then
 					uitoggled = true
 					FluxLib.Enabled = false
@@ -207,7 +207,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 	function Flux:WinUpdate(newText, newBottom, newBind)
 		Title.Text = newText
 		BottomText.Text = newBottom
-		GuiBind = newBind or CloseBind
+		_G.GuiBind = newBind or CloseBind
 	end
 
 	function Flux:Notification(desc, buttontitle)
