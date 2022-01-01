@@ -1809,7 +1809,6 @@ function Flux:Window(text, bottom, mainclr, toclose)
 			local ColorpickerBtn = Instance.new("TextButton")
 			local ToggleBtn = Instance.new("TextButton")
 
-
 			Colorpicker.Name = "Colorpicker"
 			Colorpicker.Parent = Container
 			Colorpicker.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
@@ -1828,7 +1827,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 			Title.Position = UDim2.new(0.0822437406, 0, 0, 0)
 			Title.Size = UDim2.new(0, 113, 0, 42)
 			Title.Font = Enum.Font.Gotham
-			Title.Text = "Colorpicker"
+			Title.Text = text
 			Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 			Title.TextSize = 15.000
 			Title.TextTransparency = 0.300
