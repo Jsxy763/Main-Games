@@ -3745,44 +3745,32 @@ function ESP(type)
     if type == "Fruit" then
         for i,v in pairs(game.Workspace:GetChildren()) do
             pcall(function()
-                if string.find(v.Name,"Chest") then
-                    if _G.EspChest then
-                        if string.find(v.Name,"Chest") then
-                            if not v:FindFirstChild('NameEsp'..Number) then
-                                local bill = Instance.new('BillboardGui',v)
-                                bill.Name = 'NameEsp'..Number
-                                bill.ExtentsOffset = Vector3.new(0, 1, 0)
-                                bill.Size = UDim2.new(1,200,1,30)
-                                bill.Adornee = v
-                                bill.AlwaysOnTop = true
-                                local name = Instance.new('TextLabel',bill)
-                                name.Font = "GothamBold"
-                                name.FontSize = "Size14"
-                                name.TextWrapped = true
-                                name.Size = UDim2.new(1,0,1,0)
-                                name.TextYAlignment = 'Top'
-                                name.BackgroundTransparency = 1
-                                name.TextStrokeTransparency = 0.5
-                                if v.Name == "Chest1" then
-                                    name.TextColor3 = Color3.fromRGB(255, 255, 255)
-                                    name.Text = ("Chest 1" ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' M')
-                                end
-                                if v.Name == "Chest2" then
-                                    name.TextColor3 = Color3.fromRGB(255, 255, 255)
-                                    name.Text = ("Chest 2" ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' M')
-                                end
-                                if v.Name == "Chest3" then
-                                    name.TextColor3 = Color3.fromRGB(255, 255 ,255)
-                                    name.Text = ("Chest 3" ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' M')
-                                end
-                            else
-                                v['NameEsp'..Number].TextLabel.Text = (v.Name ..'   \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' M')
-                            end
+                if _G.EspFruit then
+                    if string.find(v.Name, "Fruit") then
+                        if not v.Handle:FindFirstChild('NameEsp'..Number) then
+                            local bill = Instance.new('BillboardGui',v.Handle)
+                            bill.Name = 'NameEsp'..Number
+                            bill.ExtentsOffset = Vector3.new(0, 1, 0)
+                            bill.Size = UDim2.new(1,200,1,30)
+                            bill.Adornee = v.Handle
+                            bill.AlwaysOnTop = true
+                            local name = Instance.new('TextLabel',bill)
+                            name.Font = "GothamBold"
+                            name.FontSize = "Size14"
+                            name.TextWrapped = true
+                            name.Size = UDim2.new(1,0,1,0)
+                            name.TextYAlignment = 'Top'
+                            name.BackgroundTransparency = 1
+                            name.TextStrokeTransparency = 0.5
+                            name.TextColor3 = Color3.fromRGB(255, 255 ,255)
+                            name.Text = (v.Name ..' \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3) ..' M')
+                        else
+                            v.Handle['NameEsp'..Number].TextLabel.Text = (v.Name ..'   \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3) ..' M')
                         end
-                    else
-                        if v:FindFirstChild('NameEsp'..Number) then
-                            v:FindFirstChild('NameEsp'..Number):Destroy()
-                        end
+                    end
+                else
+                    if v.Handle:FindFirstChild('NameEsp'..Number) then
+                        v.Handle:FindFirstChild('NameEsp'..Number):Destroy()
                     end
                 end
             end)
@@ -3881,9 +3869,8 @@ function All(type)
                                         if v.Name == nameMob then
                                             repeat wait() levelCheck()
                                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                                    repeat wait() until game.Players.LocalPlayer.Character
-                                                end
-                                                if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
+                                                    repeat wait() until game.Players.LocalPlayer.Character break;
+                                                elseif string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
                                                     if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
                                                         if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                                                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
