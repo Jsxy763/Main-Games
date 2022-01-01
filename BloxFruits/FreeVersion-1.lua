@@ -432,6 +432,7 @@ spawn(function ()
                     if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5000
                     and game:GetService("Players").LocalPlayer.PlayerGui.Main.Timer.Visible == true
                     then
+                        StartMagnet = true
                         repeat game:GetService("RunService").RenderStepped:Wait(0.5)
                             if NextIsland then
                                 NextIsland = false
@@ -471,6 +472,7 @@ spawn(function ()
                             end
                             require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                         until v.Humanoid.Health <= 0 or KillAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                        StartMagnet = false
                         if CheckNextIsland then NextIsland = true end
                     end
                 end
@@ -1540,8 +1542,6 @@ end)
 AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP) And Not Logia Fruit", function ()
     GodModeIsDone = false
     StartGodMode()
-    repeat wait(3) until game.Players.LocalPlayer.Character.Humanoid.Health <= 0
-    library:Notification("Player Has God Mode xD", "Ok Thanks")
 end)
 
 AutoFarm:Button("Disable God Mode", "", function ()
@@ -3867,6 +3867,7 @@ function All(type)
                                 pcall(function ()
                                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
                                         if v.Name == nameMob then
+                                            StartMagnet = true
                                             repeat wait() levelCheck()
                                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
                                                     repeat wait() until game.Players.LocalPlayer.Character break;
@@ -3912,6 +3913,7 @@ function All(type)
                                                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                                 end
                                             until v.Humanoid.Health <= 0 or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                            StartMagnet = false
                                         end
                                     end
                                 end)
@@ -3948,6 +3950,7 @@ function All(type)
                         end
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
+                                StartMagnet = true
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
                                         repeat wait() until game.Players.LocalPlayer.Character
@@ -3977,6 +3980,7 @@ function All(type)
                                     end
                                     require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                 until v.Humanoid.Health <= 0 or _G.CandyFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                                StartMagnet = false
                             end
                         end
                     end
@@ -4000,6 +4004,7 @@ function All(type)
                         end
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if v.Name == BoneMob then
+                                StartMagnet = true
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
                                         repeat wait() until game.Players.LocalPlayer.Character
@@ -4029,6 +4034,7 @@ function All(type)
                                     end
                                     require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                 until v.Humanoid.Health <= 0 or _G.BoneFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                                StartMagnet = false
                             end
                         end
                     end
@@ -4037,6 +4043,7 @@ function All(type)
                 while _G.MobAura do game:GetService'RunService'.RenderStepped:Wait()
                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                         if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 300 then
+                            StartMagnet = true
                             repeat game:GetService("RunService").RenderStepped:Wait(0.5)
                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
                                     repeat wait() until game.Players.LocalPlayer.Character
@@ -4066,6 +4073,7 @@ function All(type)
                                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
                                 require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                             until v.Humanoid.Health <= 0 or _G.MobAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                            StartMagnet = false
                         end
                     end
                 end
@@ -4088,6 +4096,7 @@ function All(type)
                             if game:GetService("Workspace").Enemies:FindFirstChild(mobSelect) then
                                 for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                     if v.Name == mobSelect then
+                                        StartMagnet = true
                                         repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                             if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                                             if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
@@ -4118,6 +4127,7 @@ function All(type)
                                             end
                                             require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                         until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.ChooseMob == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        StartMagnet = false
                                     end
                                 end
                             else MobCheck()
@@ -4839,13 +4849,13 @@ local Logia;
 function StartGodMode()
     spawn(function ()
         for i, v in pairs(LogiaFruit) do
-            if MyFruit == v then
-                Logia = true
+            if game.Players.localPlayer.Data.DevilFruit.Value == v then
+                Logia = true break;
             else
                 Logia = false
             end
         end
-        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 and not Logia then
+        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 and Logia == false then
             local Players = game:GetService'Players'.LocalPlayer
             local OldFrame;
             local Holding = false
@@ -4894,6 +4904,7 @@ function StartGodMode()
             wait(3)
             if game.Players.LocalPlayer.Character.Humanoid.Health < -1 then
                 GodModeIsDone = true
+                library:Notification("Player Has God Mode xD", "Ok Thanks")
             else
                 StartGodMode()
             end
@@ -5106,85 +5117,87 @@ end)
 
 spawn(function () -- Magnet
     while wait(.5) do
-        if _G.AutoFarm and _G.Magnet and PosMon ~= nil then
-            levelCheck()
-            for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                if v.Name == nameMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
-                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                    v.Humanoid.WalkSpeed = 1
-                    v.HumanoidRootPart.CanCollide = false
-                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                    v.HumanoidRootPart.Transparency = 1
-                    v.HumanoidRootPart.CFrame = PosMon
-                end
-            end
-        elseif _G.CandyFarm then
-            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                    if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
-                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                        v.HumanoidRootPart.Transparency = 1
-                        v.HumanoidRootPart.CanCollide = false
-                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                        v.HumanoidRootPart.CFrame = CFrame.new(Position)
-                    end
-                end
-            end
-        elseif _G.BoneFarm then
-            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                    if v.Name == BoneMob
-                    or (v.Name == "Demonic Soul [Lv. 2025]" and BoneMob == "Posessed Mummy [Lv. 2050]")
-                    then
-                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                        v.HumanoidRootPart.Transparency = 1
-                        v.HumanoidRootPart.CanCollide = false
-                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                        v.HumanoidRootPart.CFrame = CFrame.new(Position)
-                    end
-                end
-            end
-        elseif _G.MobAura and _G.Magnet and AuraBringPos ~= nil then
-            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                    if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
+        if StartMagnet then
+            if _G.AutoFarm and _G.Magnet and PosMon ~= nil then
+                levelCheck()
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == nameMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
                         v.Humanoid.WalkSpeed = 1
                         v.HumanoidRootPart.CanCollide = false
                         v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                         v.HumanoidRootPart.Transparency = 1
-                        v.HumanoidRootPart.CFrame = AuraBringPos
+                        v.HumanoidRootPart.CFrame = PosMon
                     end
                 end
-            end
-        elseif KillAura and _G.Magnet and KillAuraPos ~= nil then
-            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
-                    if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
+            elseif _G.CandyFarm and Position ~= nil then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = CFrame.new(Position)
+                        end
+                    end
+                end
+            elseif _G.BoneFarm and Position ~= nil then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if v.Name == BoneMob
+                        or (v.Name == "Demonic Soul [Lv. 2025]" and BoneMob == "Posessed Mummy [Lv. 2050]")
+                        then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = CFrame.new(Position)
+                        end
+                    end
+                end
+            elseif _G.MobAura and _G.Magnet and AuraBringPos ~= nil then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.Humanoid.WalkSpeed = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CFrame = AuraBringPos
+                        end
+                    end
+                end
+            elseif KillAura and _G.Magnet and KillAuraPos ~= nil then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                        if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                            v.Humanoid.WalkSpeed = 1
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.Transparency = 1
+                            v.HumanoidRootPart.CFrame = KillAuraPos
+                        end
+                    end
+                end
+            elseif _G.ChooseMob and _G.Magnet and MobChoosedPos ~= nil then
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == mobSelect and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
                         v.Humanoid.WalkSpeed = 1
                         v.HumanoidRootPart.CanCollide = false
                         v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                         v.HumanoidRootPart.Transparency = 1
-                        v.HumanoidRootPart.CFrame = KillAuraPos
+                        v.HumanoidRootPart.CFrame = MobChoosedPos
                     end
-                end
-            end
-        elseif _G.ChooseMob and _G.Magnet and MobChoosedPos ~= nil then
-            for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                if v.Name == mobSelect and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
-                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
-                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                    v.Humanoid.WalkSpeed = 1
-                    v.HumanoidRootPart.CanCollide = false
-                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                    v.HumanoidRootPart.Transparency = 1
-                    v.HumanoidRootPart.CFrame = MobChoosedPos
                 end
             end
         end
