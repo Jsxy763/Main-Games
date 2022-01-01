@@ -205,10 +205,20 @@ function Flux:Window(text, bottom, mainclr, toclose)
 	)
 
 	function Flux:WinUpdate(newText, newBottom, newColor, newBind)
+		MainColor = newColor or PresetColor
 		Title.Text = newText
 		BottomText.Text = newBottom
+		Title.TextColor3 = newColor or PresetColor
+		BottomText.TextColor3 = newColor or PresetColor
+		Tab.BackgroundColor3 = newColor or PresetColor
+		CloseBtn.TextColor3 = newColor or PresetColor
+		NotificationTitle.TextColor3 = newColor or PresetColor
+		Title.TextColor3 = newColor or PresetColor
+		Line.BackgroundColor3 = newColor or PresetColor
+		SlideCircle.ImageColor3 = newColor or PresetColor
+		CurrentValueFrame.BackgroundColor3 = newColor or PresetColor
+		TabTitle.TextColor3 = newColor or PresetColor
 		GuiBind = newBind or CloseBind
-		MainColor = newColor or PresetColor
 	end
 
 	function Flux:Notification(desc, buttontitle)
