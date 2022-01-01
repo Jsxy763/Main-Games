@@ -238,6 +238,7 @@ game:GetService("RunService").Stepped:Connect(function ()
     or NextIsland
     or AutoJoinRaid
     or _G.CandyFarm
+    or KillAura
     then
         for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
             if v:IsA("BasePart") then
@@ -265,6 +266,45 @@ game:GetService("RunService").Stepped:Connect(function ()
         Part = nil
     end
 end)
+
+function TweenTo(Pos, Speed)
+    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 250 then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos)
+    else
+        if not _G.AutoFarm
+        or not _G.MobAura
+        or not _G.ChooseMob
+        or not _G.BoneFarm
+        or not _G.AutoElite
+        or not _G.AutoRainbow
+        or not AutoElectric
+        or not _G.BossFarm
+        or not _G.AllBoss
+        or not KillPlr
+        or not KillPlr2
+        or not _G.BringFruit
+        or not NoClip
+        or not NextIsland
+        or not AutoJoinRaid
+        or not Float
+        or not _G.CandyFarm
+        or not KillAura
+        then
+            Float = true
+        end
+        local TS = game:GetService("TweenService")
+        local Info = TweenInfo.new((game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude / Speed, Enum.EasingStyle.Linear)
+        local Tween, Err = pcall(function ()
+            Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
+            Tween:Play()
+            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 250 or Pos == game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
+            Tween:Pause()
+            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos) end
+            if not Tween then return Err end
+            if Float then Float = false end
+        end)
+    end
+end
 
 local localPlayer = game:GetService("Players").LocalPlayer
 local PlrMouse = localPlayer:GetMouse()
@@ -295,7 +335,7 @@ local ListMelee = {
 spawn(function ()
     while game:GetService("RunService").RenderStepped:Wait() do
         pcall(function ()
-            game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = false
+            -- game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = false
             -- for i, v in pairs(game:GetService("ReplicatedStorage").Effect.Container:GetChildren()) do
             --     if v.Name == "Shared" and v:IsA("Folder") then
             --     else
@@ -388,24 +428,70 @@ spawn(function ()
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
             end
             if KillAura then
-                pcall(function()
-                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if v:FindFirstChild("Humanoid") and v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("LowerTorso") and v:FindFirstChild("UpperTorso") and v:FindFirstChild("Head") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 1000 then
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5000
+                    and game:GetService("Players").LocalPlayer.PlayerGui.Main.Timer.Visible == true
+                    then
+                        repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                            if NextIsland then
+                                NextIsland = false
+                                CheckNextIsland = true
+                            else
+                                CheckNextIsland = false
+                            end
+                            if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
+                                repeat wait() until game.Players.LocalPlayer.Character
+                            end
                             if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                             if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            v:FindFirstChild("LowerTorso"):Destroy()
-                            v:FindFirstChild("UpperTorso"):Destroy()
-                            v:FindFirstChild("Head"):Destroy()
-                            v:breakJoints()
-                            v.Humanoid.Health = 0
-                            v.Humanoid.Health = v.Humanoid.MaxHealth
-                            v.Humanoid.Health = 0
-                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            wait(0.1)
-                        end
+                            if _G.Weapon == "" or _G.Weapon == nil then
+                                for i, v in pairs(ListMelee) do
+                                    if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                        _G.Weapon = v
+                                    end
+                                end
+                            end
+                            Equip(_G.Weapon)
+                            Click()
+                            if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                local args = {[1] = "Buso"}
+                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                            end
+                            if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                v.Humanoid.WalkSpeed = 1
+                                v.HumanoidRootPart.CanCollide = false
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                v.HumanoidRootPart.Transparency = 1
+                                KillAuraPos = v.HumanoidRootPart.CFrame
+                            end
+                            if GodModeIsDone then
+                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0)
+                            else
+                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0), 300)
+                            end
+                            require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
+                        until v.Humanoid.Health <= 0 or KillAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                        if CheckNextIsland then NextIsland = true end
                     end
-                end)
+                end
+                -- pcall(function()
+                --     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                --         if v:FindFirstChild("Humanoid") and v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("LowerTorso") and v:FindFirstChild("UpperTorso") and v:FindFirstChild("Head") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 1000 then
+                --             if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                --             if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                --             v:FindFirstChild("LowerTorso"):Destroy()
+                --             v:FindFirstChild("UpperTorso"):Destroy()
+                --             v:FindFirstChild("Head"):Destroy()
+                --             v:breakJoints()
+                --             v.Humanoid.Health = 0
+                --             v.Humanoid.Health = v.Humanoid.MaxHealth
+                --             v.Humanoid.Health = 0
+                --             if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                --             if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                --             wait(0.1)
+                --         end
+                --     end
+                -- end)
             end
             if _G.AutoEmma then
                 if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter", "Progress") >= 30 then
@@ -3477,6 +3563,12 @@ GameSetting:Button("Light Mode", "", function (bool)
     end)
 end)
 
+GameSetting:Toggle("Damage Counter", "", true, function (bool)
+    pcall(function ()
+        game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = bool
+    end)
+end)
+
 GameSetting:Line()
 GameSetting:Label("--[ Game ]--")
 
@@ -3725,44 +3817,6 @@ function Entrance(type)
     elseif type == "Domain" then
         local args = {[1] = "requestEntrance", [2] = Vector3.new(5314.58203125, 25.419387817383, -125.94227600098)}
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    end
-end
-
-function TweenTo(Pos, Speed)
-    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos)
-    else
-        if not _G.AutoFarm
-        or not _G.MobAura
-        or not _G.ChooseMob
-        or not _G.BoneFarm
-        or not _G.AutoElite
-        or not _G.AutoRainbow
-        or not AutoElectric
-        or not _G.BossFarm
-        or not _G.AllBoss
-        or not KillPlr
-        or not KillPlr2
-        or not _G.BringFruit
-        or not NoClip
-        or not NextIsland
-        or not AutoJoinRaid
-        or not Float
-        or not _G.CandyFarm
-        then
-            Float = true
-        end
-        local TS = game:GetService("TweenService")
-        local Info = TweenInfo.new((game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude / Speed, Enum.EasingStyle.Linear)
-        local Tween, Err = pcall(function ()
-            Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
-            Tween:Play()
-            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 or Pos == game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
-            Tween:Pause()
-            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos) end
-            if not Tween then return Err end
-            if Float then Float = false end
-        end)
     end
 end
 
@@ -5117,6 +5171,20 @@ spawn(function () -- Magnet
                         v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                         v.HumanoidRootPart.Transparency = 1
                         v.HumanoidRootPart.CFrame = AuraBringPos
+                    end
+                end
+            end
+        elseif KillAura and _G.Magnet and KillAuraPos ~= nil then
+            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if v.Parent and v:FindFirstChild("HumanoidRootPart") ~= nil then
+                    if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 350 then
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", 10000) end
+                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                        v.Humanoid.WalkSpeed = 1
+                        v.HumanoidRootPart.CanCollide = false
+                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                        v.HumanoidRootPart.Transparency = 1
+                        v.HumanoidRootPart.CFrame = KillAuraPos
                     end
                 end
             end
