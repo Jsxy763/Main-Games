@@ -209,12 +209,20 @@ if req then
 end
 
 -- GUI
+local GuiColour =
+    -- Color3.fromRGB(16, 100, 250) -- Light Blue
+    -- Color3.fromRGB(252, 31, 15) -- Light Red
+    Color3.fromRGB(255, 236, 235) -- Christmas Event
+local TotalLabelColor =
+    -- Color3.fromRGB(38, 226, 255) -- Dark Blue
+    -- Color3.fromRGB(255, 70, 56) -- Dark Red
+    Color3.fromRGB(237, 215, 213) -- Christmas Event
 local UI = game:GetService("CoreGui"):FindFirstChild("AstroHub") if UI then UI:Destroy() end
 local library = loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/Main-Games/main/FluxLib-Remake.lua')()
-local Main = library:Window("ASTRO HUB", "TIME | N/A", Color3.fromRGB(20, 137, 227), Enum.KeyCode.RightControl)
+local Main = library:Window("ASTRO HUB", "TIME | N/A", GuiColour, Enum.KeyCode.RightControl)
 spawn(function () wait()
     while wait(.1) do
-        library:WinUpdate("ASTRO HUB", "TIME | "..os.date("%H")..":"..os.date("%M")..":"..os.date("%S"), Color3.fromRGB(20, 137, 227), Enum.KeyCode.RightControl)
+        library:WinUpdate("ASTRO HUB", "TIME | "..os.date("%H")..":"..os.date("%M")..":"..os.date("%S"))
     end
 end)
 
@@ -1555,8 +1563,8 @@ spawn(function ()
         local Hour = math.floor(GameTime/(60^2))%24
         local Min = math.floor(GameTime/(60^1))%60
         local Sec = math.floor(GameTime/(60^0))%60
-        ServerTime:Update("Server Time   | Hour: "..Hour.." Minute: "..Min.." Second: "..Sec, Color3.fromRGB(38, 226, 255))
-        ClientStatus:Update("Client Status | FPS: "..tostring(workspace:GetRealPhysicsFPS()).." Ping: "..tostring(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()).."", Color3.fromRGB(38, 226, 255))
+        ServerTime:Update("Server Time   | Hour: "..Hour.." Minute: "..Min.." Second: "..Sec, TotalLabelColor)
+        ClientStatus:Update("Client Status | FPS: "..tostring(workspace:GetRealPhysicsFPS()).." Ping: "..tostring(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()).."", TotalLabelColor)
     end
 end)
 
@@ -1722,7 +1730,7 @@ elseif Thirdsea then
     spawn(function ()
         while wait(.1) do
             local TotalElite = tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter","Progress"))
-            EliteChecker:Update("Total Elites: "..TotalElite, Color3.fromRGB(38, 226, 255))
+            EliteChecker:Update("Total Elites: "..TotalElite, TotalLabelColor)
         end
     end)
 
@@ -1865,13 +1873,13 @@ local StatFruit = Stats:Label("")
 
 spawn(function ()
     while wait(.1) do
-		Level:Update("Level : "..tostring(game:GetService("Players").LocalPlayer.Data.Level.Value), Color3.fromRGB(38, 226, 255))
-		Point:Update("Point : "..tostring(game:GetService("Players").LocalPlayer.Data.Points.Value), Color3.fromRGB(38, 226, 255))
-		StatMelee:Update("Melee : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Melee.Level.Value), Color3.fromRGB(38, 226, 255))
-		StatDefense:Update("Defense : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value), Color3.fromRGB(38, 226, 255))
-		StatSword:Update("Sword : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Sword.Level.Value), Color3.fromRGB(38, 226, 255))
-		StatGun:Update("Gun : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Gun.Level.Value), Color3.fromRGB(38, 226, 255))
-		StatFruit:Update("Devil Fruit : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats["Demon Fruit"].Level.Value), Color3.fromRGB(38, 226, 255))
+		Level:Update("Level : "..tostring(game:GetService("Players").LocalPlayer.Data.Level.Value), TotalLabelColor)
+		Point:Update("Point : "..tostring(game:GetService("Players").LocalPlayer.Data.Points.Value), TotalLabelColor)
+		StatMelee:Update("Melee : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Melee.Level.Value), TotalLabelColor)
+		StatDefense:Update("Defense : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value), TotalLabelColor)
+		StatSword:Update("Sword : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Sword.Level.Value), TotalLabelColor)
+		StatGun:Update("Gun : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Gun.Level.Value), TotalLabelColor)
+		StatFruit:Update("Devil Fruit : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats["Demon Fruit"].Level.Value), TotalLabelColor)
         if game.Players.localPlayer.Data.Points.Value >= _G.PointStats then
             if _G.StatsMelee then
                 local args = {
@@ -3258,7 +3266,7 @@ Shop:Label("--[ Update 17 ]--")
 local Candy = Shop:Label("N/A")
 spawn(function ()
     while wait(.1) do
-        Candy:Update("Total Candy: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check")), Color3.fromRGB(38, 226, 255))
+        Candy:Update("Total Candy: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check")), TotalLabelColor)
     end
 end)
 
@@ -3307,7 +3315,7 @@ if Thirdsea then
     local Bone = Shop:Label("N/A")
     spawn(function ()
         while wait(.1) do
-            Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), Color3.fromRGB(38, 226, 255))
+            Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), TotalLabelColor)
         end
     end)
 
@@ -3548,6 +3556,12 @@ GameSetting:Toggle("Auto Ken Haki", "", _G.AutoKen, function (bool)
     _G.AutoKen = bool
 end)
 
+GameSetting:Toggle("Damage Counter", "", true, function (bool)
+    pcall(function ()
+        game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = bool
+    end)
+end)
+
 GameSetting:Line()
 GameSetting:Label("--[ FUN ]--")
 GameSetting:Button("Light Mode", "", function (bool)
@@ -3560,12 +3574,6 @@ GameSetting:Button("Light Mode", "", function (bool)
         else
             PointLight:Destroy()
         end
-    end)
-end)
-
-GameSetting:Toggle("Damage Counter", "", true, function (bool)
-    pcall(function ()
-        game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = bool
     end)
 end)
 
