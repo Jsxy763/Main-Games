@@ -1749,13 +1749,15 @@ end)
 
 AutoFarm:Toggle("Big Hitbox Mob Near", "Ez To Use", _G.BigHitbox, function (bool)
     _G.BigHitbox = bool
-    while _G.BigHitbox do game:GetService("RunService").Heartbeat:wait()
-        for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-            if v.Parent and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 500 then
-                v.Humanoid.WalkSpeed = 1
-                v.HumanoidRootPart.CanCollide = false
-                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                v.HumanoidRootPart.Transparency = 1
+    if _G.BigHitbox then
+        while _G.BigHitbox do game:GetService("RunService").Heartbeat:wait()
+            for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                if v.Parent and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 500 then
+                    v.Humanoid.WalkSpeed = 1
+                    v.HumanoidRootPart.CanCollide = false
+                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                    v.HumanoidRootPart.Transparency = 0.5
+                end
             end
         end
     end
@@ -2099,7 +2101,7 @@ if Secondsea or Thirdsea then
 end
 
 if Thirdsea then
-    Teleport:Toggle("Using Teleport Gate (Beta, Read Des)", "This Just Bete, You Can Get Kick If You Lagg", false, function (bool)
+    Teleport:Toggle("Using Teleport Gate (Beta, Read Des)", "Stop Tween First Click The Teleport Button", false, function (bool)
         gateTele = bool
     end)
 end
@@ -2813,93 +2815,7 @@ Player:Line()
 if _G.FlySpeed == nil then _G.FlySpeed = 25 end
 Player:Toggle("Fly", "", false, function (bool)
     Flight = bool
-    local mouse=game.Players.LocalPlayer:GetMouse''
-    localplayer=game.Players.LocalPlayer
-    game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-    local torso = game.Players.LocalPlayer.Character.HumanoidRootPart
-    local keys={a=false,d=false,w=false,s=false}
-    local e1
-    local e2
-    local function start()
-        local pos = Instance.new("BodyPosition",torso)
-        local gyro = Instance.new("BodyGyro",torso)
-        pos.Name = "WEEE"
-        gyro.Name = "WEEE"
-        pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
-        pos.position = torso.Position
-        gyro.maxTorque = Vector3.new(math.huge, math.huge, math.huge)
-        gyro.cframe = torso.CFrame
-        repeat
-            wait()
-            localplayer.Character.Humanoid.PlatformStand = true
-            local new = gyro.cframe - gyro.cframe.p + pos.position
-            if not keys.w and not keys.s and not keys.a and not keys.d then
-                speed = 1
-            end
-            if keys.w then
-                new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-                speed = speed + _G.FlySpeed
-            end
-            if keys.s then
-                new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-                speed = speed + _G.FlySpeed
-            end
-            if keys.d then
-                new = new * CFrame.new(speed, 0, 0)
-                speed = speed + _G.FlySpeed
-            end
-            if keys.a then
-                new = new * CFrame.new(-speed, 0, 0)
-                speed = speed + _G.FlySpeed
-            end
-            if speed > _G.FlySpeed then
-                speed = _G.FlySpeed
-            end
-            pos.position = new.p
-            if keys.w then
-                gyro.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad(speed * 15), 0, 0)
-            elseif keys.s then
-                gyro.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(math.rad(speed * 15), 0, 0)
-            else
-                gyro.cframe = workspace.CurrentCamera.CoordinateFrame
-            end
-        until not Flight
-        if gyro then
-            gyro:Destroy()
-        end
-        if pos then
-            pos:Destroy()
-        end
-        flying = false
-        localplayer.Character.Humanoid.PlatformStand = false
-        speed = 0
-    end
-    e1 = mouse.KeyDown:connect(function (key)
-        if not torso or not torso.Parent then
-            flying=false e1:disconnect() e2:disconnect() return
-        end
-        if key == "w" then
-            keys.w = true
-        elseif key == "s" then
-            keys.s = true
-        elseif key == "a" then
-            keys.a = true
-        elseif key == "d" then
-            keys.d = true
-        end
-    end)
-    e2 = mouse.KeyUp:connect(function (key)
-        if key == "w" then
-            keys.w = false
-        elseif key == "s" then
-            keys.s = false
-        elseif key == "a" then
-            keys.a = false
-        elseif key == "d" then
-            keys.d = false
-        end
-    end)
-    start()
+    StartFly()
 end)
 
 Player:Slider("Fly Speed", "", 1, 100, _G.FlySpeed, function (speed)
@@ -3140,17 +3056,6 @@ end)
 
 Misc:Toggle("Auto Click", "", false, function(bool)
     AutoClick = bool
-    if AutoClick == false then return end
-    while AutoClick do wait()
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1240, 372))
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1230, 652))
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1250, 252))
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1260, 282))
-    end
 end)
 
 Misc:Toggle("No Clip", "Fake Clip ;-;", false, function(bool)
@@ -3745,6 +3650,16 @@ end
 
 GameSetting:Line()
 GameSetting:Label("--[ Game ]--")
+local AutoClickTG = false
+GameSetting:Bind("Toggle Auto Click", Enum.KeyCode.G, function ()
+    AutoClickTG = not AutoClickTG
+end)
+
+local ToggleFly = false
+GameSetting:Bind("Toggle Fly", Enum.KeyCode.B, function ()
+    ToggleFly = not ToggleFly
+    StartFly()
+end)
 
 GameSetting:Button("Destroy Gui", "", function ()
     game:GetService("CoreGui"):FindFirstChild("AstroHub"):Destroy()
@@ -5380,6 +5295,96 @@ function AutoSeaBeast()
     end)
 end
 
+function StartFly()
+    local mouse=game.Players.LocalPlayer:GetMouse''
+    localplayer=game.Players.LocalPlayer
+    game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    local torso = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local keys={a=false,d=false,w=false,s=false}
+    local e1
+    local e2
+    local function start()
+        local pos = Instance.new("BodyPosition",torso)
+        local gyro = Instance.new("BodyGyro",torso)
+        pos.Name = "WEEE"
+        gyro.Name = "WEEE"
+        pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+        pos.position = torso.Position
+        gyro.maxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        gyro.cframe = torso.CFrame
+        repeat
+            wait()
+            localplayer.Character.Humanoid.PlatformStand = true
+            local new = gyro.cframe - gyro.cframe.p + pos.position
+            if not keys.w and not keys.s and not keys.a and not keys.d then
+                speed = 1
+            end
+            if keys.w then
+                new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+                speed = speed + _G.FlySpeed
+            end
+            if keys.s then
+                new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+                speed = speed + _G.FlySpeed
+            end
+            if keys.d then
+                new = new * CFrame.new(speed, 0, 0)
+                speed = speed + _G.FlySpeed
+            end
+            if keys.a then
+                new = new * CFrame.new(-speed, 0, 0)
+                speed = speed + _G.FlySpeed
+            end
+            if speed > _G.FlySpeed then
+                speed = _G.FlySpeed
+            end
+            pos.position = new.p
+            if keys.w then
+                gyro.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad(speed * 15), 0, 0)
+            elseif keys.s then
+                gyro.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(math.rad(speed * 15), 0, 0)
+            else
+                gyro.cframe = workspace.CurrentCamera.CoordinateFrame
+            end
+        until not Flight or not ToggleFly
+        if gyro then
+            gyro:Destroy()
+        end
+        if pos then
+            pos:Destroy()
+        end
+        flying = false
+        localplayer.Character.Humanoid.PlatformStand = false
+        speed = 0
+    end
+    e1 = mouse.KeyDown:connect(function (key)
+        if not torso or not torso.Parent then
+            flying=false e1:disconnect() e2:disconnect() return
+        end
+        if key == "w" then
+            keys.w = true
+        elseif key == "s" then
+            keys.s = true
+        elseif key == "a" then
+            keys.a = true
+        elseif key == "d" then
+            keys.d = true
+        end
+    end)
+    e2 = mouse.KeyUp:connect(function (key)
+        if key == "w" then
+            keys.w = false
+        elseif key == "s" then
+            keys.s = false
+        elseif key == "a" then
+            keys.a = false
+        elseif key == "d" then
+            keys.d = false
+        end
+    end)
+    start()
+end
+
 do wait()
     if _G.AutoSaber then
         All("Auto Saber")
@@ -5467,7 +5472,7 @@ end)
 
 spawn(function() -- Hit
     while game:GetService("RunService").RenderStepped:wait(0.2) do
-        if StartClick then
+        if StartClick or AutoClick or AutoClickTG then
             VirtualUser:CaptureController()
             VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
         end
