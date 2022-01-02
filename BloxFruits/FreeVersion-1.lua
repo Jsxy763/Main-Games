@@ -5346,7 +5346,7 @@ function StartFly()
             else
                 gyro.cframe = workspace.CurrentCamera.CoordinateFrame
             end
-        until not Flight or not ToggleFly
+        until not Flight and not ToggleFly
         if gyro then
             gyro:Destroy()
         end
