@@ -3711,7 +3711,8 @@ GameSetting:Toggle("Damage Counter", "", true, function (bool)
     end)
 end)
 
-GameSetting:Toggle("Hide Float Part", "", false, function (bool)
+if _G.HidePart == nil then _G.HidePart = true end
+GameSetting:Toggle("Hide Float Part", "", _G.HidePart, function (bool)
     _G.HidePart = bool
 end)
 
@@ -5256,83 +5257,88 @@ local HasBoat = false
 function AutoSeaBeast()
     spawn(function ()
         if AutoSea and Thirdsea then
-            while AutoSea do wait(.1)
-                if Thirdsea then
-                    SpawnBoatPos = Vector3.new(-125.65, 6.73, 5259.55)
-                elseif Secondsea then
-                    SpawnBoatPos = Vector3.new()
-                end
-                for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
-                    if v:FindFirstChild("HumanoidRootPart") then
-                        FoundSea = true
-                    else
-                        FoundSea = false
+            if not GodModeIsDone then
+                while AutoSea do wait(.1)
+                    if Thirdsea then
+                        SpawnBoatPos = Vector3.new(-125.65, 6.73, 5259.55)
+                    elseif Secondsea then
+                        SpawnBoatPos = Vector3.new()
                     end
-                end
-                if FoundSea then
-                    UseSkill("Space", 0.1) wait(1)
-                    repeat wait()
-                        if GodModeIsDone then
-                            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                    for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            FoundSea = true
                         else
-                            repeat wait()
-                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
-                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                            FoundSea = false
                         end
-                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                            if v:IsA("Tool") and v.ToolTip == "Melee" then
-                                Equip(v.Name)
-                                UseSkil("Z", 0.1) wait(1)
-                                UseSkil("X", 0.1) wait(1)
-                                UseSkil("C", 0.1) wait(1)
+                    end
+                    if FoundSea then
+                        UseSkill("Space", 0.1) wait(1)
+                        repeat wait()
+                            if GodModeIsDone then
+                                game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                            else
+                                repeat wait()
+                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
                             end
-                        end
-                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                            if v:IsA("Tool") and v.ToolTip == "Blox Fruit" then
-                                Equip(v.Name)
-                                UseSkil("Z", 0.1) wait(1)
-                                UseSkil("X", 0.1) wait(1)
-                                UseSkil("C", 0.1) wait(1)
-                                if #game.Players.LocalPLayer.Data.DevilFruit.Value == "Dragon-Dragon" then
-                                    UseSkil("V") wait(1)
+                            for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                                if v:IsA("Tool") and v.ToolTip == "Melee" then
+                                    Equip(v.Name)
+                                    UseSkil("Z", 0.1) wait(1)
+                                    UseSkil("X", 0.1) wait(1)
+                                    UseSkil("C", 0.1) wait(1)
                                 end
                             end
-                        end
-                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                            if v:IsA("Tool") and v.ToolTip == "Sword" then
-                                Equip(v.Name)
-                                UseSkil("Z", 0.1) wait(1)
-                                UseSkil("X", 0.1) wait(1)
+                            for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                                if v:IsA("Tool") and v.ToolTip == "Blox Fruit" then
+                                    Equip(v.Name)
+                                    UseSkil("Z", 0.1) wait(1)
+                                    UseSkil("X", 0.1) wait(1)
+                                    UseSkil("C", 0.1) wait(1)
+                                    if #game.Players.LocalPLayer.Data.DevilFruit.Value == "Dragon-Dragon" then
+                                        UseSkil("V") wait(1)
+                                    end
+                                end
                             end
-                        end
-                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                            if v:IsA("Tool") and v.ToolTip == "Gun" then
-                                Equip(v.Name)
-                                UseSkil("Z", 0.1) wait(1)
-                                UseSkil("X", 0.1) wait(1)
+                            for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                                if v:IsA("Tool") and v.ToolTip == "Sword" then
+                                    Equip(v.Name)
+                                    UseSkil("Z", 0.1) wait(1)
+                                    UseSkil("X", 0.1) wait(1)
+                                end
                             end
-                        end
-                    until not v.Part or v:FindFirstChild("HumanoidRootPart") == nil or not AutoSea
-                else
-                    if not HasBoat then
-                        repeat wait()
-                            TweenTo(SpawnBoatPos, 300)
-                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - SpawnBoatPos).magnitude <= 5 or not AutoSea
-                        wait(.5)
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "Swan")
-                        repeat wait()
-                            Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
-                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position).magnitude <= 5 or not AutoSea
-                        UseSkill("W", 30) wait(30)
-                        HasBoat = true
-                    elseif HasBoat then
-                        if game.Workspace["Boats"]:FindFirstChild("Swan") then
-                            Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
-                        else
-                            HasBoat = false
+                            for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                                if v:IsA("Tool") and v.ToolTip == "Gun" then
+                                    Equip(v.Name)
+                                    UseSkil("Z", 0.1) wait(1)
+                                    UseSkil("X", 0.1) wait(1)
+                                end
+                            end
+                        until not v.Part or v:FindFirstChild("HumanoidRootPart") == nil or not AutoSea
+                    else
+                        if not HasBoat then
+                            repeat wait()
+                                TweenTo(SpawnBoatPos, 300)
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - SpawnBoatPos).magnitude <= 5 or not AutoSea
+                            wait(.5)
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "Swan")
+                            repeat wait()
+                                Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position).magnitude <= 5 or not AutoSea
+                            wait(1)
+                            UseSkill("W", 30)
+                            HasBoat = true
+                        elseif HasBoat then
+                            if game.Workspace["Boats"]:FindFirstChild("Swan") then
+                                Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
+                            else
+                                HasBoat = false
+                            end
                         end
                     end
                 end
+            else
+                library:Notification("This Function Not Support God Mode :(", "Ok")
             end
         end
     end)
