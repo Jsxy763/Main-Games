@@ -260,11 +260,20 @@ game:GetService("RunService").Stepped:Connect(function ()
             Part.CanCollide = true
             Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
             Part.Size = Vector3.new(10, 1.3, 10)
-            Part.Transparency = 0
+            if _G.HidePart then
+                Part.Transparency = 1
+            else
+                Part.Transparency = 0
+            end
             Part.Material = "Neon"
             Part.BrickColor = BrickColor.new"Deep orange"
             while game.Workspace:FindFirstChild("TweenWalk") do
                 game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
+                if _G.HidePart then
+                    game.Workspace:FindFirstChild("TweenWalk").Transparency = 1
+                else
+                    game.Workspace:FindFirstChild("TweenWalk").Transparency = 0
+                end
                 game:GetService("RunService").Heartbeat:wait()
             end
         end
@@ -3025,6 +3034,36 @@ Misc:Button("No Fog", "", function ()
     end)
 end)
 
+GameSetting:Button("Light Mode", "", function (bool)
+    pcall(function ()
+        if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("PointLight") then
+            local PointLight = Instance.new("PointLight")
+            PointLight.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+            PointLight.Range = 16
+            PointLight.Color = Color3.fromRGB(255, 167, 31)
+        end
+    end)
+end)
+
+GameSetting:Toggle("Auto Click", "", false, function(bool)
+    AutoClick = bool
+    if AutoClick == false then return end
+    while AutoClick do wait()
+        game:GetService'VirtualUser':CaptureController()
+        game:GetService'VirtualUser':Button1Down(Vector2.new(1240, 372))
+        game:GetService'VirtualUser':CaptureController()
+        game:GetService'VirtualUser':Button1Down(Vector2.new(1230, 652))
+        game:GetService'VirtualUser':CaptureController()
+        game:GetService'VirtualUser':Button1Down(Vector2.new(1250, 252))
+        game:GetService'VirtualUser':CaptureController()
+        game:GetService'VirtualUser':Button1Down(Vector2.new(1260, 282))
+    end
+end)
+
+GameSetting:Toggle("No Clip", "Fake Clip ;-;", false, function(bool)
+    NoClip = bool
+end)
+
 expCode = {
     "3BVISITS",
     "UPD16",
@@ -3071,26 +3110,6 @@ end)
 
 Misc:Toggle("Esp Devil Fruit", "", _G.EspFruit, function (bool)
     _G.EspFruit = bool
-end)
-
-Misc:Line()
-Misc:Toggle("Auto Click", "", false, function(bool)
-    AutoClick = bool
-    if AutoClick == false then return end
-    while AutoClick do wait()
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1240, 372))
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1230, 652))
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1250, 252))
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1260, 282))
-    end
-end)
-
-Misc:Toggle("No Clip", "Fake Clip ;-;", false, function(bool)
-    NoClip = bool
 end)
 
 Misc:Line()
@@ -3616,17 +3635,8 @@ GameSetting:Toggle("Damage Counter", "", true, function (bool)
     end)
 end)
 
-GameSetting:Line()
-GameSetting:Label("--[ FUN ]--")
-GameSetting:Button("Light Mode", "", function (bool)
-    pcall(function ()
-        if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("PointLight") then
-            local PointLight = Instance.new("PointLight")
-            PointLight.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
-            PointLight.Range = 16
-            PointLight.Color = Color3.fromRGB(255, 167, 31)
-        end
-    end)
+GameSetting:Toggle("Hide Float Part", "", false, function (bool)
+    _G.HidePart = bool
 end)
 
 GameSetting:Line()
