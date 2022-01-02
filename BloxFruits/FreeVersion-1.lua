@@ -5283,7 +5283,7 @@ function AutoSeaBeast()
                     if Thirdsea then
                         SpawnBoatPos = Vector3.new(-125.65, 6.73, 5259.55)
                     elseif Secondsea then
-                        SpawnBoatPos = Vector3.new(92.16, 10.28, 2923.09)
+                        SpawnBoatPos = Vector3.new(-11.9033, 10.2767, 2926.24)
                     end
                     for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
                         if v:FindFirstChild("HumanoidRootPart") then
@@ -5295,13 +5295,9 @@ function AutoSeaBeast()
                     if FoundSea then
                         UseSkill("Space", 0.1) wait(1)
                         repeat wait()
-                            if GodModeIsDone then
-                                game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
-                            else
-                                repeat wait()
-                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
-                                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
-                            end
+                            repeat wait()
+                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
                             for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
                                 if v:IsA("Tool") and v.ToolTip == "Melee" then
                                     Equip(v.Name)
@@ -5342,18 +5338,37 @@ function AutoSeaBeast()
                                 TweenTo(SpawnBoatPos, 300)
                             until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - SpawnBoatPos).magnitude <= 5 or not AutoSea
                             wait(.5)
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "Swan")
-                            repeat wait()
-                                Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
-                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position).magnitude <= 5 or not AutoSea
+                            if Thirdsea then
+                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "Swan")
+                            elseif Secondsea then
+                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "PirateBrigade")
+                            end
+                            wait(3)
+                            if Thirdsea then
+                                repeat wait()
+                                    Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
+                                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position).magnitude <= 5 or not AutoSea
+                            elseif Secondsea then
+                                repeat wait()
+                                    Tween(game.Workspace["Boats"]:FindFirstChild("PirateBrigade")["VehicleSeat"].Position, 100)
+                                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Workspace["Boats"]:FindFirstChild("PirateBrigade")["VehicleSeat"].Position).magnitude <= 5 or not AutoSea
+                            end
                             wait(1)
                             UseSkill("W", 30)
                             HasBoat = true
                         elseif HasBoat then
-                            if game.Workspace["Boats"]:FindFirstChild("Swan") then
-                                Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
-                            else
-                                HasBoat = false
+                            if Thirdsea then
+                                if game.Workspace["Boats"]:FindFirstChild("Swan") then
+                                    Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
+                                else
+                                    HasBoat = false
+                                end
+                            elseif Secondsea then
+                                if game.Workspace["Boats"]:FindFirstChild("PirateBrigade") then
+                                    Tween(game.Workspace["Boats"]:FindFirstChild("PirateBrigade")["VehicleSeat"].Position, 100)
+                                else
+                                    HasBoat = false
+                                end
                             end
                         end
                     end
