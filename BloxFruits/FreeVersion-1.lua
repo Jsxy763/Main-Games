@@ -247,6 +247,7 @@ game:GetService("RunService").Stepped:Connect(function ()
     or AutoJoinRaid
     or _G.CandyFarm
     or KillAura
+    or AutoSea
     then
         for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
             if v:IsA("BasePart") then
@@ -309,6 +310,7 @@ function TweenTo(Pos, Speed)
         or not Float
         or not _G.CandyFarm
         or not KillAura
+        or not AutoSea
         then
             Float = true
         end
@@ -1800,6 +1802,14 @@ elseif Thirdsea then
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
         end
     end)
+
+    -- AutoFarm:Toggle("Auto SeaBeast - Beta", "", false, function (bool)
+    --     AutoSea = bool
+    --     AutoSeaBeast()
+    --     if AutoSea == false then wait(.5)
+    --         TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+    --     end
+    -- end)
 end
 
 AutoFarm:Line()
@@ -3034,7 +3044,7 @@ Misc:Button("No Fog", "", function ()
     end)
 end)
 
-GameSetting:Button("Light Mode", "", function (bool)
+Misc:Button("Light Mode", "", function (bool)
     pcall(function ()
         if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("PointLight") then
             local PointLight = Instance.new("PointLight")
@@ -3045,7 +3055,7 @@ GameSetting:Button("Light Mode", "", function (bool)
     end)
 end)
 
-GameSetting:Toggle("Auto Click", "", false, function(bool)
+Misc:Toggle("Auto Click", "", false, function(bool)
     AutoClick = bool
     if AutoClick == false then return end
     while AutoClick do wait()
@@ -3060,7 +3070,7 @@ GameSetting:Toggle("Auto Click", "", false, function(bool)
     end
 end)
 
-GameSetting:Toggle("No Clip", "Fake Clip ;-;", false, function(bool)
+Misc:Toggle("No Clip", "Fake Clip ;-;", false, function(bool)
     NoClip = bool
 end)
 
@@ -5157,6 +5167,34 @@ function FullyRaid()
                         NextIsland = false
                         AutoAwaken = false
                         JoinedRaid = false
+                    end
+                end
+            end
+        end)
+    end)
+end
+
+function UseSkill(skill)
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, skill, false, game)
+    wait(2)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, skill, false, game)
+end
+
+function AutoSeaBeast()
+    spawn(function ()
+        pcall(function ()
+            if AutoSea and Thirdsea then
+                while AutoSea do wait(.1)
+                    for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            if GodModeIsDone then
+                                game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                            else
+                                repeat wait()
+                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                            end
+                        end
                     end
                 end
             end
