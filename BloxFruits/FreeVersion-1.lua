@@ -1815,6 +1815,13 @@ elseif Secondsea then
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
         end
     end)
+    AutoFarm:Toggle("Auto SeaBeast (Read Des Pls!)", "This Just Beta & Make Sure You Have Swan Boat", AutoSea, function (bool)
+        AutoSea = bool
+        AutoSeaBeast()
+        if AutoSea == false then wait(.5)
+            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        end
+    end)
 elseif Thirdsea then
 	local EliteChecker = AutoFarm:Label("N/A")
     spawn(function ()
@@ -5270,13 +5277,13 @@ end
 local HasBoat = false
 function AutoSeaBeast()
     spawn(function ()
-        if AutoSea and Thirdsea then
+        if AutoSea and (Thirdsea or Secondsea) then
             if not GodModeIsDone then
                 while AutoSea do wait(.1)
                     if Thirdsea then
                         SpawnBoatPos = Vector3.new(-125.65, 6.73, 5259.55)
                     elseif Secondsea then
-                        SpawnBoatPos = Vector3.new()
+                        SpawnBoatPos = Vector3.new(92.16, 10.28, 2923.09)
                     end
                     for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
                         if v:FindFirstChild("HumanoidRootPart") then
