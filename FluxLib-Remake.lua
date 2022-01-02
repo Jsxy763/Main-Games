@@ -6,6 +6,7 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
+local CloseBind = Enum.KeyCode.RightControl
 
 local FluxLib = Instance.new("ScreenGui")
 FluxLib.Name = "AstroHub"
@@ -87,7 +88,8 @@ end
 
 
 
-function Flux:Window(text, bottom, mainclr)
+function Flux:Window(text, bottom, mainclr, toclose)
+	GuiBind = toclose or CloseBind
 	MainColor = mainclr or PresetColor
 	local fs = false
 	local MainFrame = Instance.new("Frame")
@@ -188,15 +190,17 @@ function Flux:Window(text, bottom, mainclr)
 	MainFrame:TweenSize(UDim2.new(0, 706, 0, 484), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
 
 	local uitoggled = false
-	function Flux:Toggle()
-		if uitoggled == false then
-			uitoggled = true
-			FluxLib.Enabled = false
-		else
-			FluxLib.Enabled = true
-			uitoggled = false
+	UserInputService.InputBegan:Connect(function(io)
+		if io.KeyCode == GuiBind then
+			if uitoggled == false then
+				uitoggled = true
+				FluxLib.Enabled = false
+			else
+				FluxLib.Enabled = true
+				uitoggled = false
+			end
 		end
-	end
+	end)
 
 	function Flux:WinUpdate(newText, newBottom)
 		Title.Text = newText
