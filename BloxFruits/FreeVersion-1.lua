@@ -260,7 +260,7 @@ game:GetService("RunService").Stepped:Connect(function ()
             Part.CanCollide = true
             Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
             Part.Size = Vector3.new(2,1.3,2)
-            Part.Transparency = 1
+            Part.Transparency = 0
             while game.Workspace:FindFirstChild("TweenWalk") do
                 game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0) wait()
             end
@@ -350,6 +350,15 @@ spawn(function ()
             --         v:Destroy()
             --     end
             -- end
+            for i, v in pairs(game:GetService("Workspace").Characters[tostring(game.Players.LocalPlayer)].HumanoidRootPart:GetChildren()) do
+                if v.Name == "CrewBBG" then
+                    Pirates = true
+                    Marines = false
+                elseif v.Name == "MarineBBG" then
+                    Pirates = false
+                    Marines = true
+                end
+            end
             for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
                 if v:FindFirstChild("Humanoid") ~= nil  and v:FindFirstChild("HumanoidRootPart") ~= nil and v:IsA("Model") then
                     v.Parent = game:GetService("Workspace").Enemies
@@ -421,14 +430,6 @@ spawn(function ()
                 wait(1)
                 game:GetService('VirtualUser'):SetKeyUp('0x65')
             end
-            if _G.FastAttack then
-                local FastAttackModule = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-                pcall(function ()
-                    FastAttackModule.activeController.attacking = false
-                    FastAttackModule.activeController.active = false
-                    FastAttackModule.activeController.timeToNextAttack = 0.2
-                end)
-            end
             if AutoAwaken then
                 local args = {[1] = "Awakener", [2] = "Check"}
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -441,6 +442,7 @@ spawn(function ()
                     and game:GetService("Players").LocalPlayer.PlayerGui.Main.Timer.Visible == true
                     then
                         StartMagnet = true
+                        StartClick = true
                         repeat game:GetService("RunService").RenderStepped:Wait(0.5)
                             if NextIsland then
                                 NextIsland = false
@@ -461,7 +463,6 @@ spawn(function ()
                                 end
                             end
                             Equip(_G.Weapon)
-                            Click()
                             if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
                                 local args = {[1] = "Buso"}
                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -481,6 +482,7 @@ spawn(function ()
                             require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                         until v.Humanoid.Health <= 0 or KillAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
                         StartMagnet = false
+                        StartClick = false
                         if CheckNextIsland then NextIsland = true end
                     end
                 end
@@ -598,10 +600,27 @@ spawn(function ()
 end)
 
 -- Function
-function Click()
-    game:GetService'VirtualUser':CaptureController()
-    game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
-end
+local PlrMouse = game.Players.LocalPlayer:GetMouse()
+PlrMouse.Button1Down:Connect(function()
+    if _G.FastAttack then
+        local FastAtackMod = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
+        if FastAtackMod.activeController and FastAtackMod.activeController.anims and FastAtackMod.activeController.anims.basic then
+            FastAtackMod.activeController:attack()
+        end
+    end
+end)
+
+-- local NoCDATK = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
+-- function Click()
+--     if _G.FastAttack then
+--         if NoCDATK.activeController and game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
+--             if NoCDATK.activeController.timeToNextAttack and NoCDATK.activeController.timeToNextAttack ~= 0 then
+--                 NoCDATK.activeController.timeToNextAttack =  0
+--             end
+--         end
+--     end
+-- end
+-- game.Players.LocalPlayer:GetMouse().Button1Down:Connect(Click)
 
 function levelCheck() -- Check Level
     local MyLevel = game.Players.localPlayer.Data.Level.Value
@@ -1215,7 +1234,7 @@ function BossCheck() -- Check Boss
         needQuest = false
     elseif _G.SelectedBoss == "Darkbeard [Lv. 1000] [Raid Boss]" then
         needQuest = false
-    elseif _G.SelectedBoss == "Law" then
+    elseif _G.SelectedBoss == "Order [Lv. 1250] [Raid Boss]" then
         needQuest = false
     elseif _G.SelectedBoss == "Stone [Lv. 1550] [Boss]" then
         needQuest = true
@@ -3571,8 +3590,6 @@ GameSetting:Button("Light Mode", "", function (bool)
             PointLight.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
             PointLight.Range = 16
             PointLight.Color = Color3.fromRGB(255, 167, 31)
-        else
-            PointLight:Destroy()
         end
     end)
 end)
@@ -3876,6 +3893,7 @@ function All(type)
                                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
                                         if v.Name == nameMob then
                                             StartMagnet = true
+                                            StartClick = true
                                             repeat wait() levelCheck()
                                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
                                                     repeat wait() until game.Players.LocalPlayer.Character break;
@@ -3891,7 +3909,6 @@ function All(type)
                                                             end
                                                         end
                                                         Equip(_G.Weapon)
-                                                        Click()
                                                         if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
                                                             local args = {[1] = "Buso"}
                                                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -3922,6 +3939,7 @@ function All(type)
                                                 end
                                             until v.Humanoid.Health <= 0 or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
                                             StartMagnet = false
+                                            StartClick = false
                                         end
                                     end
                                 end)
@@ -3959,36 +3977,38 @@ function All(type)
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
                                 StartMagnet = true
+                                StartClick = true
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                    if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                        repeat wait() until game.Players.LocalPlayer.Character
-                                    end
-                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                        for i, v in pairs(ListMelee) do
-                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                _G.Weapon = v
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                    else
+                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                            for i, v in pairs(ListMelee) do
+                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                    _G.Weapon = v
+                                                end
                                             end
                                         end
+                                        Equip(_G.Weapon)
+                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then local args = {[1] = "Buso"} game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args)) end
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.HumanoidRootPart.Transparency = 1
+                                        end
+                                        if GodModeIsDone then
+                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Position + Vector3.new(0, 25, 0))
+                                        else
+                                            TweenTo(Position + Vector3.new(0, 25, 0), 300)
+                                        end
+                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
-                                    Equip(_G.Weapon)
-                                    Click()
-                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then local args = {[1] = "Buso"} game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args)) end
-                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                        v.Humanoid.WalkSpeed = 1
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                        v.HumanoidRootPart.Transparency = 1
-                                    end
-                                    if GodModeIsDone then
-                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Position + Vector3.new(0, 25, 0))
-                                    else
-                                        TweenTo(Position + Vector3.new(0, 25, 0), 300)
-                                    end
-                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                 until v.Humanoid.Health <= 0 or _G.CandyFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
                                 StartMagnet = false
+                                StartClick = false
                             end
                         end
                     end
@@ -4013,10 +4033,52 @@ function All(type)
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if v.Name == BoneMob then
                                 StartMagnet = true
+                                StartClick = true
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                    if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                        repeat wait() until game.Players.LocalPlayer.Character
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                    else
+                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                            for i, v in pairs(ListMelee) do
+                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                    _G.Weapon = v
+                                                end
+                                            end
+                                        end
+                                        Equip(_G.Weapon)
+                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then local args = {[1] = "Buso"} game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args)) end
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.HumanoidRootPart.Transparency = 1
+                                        end
+                                        if GodModeIsDone then
+                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Position + Vector3.new(0, 25, 0))
+                                        else
+                                            TweenTo(Position + Vector3.new(0, 25, 0), 300)
+                                        end
+                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
+                                until v.Humanoid.Health <= 0 or _G.BoneFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                                StartMagnet = false
+                                StartClick = false
+                            end
+                        end
+                    end
+                end
+            elseif type == "Mob Aura" and _G.MobAura then
+                while _G.MobAura do game:GetService'RunService'.RenderStepped:Wait()
+                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 300 then
+                            StartMagnet = true
+                            StartClick = true
+                            repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                                if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                    repeat wait() until game.Players.LocalPlayer.Character break;
+                                else
                                     if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                                     if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
                                     if _G.Weapon == "" or _G.Weapon == nil then
@@ -4027,61 +4089,23 @@ function All(type)
                                         end
                                     end
                                     Equip(_G.Weapon)
-                                    Click()
-                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then local args = {[1] = "Buso"} game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args)) end
+                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                        local args = {[1] = "Buso"}
+                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                    end
                                     if v:FindFirstChild("HumanoidRootPart") ~= nil then
                                         v.Humanoid.WalkSpeed = 1
                                         v.HumanoidRootPart.CanCollide = false
                                         v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                                         v.HumanoidRootPart.Transparency = 1
+                                        AuraBringPos = v.HumanoidRootPart.CFrame
                                     end
-                                    if GodModeIsDone then
-                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Position + Vector3.new(0, 25, 0))
-                                    else
-                                        TweenTo(Position + Vector3.new(0, 25, 0), 300)
-                                    end
+                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
                                     require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                until v.Humanoid.Health <= 0 or _G.BoneFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
-                                StartMagnet = false
-                            end
-                        end
-                    end
-                end
-            elseif type == "Mob Aura" and _G.MobAura then
-                while _G.MobAura do game:GetService'RunService'.RenderStepped:Wait()
-                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 300 then
-                            StartMagnet = true
-                            repeat game:GetService("RunService").RenderStepped:Wait(0.5)
-                                if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                    repeat wait() until game.Players.LocalPlayer.Character
                                 end
-                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                if _G.Weapon == "" or _G.Weapon == nil then
-                                    for i, v in pairs(ListMelee) do
-                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                            _G.Weapon = v
-                                        end
-                                    end
-                                end
-                                Equip(_G.Weapon)
-                                Click()
-                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                    local args = {[1] = "Buso"}
-                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                end
-                                if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                    v.Humanoid.WalkSpeed = 1
-                                    v.HumanoidRootPart.CanCollide = false
-                                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                    v.HumanoidRootPart.Transparency = 1
-                                    AuraBringPos = v.HumanoidRootPart.CFrame
-                                end
-                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
-                                require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                             until v.Humanoid.Health <= 0 or _G.MobAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
                             StartMagnet = false
+                            StartClick = false
                         end
                     end
                 end
@@ -4105,37 +4129,42 @@ function All(type)
                                 for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                     if v.Name == mobSelect then
                                         StartMagnet = true
+                                        StartClick = true
                                         repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                            if _G.Weapon == "" or _G.Weapon == nil then
-                                                for i, v in pairs(ListMelee) do
-                                                    if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                        _G.Weapon = v
+                                            if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                                repeat wait() until game.Players.LocalPlayer.Character break;
+                                            else
+                                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                                if _G.Weapon == "" or _G.Weapon == nil then
+                                                    for i, v in pairs(ListMelee) do
+                                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                            _G.Weapon = v
+                                                        end
                                                     end
                                                 end
+                                                Equip(_G.Weapon)
+                                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                    local args = {[1] = "Buso"}
+                                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                end
+                                                if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                    v.Humanoid.WalkSpeed = 1
+                                                    v.HumanoidRootPart.CanCollide = false
+                                                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                    v.HumanoidRootPart.Transparency = 1
+                                                    MobChoosedPos = v.HumanoidRootPart.CFrame
+                                                end
+                                                if GodModeIsDone then
+                                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
+                                                else
+                                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                                end
+                                                require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                             end
-                                            Equip(_G.Weapon)
-                                            Click()
-                                            if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                                local args = {[1] = "Buso"}
-                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                            end
-                                            if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                                v.Humanoid.WalkSpeed = 1
-                                                v.HumanoidRootPart.CanCollide = false
-                                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                                v.HumanoidRootPart.Transparency = 1
-                                                MobChoosedPos = v.HumanoidRootPart.CFrame
-                                            end
-                                            if GodModeIsDone then
-                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
-                                            else
-                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
-                                            end
-                                            require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                        until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.ChooseMob == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        until v.Humanoid.Health <= 0 or _G.ChooseMob == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
                                         StartMagnet = false
+                                        StartClick = false
                                     end
                                 end
                             else MobCheck()
@@ -4182,34 +4211,39 @@ function All(type)
                         if not needQuest or (string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameBoss) and needQuest) then
                             for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                 if v.Name == _G.SelectedBoss then
+                                    StartClick = true
                                     repeat game:GetService("RunService").RenderStepped:Wait(0.5)
-                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                        if _G.BossWeapon == "" or _G.BossWeapon == nil then
-                                            for i, v in pairs(ListMelee) do
-                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                    _G.BossWeapon = v
+                                        if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                            repeat wait() until game.Players.LocalPlayer.Character break;
+                                        else
+                                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                            if _G.BossWeapon == "" or _G.BossWeapon == nil then
+                                                for i, v in pairs(ListMelee) do
+                                                    if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                        _G.BossWeapon = v
+                                                    end
                                                 end
                                             end
+                                            Equip(_G.BossWeapon)
+                                            if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                local args = {[1] = "Buso"}
+                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                            end
+                                            if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                v.Humanoid.WalkSpeed = 1
+                                                v.HumanoidRootPart.CanCollide = false
+                                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                v.HumanoidRootPart.Transparency = 1
+                                            end
+                                            if GodModeIsDone then
+                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                            else
+                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                            end
                                         end
-                                        Equip(_G.BossWeapon)
-                                        Click()
-                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                            local args = {[1] = "Buso"}
-                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                        end
-                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                            v.Humanoid.WalkSpeed = 1
-                                            v.HumanoidRootPart.CanCollide = false
-                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                            v.HumanoidRootPart.Transparency = 1
-                                        end
-                                        if GodModeIsDone then
-                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
-                                        else
-                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
-                                        end
-                                    until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.BossFarm == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
+                                    until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.BossFarm == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
+                                    StartClick = false
                                 end
                             end
                         elseif needQuest then
@@ -4238,35 +4272,40 @@ function All(type)
                                 if not needQuest or (string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameBoss) and needQuest) then
                                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                         if v.Name == _G.SelectedBoss then
+                                            StartClick = true
                                             repeat game:GetService("RunService").RenderStepped:Wait(0.5)
-                                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                                if _G.BossWeapon == "" or _G.BossWeapon == nil then
-                                                    for i, v in pairs(ListMelee) do
-                                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                            _G.BossWeapon = v
+                                                if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                                    repeat wait() until game.Players.LocalPlayer.Character break;
+                                                else
+                                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                                    if _G.BossWeapon == "" or _G.BossWeapon == nil then
+                                                        for i, v in pairs(ListMelee) do
+                                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                                _G.BossWeapon = v
+                                                            end
                                                         end
                                                     end
+                                                    Equip(_G.BossWeapon)
+                                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                        local args = {[1] = "Buso"}
+                                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                    end
+                                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                        v.Humanoid.WalkSpeed = 1
+                                                        v.HumanoidRootPart.CanCollide = false
+                                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                        v.HumanoidRootPart.Transparency = 1
+                                                    end
+                                                    if GodModeIsDone then
+                                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                                    else
+                                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                                    end
+                                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                 end
-                                                Equip(_G.BossWeapon)
-                                                Click()
-                                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                                    local args = {[1] = "Buso"}
-                                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                                end
-                                                if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                                    v.Humanoid.WalkSpeed = 1
-                                                    v.HumanoidRootPart.CanCollide = false
-                                                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                                    v.HumanoidRootPart.Transparency = 1
-                                                end
-                                                if GodModeIsDone then
-                                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
-                                                else
-                                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
-                                                end
-                                                require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                            until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AllBoss == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
+                                            until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AllBoss == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
+                                            StartClick = false
                                         end
                                     end
                                 elseif needQuest then
@@ -4280,6 +4319,7 @@ function All(type)
             elseif type == "Kill Player Gun" and KillPlr2 then
                 local Plr1 = game.Players.LocalPlayer
                 local Plr2 = game.Players:FindFirstChild(selectedPlayer)
+                StartClick = true
                 repeat wait()
                     Equip(Gun)
                     if GodModeIsDone then
@@ -4288,11 +4328,12 @@ function All(type)
                         TweenTo(Plr2.Character.HumanoidRootPart.Position + Vector3.new(0, 70, -30), 300)
                     end
                     Plr2.Character.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                    Click()
                 until KillPlr2 == false
+                StartClick = false
             elseif type == "Kill Player Melee" and KillPlr then
                 local Plr1 = game.Players.LocalPlayer
                 local Plr2 = game.Players:FindFirstChild(selectedPlayer)
+                StartClick = true
                 repeat wait()
                     Equip(WeaponPlayerFarm)
                     if GodModeIsDone then
@@ -4301,8 +4342,8 @@ function All(type)
                         TweenTo(Plr2.Character.HumanoidRootPart.Position + Vector3.new(0, 15, 0), 300)
                     end
                     Plr2.Character.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                    Click()
                 until KillPlr == false
+                StartClick = false
             elseif type == "Auto Elite" and _G.AutoElite and Thirdsea then
                 while _G.AutoElite do game:GetService("RunService").RenderStepped:Wait()
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
@@ -4327,35 +4368,40 @@ function All(type)
                                 or (v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v:IsA("Model") and string.find(v.Name, "Urban"))
                                 or (v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v:IsA("Model") and string.find(v.Name, "Deandre"))
                                 then
+                                    StartClick = true
                                     repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                        if _G.Weapon == "" or _G.Weapon == nil then
-                                            for i, v in pairs(ListMelee) do
-                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                    _G.Weapon = v
+                                        if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                            repeat wait() until game.Players.LocalPlayer.Character break;
+                                        else
+                                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                            if _G.Weapon == "" or _G.Weapon == nil then
+                                                for i, v in pairs(ListMelee) do
+                                                    if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                        _G.Weapon = v
+                                                    end
                                                 end
                                             end
+                                            Equip(_G.Weapon)
+                                            if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                local args = {[1] = "Buso"}
+                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                            end
+                                            if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                v.Humanoid.WalkSpeed = 1
+                                                v.HumanoidRootPart.CanCollide = false
+                                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                v.HumanoidRootPart.Transparency = 1
+                                            end
+                                            if GodModeIsDone then
+                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
+                                            else
+                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                            end
+                                            require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                         end
-                                        Equip(_G.Weapon)
-                                        Click()
-                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                            local args = {[1] = "Buso"}
-                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                        end
-                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                            v.Humanoid.WalkSpeed = 1
-                                            v.HumanoidRootPart.CanCollide = false
-                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                            v.HumanoidRootPart.Transparency = 1
-                                        end
-                                        if GodModeIsDone then
-                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
-                                        else
-                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
-                                        end
-                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                    until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.AutoElite == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                    until v.Humanoid.Health <= 0 or _G.AutoElite == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                    StartClick = false
                                     if _G.HOP and Thirdsea then
                                         wait(1.5)
                                         Teleport() break;
@@ -4406,35 +4452,40 @@ function All(type)
                     then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Ice Admiral [Lv. 700] [Boss]" then
+                                StartClick = true
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                        for i, v in pairs(ListMelee) do
-                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                _G.Weapon = v
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                    else
+                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                            for i, v in pairs(ListMelee) do
+                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                    _G.Weapon = v
+                                                end
                                             end
                                         end
+                                        Equip(_G.Weapon)
+                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                            local args = {[1] = "Buso"}
+                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                        end
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.HumanoidRootPart.Transparency = 1
+                                        end
+                                        if GodModeIsDone then
+                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0))
+                                        else
+                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                        end
+                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
-                                    Equip(_G.Weapon)
-                                    Click()
-                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                        local args = {[1] = "Buso"}
-                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                    end
-                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                        v.Humanoid.WalkSpeed = 1
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                        v.HumanoidRootPart.Transparency = 1
-                                    end
-                                    if GodModeIsDone then
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0))
-                                    else
-                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
-                                    end
-                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.Auto2nd == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                                until v.Humanoid.Health <= 0 or _G.Auto2nd == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
+                                StartClick = false
                                 wait(.5)
                                 local args = {[1] = "TravelDressrosa"}
                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -4457,22 +4508,27 @@ function All(type)
                     if game.Workspace.Enemies:FindFirstChild("rip_indra [Lv. 1500] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "rip_indra [Lv. 1500] [Boss]" then
+                                StartClick = true
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
-                                    Equip(_G.Weapon)
-                                    Click()
-                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                        v.HumanoidRootPart.Transparency = 1
-                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                        v.Humanoid.WalkSpeed = 1
-                                        v.HumanoidRootPart.CanCollide = false
-                                    end
-                                    if GodModeIsDone then
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(10, 25, 0)
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character break;
                                     else
-                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(10, 25, 0), 300)
+                                        Equip(_G.Weapon)
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.HumanoidRootPart.Transparency = 1
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                        end
+                                        if GodModeIsDone then
+                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(10, 25, 0)
+                                        else
+                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(10, 25, 0), 300)
+                                        end
+                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
-                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                until not v.Parent or v.Humanoid.Health <= 55000 or _G.Auto3rd == false or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone)
+                                until not v.Parent or v.Humanoid.Health <= 55000 or _G.Auto3rd == false
+                                StartClick = false
                             end
                         end
 
@@ -4524,36 +4580,41 @@ function All(type)
                                     pcall(function ()
                                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                             if v.Name == BartiloMob then
+                                                StartClick = true
                                                 repeat game:GetService("RunService").RenderStepped:Wait(0.5)
-                                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                                        for i, v in pairs(ListMelee) do
-                                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                                _G.Weapon = v
+                                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                                    else
+                                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                                            for i, v in pairs(ListMelee) do
+                                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                                    _G.Weapon = v
+                                                                end
                                                             end
                                                         end
+                                                        Equip(_G.Weapon)
+                                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                            local args = {[1] = "Buso"}
+                                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                        end
+                                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                            v.Humanoid.WalkSpeed = 1
+                                                            v.HumanoidRootPart.CanCollide = false
+                                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                            v.HumanoidRootPart.Transparency = 1
+                                                            BartiloBringPos = v.HumanoidRootPart.CFrame
+                                                        end
+                                                        if GodModeIsDone then
+                                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0))
+                                                        else
+                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                                        end
+                                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                     end
-                                                    Equip(_G.Weapon)
-                                                    Click()
-                                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                                        local args = {[1] = "Buso"}
-                                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                                    end
-                                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                                        v.Humanoid.WalkSpeed = 1
-                                                        v.HumanoidRootPart.CanCollide = false
-                                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                                        v.HumanoidRootPart.Transparency = 1
-                                                        BartiloBringPos = v.HumanoidRootPart.CFrame
-                                                    end
-                                                    if GodModeIsDone then
-                                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0))
-                                                    else
-                                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
-                                                    end
-                                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                                until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or _G.AutoBartilo == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                                until v.Humanoid.Health <= 0 or _G.AutoBartilo == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                                StartClick = false
                                                 wait(.5)
                                                 if GodModeIsDone then
                                                     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(BartiloQuest)
@@ -4569,35 +4630,40 @@ function All(type)
                                                     pcall(function ()
                                                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                                             if v.Name == BartiloBoss then
+                                                                StartClick = true
                                                                 repeat game:GetService("RunService").RenderStepped:Wait(0.5)
-                                                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                                                        for i, v in pairs(ListMelee) do
-                                                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                                                _G.Weapon = v
+                                                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                                                    else
+                                                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                                                            for i, v in pairs(ListMelee) do
+                                                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                                                    _G.Weapon = v
+                                                                                end
                                                                             end
                                                                         end
+                                                                        Equip(_G.Weapon)
+                                                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                                            local args = {[1] = "Buso"}
+                                                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                                        end
+                                                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                                            v.Humanoid.WalkSpeed = 1
+                                                                            v.HumanoidRootPart.CanCollide = false
+                                                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                                            v.HumanoidRootPart.Transparency = 1
+                                                                        end
+                                                                        if GodModeIsDone then
+                                                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0))
+                                                                        else
+                                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                                                        end
+                                                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                                     end
-                                                                    Equip(_G.Weapon)
-                                                                    Click()
-                                                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                                                        local args = {[1] = "Buso"}
-                                                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                                                    end
-                                                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                                                        v.Humanoid.WalkSpeed = 1
-                                                                        v.HumanoidRootPart.CanCollide = false
-                                                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                                                        v.HumanoidRootPart.Transparency = 1
-                                                                    end
-                                                                    if GodModeIsDone then
-                                                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0))
-                                                                    else
-                                                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
-                                                                    end
-                                                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                                                until v.Humanoid.Health <= 0 or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AutoBartilo == false or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                                                until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AutoBartilo == false or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                                                StartClick = false
                                                                 wait(.5)
                                                                 for i, v in pairs(game:GetService("Workspace").Map.Dressrosa.BartiloPlates:GetDescendants()) do
                                                                     if v:IsA("TouchTransmitter") then
@@ -4696,25 +4762,30 @@ function All(type)
                         if game:GetService("Workspace").Enemies:FindFirstChild(AutoRainbow_Boss) then
                             for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                 if v.Name == AutoRainbow_Boss then
+                                    StartClick = true
                                     repeat game:GetService("RunService").Heartbeat:wait()
-                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                        if _G.Weapon == "" or _G.Weapon == nil then
-                                            for i, v in pairs(ListMelee) do
-                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                    _G.Weapon = v
+                                        if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                            repeat wait() until game.Players.LocalPlayer.Character break;
+                                        else
+                                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                            if _G.Weapon == "" or _G.Weapon == nil then
+                                                for i, v in pairs(ListMelee) do
+                                                    if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                        _G.Weapon = v
+                                                    end
                                                 end
                                             end
+                                            Equip(_G.Weapon)
+                                            if GodModeIsDone then
+                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0))
+                                            else
+                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0), 300)
+                                            end
+                                            require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                         end
-                                        Equip(_G.Weapon)
-                                        Click()
-                                        if GodModeIsDone then
-                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0))
-                                        else
-                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0), 300)
-                                        end
-                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                    until _G.AutoRainbow == false or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) or v.Humanoid.Health <= 0 or not v.Parent or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                    until _G.AutoRainbow == false or v.Humanoid.Health <= 0 or not v.Parent or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                    StartClick = false
                                 end
                             end
                         elseif _G.HOP and Thirdsea then
@@ -4753,35 +4824,40 @@ function All(type)
                     if game.Workspace.Enemies:FindFirstChild("Mob Leader [Lv. 120] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Mob Leader [Lv. 120] [Boss]" then
+                                StartClick = true
                                 repeat game:GetService("RunService").RenderStepped:wait(.5)
-                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                        for i, v in pairs(ListMelee) do
-                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                _G.Weapon = v
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                    else
+                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                            for i, v in pairs(ListMelee) do
+                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                    _G.Weapon = v
+                                                end
                                             end
                                         end
+                                        Equip(_G.Weapon)
+                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                            local args = {[1] = "Buso"}
+                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                        end
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.HumanoidRootPart.Transparency = 1
+                                        end
+                                        if GodModeIsDone then
+                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15))
+                                        else
+                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15), 300)
+                                        end
+                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
-                                    Equip(_G.Weapon)
-                                    Click()
-                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                        local args = {[1] = "Buso"}
-                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                    end
-                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                        v.Humanoid.WalkSpeed = 1
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                        v.HumanoidRootPart.Transparency = 1
-                                    end
-                                    if GodModeIsDone then
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15))
-                                    else
-                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15), 300)
-                                    end
-                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                 until not v.Parent or v.Humanoid.Health <= 0 or _G.AutoSaber == false or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone)
+                                StartClick = false
                             end
                         end
                     end
@@ -4812,35 +4888,40 @@ function All(type)
                     if game.Workspace.Enemies:FindFirstChild("Saber Expert [Lv. 200] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Saber Expert [Lv. 200] [Boss]" then
+                                StartClick = true
                                 repeat game:GetService("RunService").RenderStepped:wait(.5)
-                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                    if _G.Weapon == "" or _G.Weapon == nil then
-                                        for i, v in pairs(ListMelee) do
-                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                _G.Weapon = v
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character
+                                    else
+                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                            for i, v in pairs(ListMelee) do
+                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                    _G.Weapon = v
+                                                end
                                             end
                                         end
+                                        Equip(_G.Weapon)
+                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                            local args = {[1] = "Buso"}
+                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                        end
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.HumanoidRootPart.Transparency = 1
+                                        end
+                                        if GodModeIsDone then
+                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15))
+                                        else
+                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15), 300)
+                                        end
+                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
-                                    Equip(_G.Weapon)
-                                    Click()
-                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                        local args = {[1] = "Buso"}
-                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                    end
-                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                        v.Humanoid.WalkSpeed = 1
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                        v.HumanoidRootPart.Transparency = 1
-                                    end
-                                    if GodModeIsDone then
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15))
-                                    else
-                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 15), 300)
-                                    end
-                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                until not v.Parent or v.Humanoid.Health <= 0 or _G.AutoSaber == false or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone)
+                                until not v.Parent or v.Humanoid.Health <= 0 or _G.AutoSaber == false
+                                StartClick = false
                             end
                         end
                     end
@@ -5121,6 +5202,15 @@ spawn(function () -- Auto Electric Claw
             end
         end
     end)
+end)
+
+spawn(function() -- Hit
+    while game:GetService("RunService").RenderStepped:wait(0.2) do
+        if StartClick then
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
+        end
+    end
 end)
 
 spawn(function () -- Magnet
