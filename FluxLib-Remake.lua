@@ -190,19 +190,15 @@ function Flux:Window(text, bottom, mainclr, toclose)
 	MainFrame:TweenSize(UDim2.new(0, 706, 0, 484), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
 
 	local uitoggled = false
-	UserInputService.InputBegan:Connect(
-		function(io, p)
-			if io.KeyCode == GuiBind then
-				if uitoggled == false then
-					uitoggled = true
-					FluxLib.Enabled = false
-				else
-					FluxLib.Enabled = true
-					uitoggled = false
-				end
-			end
+	function Flux:Toggle()
+		if uitoggled == false then
+			uitoggled = true
+			FluxLib.Enabled = false
+		else
+			FluxLib.Enabled = true
+			uitoggled = false
 		end
-	)
+	end
 
 	function Flux:WinUpdate(newText, newBottom)
 		Title.Text = newText
@@ -2063,6 +2059,123 @@ function Flux:Window(text, bottom, mainclr, toclose)
 				end
 				TextboxDescToggled = not TextboxDescToggled
 			end)
+			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+		end
+		function ContainerContent:Bind(text, default, callback)
+			local Key = default.Name
+			local Bind = Instance.new("TextButton")
+			local BindCorner = Instance.new("UICorner")
+			local Title = Instance.new("TextLabel")
+			local Circle = Instance.new("Frame")
+			local CircleCorner = Instance.new("UICorner")
+			local CircleSmall = Instance.new("Frame")
+			local CircleSmallCorner = Instance.new("UICorner")
+			local BindLabel = Instance.new("TextLabel")
+
+			Bind.Name = "Bind"
+			Bind.Parent = Container
+			Bind.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			Bind.ClipsDescendants = true
+			Bind.Position = UDim2.new(0.40625, 0, 0.828947306, 0)
+			Bind.Size = UDim2.new(0, 457, 0, 43)
+			Bind.AutoButtonColor = false
+			Bind.Font = Enum.Font.SourceSans
+			Bind.Text = ""
+			Bind.TextColor3 = Color3.fromRGB(0, 0, 0)
+			Bind.TextSize = 14.000
+
+			BindCorner.CornerRadius = UDim.new(0, 4)
+			BindCorner.Name = "BindCorner"
+			BindCorner.Parent = Bind
+
+			Title.Name = "Title"
+			Title.Parent = Bind
+			Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Title.BackgroundTransparency = 1.000
+			Title.Position = UDim2.new(0.0822437406, 0, 0, 0)
+			Title.Size = UDim2.new(0, 113, 0, 42)
+			Title.Font = Enum.Font.Gotham
+			Title.Text = text
+			Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Title.TextSize = 15.000
+			Title.TextTransparency = 0.300
+			Title.TextXAlignment = Enum.TextXAlignment.Left
+
+			Circle.Name = "Circle"
+			Circle.Parent = Title
+			Circle.Active = true
+			Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+			Circle.BackgroundColor3 = Color3.fromRGB(211, 211, 211)
+			Circle.Position = UDim2.new(-0.150690272, 0, 0.503000021, 0)
+			Circle.Size = UDim2.new(0, 11, 0, 11)
+
+			CircleCorner.CornerRadius = UDim.new(2, 6)
+			CircleCorner.Name = "CircleCorner"
+			CircleCorner.Parent = Circle
+
+			CircleSmall.Name = "CircleSmall"
+			CircleSmall.Parent = Circle
+			CircleSmall.Active = true
+			CircleSmall.AnchorPoint = Vector2.new(0.5, 0.5)
+			CircleSmall.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
+			CircleSmall.BackgroundTransparency = 1.000
+			CircleSmall.Position = UDim2.new(0.485673368, 0, 0.503000021, 0)
+			CircleSmall.Size = UDim2.new(0, 9, 0, 9)
+
+			CircleSmallCorner.CornerRadius = UDim.new(2, 6)
+			CircleSmallCorner.Name = "CircleSmallCorner"
+			CircleSmallCorner.Parent = CircleSmall
+
+			BindLabel.Name = "BindLabel"
+			BindLabel.Parent = Title
+			BindLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			BindLabel.BackgroundTransparency = 1.000
+			BindLabel.Position = UDim2.new(2.56011987, 0, 0, 0)
+			BindLabel.Size = UDim2.new(0, 113, 0, 42)
+			BindLabel.Font = Enum.Font.Gotham
+			BindLabel.Text = Key
+			BindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+			BindLabel.TextSize = 15.000
+			BindLabel.TextTransparency = 0.300
+			BindLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+			Bind.MouseEnter:Connect(function()
+				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+			end)
+
+			Bind.MouseLeave:Connect(function()
+				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.3}):Play()
+			end)
+
+			Bind.MouseButton1Click:connect(function()
+				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = MainColor}):Play()
+				TweenService:Create(BindLabel, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = MainColor}):Play()
+				TweenService:Create(Circle,	TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),	{BackgroundColor3 = MainColor}):Play()
+				TweenService:Create(CircleSmall, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+				TweenService:Create(BindLabel, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+				BindLabel.Text = "..."
+				local inputwait = game:GetService("UserInputService").InputBegan:wait()
+				if inputwait.KeyCode.Name ~= "Unknown" then
+					BindLabel.Text = inputwait.KeyCode.Name
+					Key = inputwait.KeyCode.Name
+				end
+				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+				TweenService:Create(BindLabel, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+				TweenService:Create(Circle,	TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),	{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}):Play()
+				TweenService:Create(CircleSmall, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.3}):Play()
+				TweenService:Create(BindLabel, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.3}):Play()
+			end)
+
+			game:GetService("UserInputService").InputBegan:connect(function(current, pressed)
+				if not pressed then
+					if current.KeyCode.Name == Key then
+						pcall(callback)
+					end
+				end
+			end)
+
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
 		end
 		return ContainerContent
