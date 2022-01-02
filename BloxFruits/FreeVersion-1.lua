@@ -227,7 +227,10 @@ spawn(function () wait()
 end)
 
 local Part = nil;
+local Force = nil;
+if TweenType or TweenType == nil then TweenType = true end
 if GodModeIsDone or GodModeIsDone == nil then GodModeIsDone = false end
+if TotalCounter or TotalCounter == nil then TotalCounter = true end
 game:GetService("RunService").Stepped:Connect(function ()
     if Float
     or _G.AutoFarm
@@ -254,39 +257,89 @@ game:GetService("RunService").Stepped:Connect(function ()
                 v.CanCollide = false
             end
         end
-        if not Part then
-            Part = Instance.new("Part", game.Workspace)
-            Part.Name = "TweenWalk"
-            Part.Anchored = true
-            Part.CanCollide = true
-            Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
-            Part.Size = Vector3.new(10, 1.3, 10)
-            if _G.HidePart then
-                Part.Transparency = 1
-            else
-                Part.Transparency = 0
-            end
-            Part.Material = "Neon"
-            Part.BrickColor = BrickColor.new"Deep orange"
-            while game.Workspace:FindFirstChild("TweenWalk") do
-                game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
+        if TweenType then
+            if not Part then
+                Part = Instance.new("Part", game.Workspace)
+                Part.Name = "TweenWalk"
+                Part.Anchored = true
+                Part.CanCollide = true
+                Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
+                Part.Size = Vector3.new(10, 1.3, 10)
                 if _G.HidePart then
-                    game.Workspace:FindFirstChild("TweenWalk").Transparency = 1
+                    Part.Transparency = 1
                 else
-                    game.Workspace:FindFirstChild("TweenWalk").Transparency = 0
+                    Part.Transparency = 0
                 end
-                game:GetService("RunService").Heartbeat:wait()
+                Part.Material = "Neon"
+                Part.BrickColor = BrickColor.new"Deep orange"
+                while game.Workspace:FindFirstChild("TweenWalk") do
+                    game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
+                    if _G.HidePart then
+                        game.Workspace:FindFirstChild("TweenWalk").Transparency = 1
+                    else
+                        game.Workspace:FindFirstChild("TweenWalk").Transparency = 0
+                    end
+                    game:GetService("RunService").Heartbeat:wait()
+                end
+            end
+        elseif TweenType == false then
+            if not Force then
+                Force = Instance.new("BodyForce", game.Players.LocalPlayer.Character.HumanoidRootPart)
+                Force.Force = Vector3.new(0, 96.2, 0) * game.Players.LocalPlayer.Character.HumanoidRootPart:GetMass()
+                -- Force.Force = Vector3.new(0, game.Players.LocalPlayer.Character.HumanoidRootPart:GetMass() * 196.2, 0)
             end
         end
-    elseif Part then
-        for i,v in pairs(game.Workspace:GetChildren()) do
-            if v:IsA("Part") and v.Name == "TweenWalk" then
-                v:Destroy()
+    else
+        if TweenType then
+            if Part then
+                for i,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Part") and v.Name == "TweenWalk" then
+                        v:Destroy()
+                    end
+                end
+                Part = nil
+            end
+        else
+            if Force then
+                game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyForce"):Destroy()
+                Force = nil
             end
         end
-        Part = nil
     end
 end)
+
+function Tween(Pos, Speed)
+    if not _G.AutoFarm
+    or not _G.MobAura
+    or not _G.ChooseMob
+    or not _G.BoneFarm
+    or not _G.AutoElite
+    or not _G.AutoRainbow
+    or not AutoElectric
+    or not _G.BossFarm
+    or not _G.AllBoss
+    or not KillPlr
+    or not KillPlr2
+    or not _G.BringFruit
+    or not NoClip
+    or not NextIsland
+    or not AutoJoinRaid
+    or not Float
+    or not _G.CandyFarm
+    or not KillAura
+    or not AutoSea
+    then
+        Float = true
+    end
+    local TS = game:GetService("TweenService")
+    local Info = TweenInfo.new((game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude / Speed, Enum.EasingStyle.Linear)
+    local Tween, Err = pcall(function ()
+        Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
+        Tween:Play()
+        if not Tween then return Err end
+        if Float then Float = false end
+    end)
+end
 
 function TweenTo(Pos, Speed)
     if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 250 then
@@ -374,11 +427,6 @@ spawn(function ()
                 end
             end
             for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
-                if v:FindFirstChild("Humanoid") ~= nil  and v:FindFirstChild("HumanoidRootPart") ~= nil and v:IsA("Model") then
-                    v.Parent = game:GetService("Workspace").Enemies
-                end
-            end
-            for i, v in pairs(game:GetService("Workspace").Boats:GetChildren()) do
                 if v:FindFirstChild("Humanoid") ~= nil  and v:FindFirstChild("HumanoidRootPart") ~= nil and v:IsA("Model") then
                     v.Parent = game:GetService("Workspace").Enemies
                 end
@@ -1591,17 +1639,27 @@ end)
 
 spawn(function ()
     while wait(.1) do
-        local GameTime = math.floor(workspace.DistributedGameTime + 0.5)
-        local Hour = math.floor(GameTime/(60^2))%24
-        local Min = math.floor(GameTime/(60^1))%60
-        local Sec = math.floor(GameTime/(60^0))%60
-        ServerTime:Update("Server Time   | Hour: "..Hour.." Minute: "..Min.." Second: "..Sec, TotalLabelColor)
-        ClientStatus:Update("Client Status | FPS: "..tostring(workspace:GetRealPhysicsFPS()).." Ping: "..tostring(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()).."", TotalLabelColor)
+        if TotalCounter then
+            local GameTime = math.floor(workspace.DistributedGameTime + 0.5)
+            local Hour = math.floor(GameTime/(60^2))%24
+            local Min = math.floor(GameTime/(60^1))%60
+            local Sec = math.floor(GameTime/(60^0))%60
+            ServerTime:Update("Server Time   | Hour: "..Hour.." Minute: "..Min.." Second: "..Sec, TotalLabelColor)
+            ClientStatus:Update("Client Status | FPS: "..tostring(workspace:GetRealPhysicsFPS()).." Ping: "..tostring(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()).."", TotalLabelColor)
+        end
     end
 end)
 
 AutoFarm:Line()
 AutoFarm:Label("--[ Auto Farm ]--")
+AutoFarm:Dropdown("Tween Type", {"Part", "Gravity"}, function (type)
+    if type == "Part" then
+        TweenType = false
+    elseif type == "Gravity" then
+        TweenType = true
+    end
+end)
+
 AutoFarm:Toggle("Auto Farm", "Ez To Use", _G.AutoFarm, function (bool)
     local args = {[1] = "AbandonQuest"}
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -1747,8 +1805,10 @@ elseif Thirdsea then
 	local EliteChecker = AutoFarm:Label("N/A")
     spawn(function ()
         while wait(.1) do
-            local TotalElite = tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter","Progress"))
-            EliteChecker:Update("Total Elites: "..TotalElite, TotalLabelColor)
+            if TotalCounter then
+                local TotalElite = tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter","Progress"))
+                EliteChecker:Update("Total Elites: "..TotalElite, TotalLabelColor)
+            end
         end
     end)
 
@@ -1803,13 +1863,13 @@ elseif Thirdsea then
         end
     end)
 
-    -- AutoFarm:Toggle("Auto SeaBeast - Beta", "", false, function (bool)
-    --     AutoSea = bool
-    --     AutoSeaBeast()
-    --     if AutoSea == false then wait(.5)
-    --         TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
-    --     end
-    -- end)
+    AutoFarm:Toggle("Auto SeaBeast (Read Des Pls!)", "This Just Beta & Make Sure You Have Swan Boat", AutoSea, function (bool)
+        AutoSea = bool
+        AutoSeaBeast()
+        if AutoSea == false then wait(.5)
+            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        end
+    end)
 end
 
 AutoFarm:Line()
@@ -1915,13 +1975,15 @@ local StatFruit = Stats:Label("")
 
 spawn(function ()
     while wait(.1) do
-		Level:Update("Level : "..tostring(game:GetService("Players").LocalPlayer.Data.Level.Value), TotalLabelColor)
-		Point:Update("Point : "..tostring(game:GetService("Players").LocalPlayer.Data.Points.Value), TotalLabelColor)
-		StatMelee:Update("Melee : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Melee.Level.Value), TotalLabelColor)
-		StatDefense:Update("Defense : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value), TotalLabelColor)
-		StatSword:Update("Sword : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Sword.Level.Value), TotalLabelColor)
-		StatGun:Update("Gun : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Gun.Level.Value), TotalLabelColor)
-		StatFruit:Update("Devil Fruit : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats["Demon Fruit"].Level.Value), TotalLabelColor)
+        if TotalCounter then
+            Level:Update("Level : "..tostring(game:GetService("Players").LocalPlayer.Data.Level.Value), TotalLabelColor)
+            Point:Update("Point : "..tostring(game:GetService("Players").LocalPlayer.Data.Points.Value), TotalLabelColor)
+            StatMelee:Update("Melee : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Melee.Level.Value), TotalLabelColor)
+            StatDefense:Update("Defense : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value), TotalLabelColor)
+            StatSword:Update("Sword : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Sword.Level.Value), TotalLabelColor)
+            StatGun:Update("Gun : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats.Gun.Level.Value), TotalLabelColor)
+            StatFruit:Update("Devil Fruit : "..tostring(game:GetService("Players").LocalPlayer.Data.Stats["Demon Fruit"].Level.Value), TotalLabelColor)
+        end
         if game.Players.localPlayer.Data.Points.Value >= _G.PointStats then
             if _G.StatsMelee then
                 local args = {
@@ -3338,7 +3400,9 @@ Shop:Label("--[ Update 17 ]--")
 local Candy = Shop:Label("N/A")
 spawn(function ()
     while wait(.1) do
-        Candy:Update("Total Candy: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check")), TotalLabelColor)
+        if TotalCounter then
+            Candy:Update("Total Candy: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Check")), TotalLabelColor)
+        end
     end
 end)
 
@@ -3391,7 +3455,9 @@ if Thirdsea then
     local Bone = Shop:Label("N/A")
     spawn(function ()
         while wait(.1) do
-            Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), TotalLabelColor)
+            if TotalCounter then
+                Bone:Update("Total Bone: "..tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Check")), TotalLabelColor)
+            end
         end
     end)
 
@@ -3648,6 +3714,12 @@ end)
 GameSetting:Toggle("Hide Float Part", "", false, function (bool)
     _G.HidePart = bool
 end)
+
+if game.Players.LocalPlayer.Name == "HoangNam2k7VN" then
+    GameSetting:Toggle("Total Counter", "", true, function (bool)
+        TotalCounter = bool
+    end)
+end
 
 GameSetting:Line()
 GameSetting:Label("--[ Game ]--")
@@ -5174,31 +5246,95 @@ function FullyRaid()
     end)
 end
 
-function UseSkill(skill)
+function UseSkill(skill, time)
     game:GetService("VirtualInputManager"):SendKeyEvent(true, skill, false, game)
-    wait(2)
+    wait(time)
     game:GetService("VirtualInputManager"):SendKeyEvent(false, skill, false, game)
 end
 
+local HasBoat = false
 function AutoSeaBeast()
     spawn(function ()
-        pcall(function ()
-            if AutoSea and Thirdsea then
-                while AutoSea do wait(.1)
-                    for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
-                        if v:FindFirstChild("HumanoidRootPart") then
-                            if GodModeIsDone then
-                                game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
-                            else
-                                repeat wait()
-                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
-                                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+        if AutoSea and Thirdsea then
+            while AutoSea do wait(.1)
+                if Thirdsea then
+                    SpawnBoatPos = Vector3.new(-125.65, 6.73, 5259.55)
+                elseif Secondsea then
+                    SpawnBoatPos = Vector3.new()
+                end
+                for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
+                    if v:FindFirstChild("HumanoidRootPart") then
+                        FoundSea = true
+                    else
+                        FoundSea = false
+                    end
+                end
+                if FoundSea then
+                    UseSkill("Space", 0.1) wait(1)
+                    repeat wait()
+                        if GodModeIsDone then
+                            game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                        else
+                            repeat wait()
+                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                        end
+                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                            if v:IsA("Tool") and v.ToolTip == "Melee" then
+                                Equip(v.Name)
+                                UseSkil("Z", 0.1) wait(1)
+                                UseSkil("X", 0.1) wait(1)
+                                UseSkil("C", 0.1) wait(1)
                             end
+                        end
+                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                            if v:IsA("Tool") and v.ToolTip == "Blox Fruit" then
+                                Equip(v.Name)
+                                UseSkil("Z", 0.1) wait(1)
+                                UseSkil("X", 0.1) wait(1)
+                                UseSkil("C", 0.1) wait(1)
+                                if #game.Players.LocalPLayer.Data.DevilFruit.Value == "Dragon-Dragon" then
+                                    UseSkil("V") wait(1)
+                                end
+                            end
+                        end
+                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                            if v:IsA("Tool") and v.ToolTip == "Sword" then
+                                Equip(v.Name)
+                                UseSkil("Z", 0.1) wait(1)
+                                UseSkil("X", 0.1) wait(1)
+                            end
+                        end
+                        for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                            if v:IsA("Tool") and v.ToolTip == "Gun" then
+                                Equip(v.Name)
+                                UseSkil("Z", 0.1) wait(1)
+                                UseSkil("X", 0.1) wait(1)
+                            end
+                        end
+                    until not v.Part or v:FindFirstChild("HumanoidRootPart") == nil or not AutoSea
+                else
+                    if not HasBoat then
+                        repeat wait()
+                            TweenTo(SpawnBoatPos, 300)
+                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - SpawnBoatPos).magnitude <= 5 or not AutoSea
+                        wait(.5)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "Swan")
+                        repeat wait()
+                            Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
+                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position).magnitude <= 5 or not AutoSea
+                        UseSkill("W", 30) wait(30)
+                        HasBoat = true
+                    elseif HasBoat then
+                        if game.Workspace["Boats"]:FindFirstChild("Swan") then
+                            Tween(game.Workspace["Boats"]:FindFirstChild("Swan")["VehicleSeat"].Position, 100)
+                        else
+                            HasBoat = false
                         end
                     end
                 end
             end
-        end)
+        end
     end)
 end
 
