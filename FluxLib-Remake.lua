@@ -6,7 +6,6 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
-local CloseBind = Enum.KeyCode.RightControl
 
 local FluxLib = Instance.new("ScreenGui")
 FluxLib.Name = "AstroHub"
@@ -88,8 +87,7 @@ end
 
 
 
-function Flux:Window(text, bottom, mainclr, toclose)
-	GuiBind = toclose or CloseBind
+function Flux:Window(text, bottom, mainclr)
 	MainColor = mainclr or PresetColor
 	local fs = false
 	local MainFrame = Instance.new("Frame")
