@@ -1653,9 +1653,9 @@ end)
 AutoFarm:Line()
 AutoFarm:Label("--[ Auto Farm ]--")
 AutoFarm:Dropdown("Tween Type", {"Part", "Gravity"}, function (type)
-    if type == "Part" then
+    if type == "Gravity" then
         TweenType = false
-    elseif type == "Gravity" then
+    elseif type == "Part" then
         TweenType = true
     end
 end)
