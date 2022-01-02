@@ -216,7 +216,7 @@ local GuiColour =
 local TotalLabelColor =
     -- Color3.fromRGB(38, 226, 255) -- Dark Blue
     -- Color3.fromRGB(255, 70, 56) -- Dark Red
-    Color3.fromRGB(237, 215, 213) -- Christmas Event
+    Color3.fromRGB(205, 238, 247) -- Christmas Event
 local UI = game:GetService("CoreGui"):FindFirstChild("AstroHub") if UI then UI:Destroy() end
 local library = loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/Main-Games/main/FluxLib-Remake.lua')()
 local Main = library:Window("ASTRO HUB", "TIME | N/A", GuiColour, Enum.KeyCode.RightControl)
@@ -227,7 +227,7 @@ spawn(function () wait()
 end)
 
 local Part = nil;
-local GodModeIsDone;
+if GodModeIsDone or GodModeIsDone == nil then GodModeIsDone = false end
 game:GetService("RunService").Stepped:Connect(function ()
     if Float
     or _G.AutoFarm
@@ -259,10 +259,13 @@ game:GetService("RunService").Stepped:Connect(function ()
             Part.Anchored = true
             Part.CanCollide = true
             Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
-            Part.Size = Vector3.new(2,1.3,2)
+            Part.Size = Vector3.new(10, 1.3, 10)
             Part.Transparency = 0
+            Part.Material = "Neon"
+            Part.BrickColor = BrickColor.new"Deep orange"
             while game.Workspace:FindFirstChild("TweenWalk") do
-                game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0) wait()
+                game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
+                game:GetService("RunService").Heartbeat:wait()
             end
         end
     elseif Part then
@@ -1557,15 +1560,9 @@ local AutoFarm = Main:Tab("Main", "http://www.roblox.com/asset/?id=1291127432")
 AutoFarm:Label("--[ Server Status ]--")
 local ServerTime = AutoFarm:Label("Server Time | N/A ")
 local ClientStatus = AutoFarm:Label("Client Status | N/A ")
-AutoFarm:Textbox("Chat Box [Enter To Chat]", "", false, function (message)
-    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
-end)
 
-AutoFarm:Button("Set Spawn Near", "", function ()
-    local args = {[1] = "SetSpawnPoint"}
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-end)
-
+AutoFarm:Line()
+AutoFarm:Label("--[ OP! ]--")
 AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP) And Not Logia Fruit", function ()
     GodModeIsDone = false
     StartGodMode()
@@ -1574,6 +1571,11 @@ end)
 AutoFarm:Button("Disable God Mode", "", function ()
     GodModeIsDone = false
     game.Players.LocalPlayer.Character:BreakJoints()
+end)
+
+AutoFarm:Button("Set Spawn Near", "", function ()
+    local args = {[1] = "SetSpawnPoint"}
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 end)
 
 spawn(function ()
@@ -1676,6 +1678,18 @@ AutoFarm:Toggle("Mob Aura", "Kill Every Mob Near You", _G.MobAura, function (boo
     end
 end)
 
+local WeaponDD = AutoFarm:Dropdown("Select Weapon", WeaponList, function (bool)
+    _G.Weapon = bool
+end)
+
+AutoFarm:Button("Refresh Weapon", "Refresh Dropdown List", function ()
+    WeaponDD:Clear() WeaponList = {}
+    for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do if v:IsA("Tool") then WeaponDD:Add(v.Name) table.insert(WeaponList, v.Name) end end
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do if v:IsA("Tool") then WeaponDD:Add(v.Name) table.insert(WeaponList, v.Name) end end
+end)
+
+AutoFarm:Line()
+AutoFarm:Label("--[ Other Farm ]--")
 if Firstsea then
     AutoFarm:Toggle("Auto Second Sea", "Fast :3", _G.Auto2nd, function (bool)
         _G.Auto2nd = bool
@@ -1719,6 +1733,14 @@ elseif Secondsea then
         end
     end)
 elseif Thirdsea then
+	local EliteChecker = AutoFarm:Label("N/A")
+    spawn(function ()
+        while wait(.1) do
+            local TotalElite = tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter","Progress"))
+            EliteChecker:Update("Total Elites: "..TotalElite, TotalLabelColor)
+        end
+    end)
+
     AutoFarm:Toggle("Auto Bone Farm", "Third Sea Only [OP!]", _G.BoneFarm, function (bool)
         _G.BoneFarm = bool
         All("Bone Farm")
@@ -1742,14 +1764,6 @@ elseif Thirdsea then
         All("Auto Elite")
         if _G.AutoElite == false then wait(.5)
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
-        end
-    end)
-
-	local EliteChecker = AutoFarm:Label("N/A")
-    spawn(function ()
-        while wait(.1) do
-            local TotalElite = tostring(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("EliteHunter","Progress"))
-            EliteChecker:Update("Total Elites: "..TotalElite, TotalLabelColor)
         end
     end)
 
@@ -1778,16 +1792,6 @@ elseif Thirdsea then
         end
     end)
 end
-
-local WeaponDD = AutoFarm:Dropdown("Select Weapon", WeaponList, function (bool)
-    _G.Weapon = bool
-end)
-
-AutoFarm:Button("Refresh Weapon", "Refresh Dropdown List", function ()
-    WeaponDD:Clear() WeaponList = {}
-    for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do if v:IsA("Tool") then WeaponDD:Add(v.Name) table.insert(WeaponList, v.Name) end end
-    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do if v:IsA("Tool") then WeaponDD:Add(v.Name) table.insert(WeaponList, v.Name) end end
-end)
 
 AutoFarm:Line()
 AutoFarm:Label("--[ Boss Farm ]--")
@@ -1966,35 +1970,14 @@ Mouse.Button1Down:Connect(function ()
     end
 end)
 
-if Firstsea then
-    Teleport:Button("Teleport To Second Sea", "", function ()
-        local args = {[1] = "TravelDressrosa"}
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    end)
-elseif Secondsea then
-    Teleport:Button("Teleport To First Sea", "", function ()
-        local args = {[1] = "TravelMain"}
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    end)
-    Teleport:Button("Teleport To Third Sea", "", function ()
-        local args = {[1] = "TravelZou"}
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    end)
-elseif Thirdsea then
-    Teleport:Button("Teleport To Second Sea", "", function()
-        local args = {[1] = "TravelDressrosa"}
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    end)
-end
+if _G.TweenSpeed == nil then _G.TweenSpeed = 250 end
+Teleport:Slider("Tween Speed", "", 1, 300, _G.TweenSpeed, function (bool)
+    _G.TweenSpeed = bool
+end)
 
 Teleport:Button("Stop Tween", "", function ()
     wait(.5)
     TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
-end)
-
-if _G.TweenSpeed == nil then _G.TweenSpeed = 250 end
-Teleport:Slider("Tween Speed", "", 1, 300, _G.TweenSpeed, function (bool)
-    _G.TweenSpeed = bool
 end)
 
 if Secondsea or Thirdsea then
@@ -2016,6 +1999,29 @@ end
 if Thirdsea then
     Teleport:Toggle("Using Teleport Gate (Beta, Read Des)", "This Just Bete, You Can Get Kick If You Lagg", false, function (bool)
         gateTele = bool
+    end)
+end
+
+Teleport:Line()
+Teleport:Label("--[ Teleport Sea ]--")
+if Firstsea then
+    Teleport:Button("Teleport To Second Sea", "", function ()
+        local args = {[1] = "TravelDressrosa"}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end)
+elseif Secondsea then
+    Teleport:Button("Teleport To First Sea", "", function ()
+        local args = {[1] = "TravelMain"}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end)
+    Teleport:Button("Teleport To Third Sea", "", function ()
+        local args = {[1] = "TravelZou"}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end)
+elseif Thirdsea then
+    Teleport:Button("Teleport To Second Sea", "", function()
+        local args = {[1] = "TravelDressrosa"}
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     end)
 end
 
@@ -2472,6 +2478,39 @@ Player:Toggle("Kill Player (Gun)", "", KillPlr2, function (bool)
     end
 end)
 
+Player:Button("Tween - TP To Player", "", function ()
+    if GodModeIsDone then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.CFrame * CFrame.new(5, 0, 5)
+    else
+        repeat wait()
+            TweenTo(game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position, 300)
+        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position).magnitude <= 5 or not game.Players:FindFirstChild(selectedPlayer).Character
+    end
+end)
+
+local WeaponPlayerDD = Player:Dropdown("Weapon Player", WeaponList, function (bool)
+    WeaponPlayerFarm = bool
+end)
+
+Player:Button("Refresh Weapon", "", function ()
+    WeaponPlayerDD:Clear()
+    WeaponList = {}
+    for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("Tool") then
+            WeaponPlayerDD:Add(v.Name)
+            table.insert(WeaponList, v.Name)
+        end
+    end
+    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") then
+            WeaponPlayerDD:Add(v.Name)
+            table.insert(WeaponList, v.Name)
+        end
+    end
+end)
+
+Player:Line()
+Player:Label("Aimbot & Spectate")
 Player:Toggle("Spectate Player", "", false, function (bool)
     Spectate = bool
     repeat wait(.5)
@@ -2506,37 +2545,6 @@ Player:Toggle("Aimbot Skill (Beta)", "", false, function (bool)
     end
 end)
 
-Player:Button("Tween To Player", "", function ()
-    if GodModeIsDone then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.CFrame * CFrame.new(5, 0, 5)
-    else
-        repeat wait()
-            TweenTo(game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position, 300)
-        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position).magnitude <= 5 or not game.Players:FindFirstChild(selectedPlayer).Character
-    end
-end)
-
-local WeaponPlayerDD = Player:Dropdown("Weapon Player", WeaponList, function (bool)
-    WeaponPlayerFarm = bool
-end)
-
-Player:Button("Refresh Weapon", "", function ()
-    WeaponPlayerDD:Clear()
-    WeaponList = {}
-    for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-        if v:IsA("Tool") then
-            WeaponPlayerDD:Add(v.Name)
-            table.insert(WeaponList, v.Name)
-        end
-    end
-    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-        if v:IsA("Tool") then
-            WeaponPlayerDD:Add(v.Name)
-            table.insert(WeaponList, v.Name)
-        end
-    end
-end)
-
 Player:Line()
 Player:Label("--[ Local Player ]--")
 Player:Button("Invisible", "", function ()
@@ -2553,14 +2561,7 @@ Player:Button("Remove Crew / Marine", "", function ()
     end
 end)
 
-Player:Slider("Zoom Distant", "", 200, 5000, game.Players.LocalPlayer.CameraMaxZoomDistance, function (bool)
-    game.Players.LocalPlayer.CameraMaxZoomDistance = bool
-end)
-
-Player:Slider("Range Observation", "", 1, 5000, math.floor(game.Players.LocalPlayer.VisionRadius.Value), function (bool)
-    game.Players.LocalPlayer.VisionRadius.Value = bool
-end)
-
+Player:Line()
 local MyFruit = game.Players.localPlayer.Data.DevilFruit.Value
 Player:Toggle("Walk On Water [ICE - FRUIT]", "", false, function (bool)
     WaterWalker = bool
@@ -2595,6 +2596,7 @@ Player:Toggle("Walk On Water [IDK]", "", false, function (bool)
     end)
 end)
 
+Player:Line()
 Player:Toggle("Inf Energy", "", false, function (bool)
     InfEnergy = bool
     OriginEnergy = game:GetService("Players").LocalPlayer.Character.Energy.value
@@ -2664,6 +2666,7 @@ Player:Toggle("Inf Geppo", "", false, function (bool)
     end
 end)
 
+Player:Line()
 Player:Toggle("No Dash Cooldown", "", false, function (bool)
     DashNoCooldown = bool
     if DashNoCooldown and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") ~= nil then
@@ -2704,6 +2707,8 @@ Player:Toggle("No Soru Cooldown", "", false, function (bool)
     end
 end)
 
+Player:Line()
+if _G.FlySpeed == nil then _G.FlySpeed = 25 end
 Player:Toggle("Fly", "", false, function (bool)
     Flight = bool
     local mouse=game.Players.LocalPlayer:GetMouse''
@@ -2731,22 +2736,22 @@ Player:Toggle("Fly", "", false, function (bool)
             end
             if keys.w then
                 new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-                speed = speed + 25
+                speed = speed + _G.FlySpeed
             end
             if keys.s then
                 new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-                speed = speed + 25
+                speed = speed + _G.FlySpeed
             end
             if keys.d then
                 new = new * CFrame.new(speed, 0, 0)
-                speed = speed + 25
+                speed = speed + _G.FlySpeed
             end
             if keys.a then
                 new = new * CFrame.new(-speed, 0, 0)
-                speed = speed + 25
+                speed = speed + _G.FlySpeed
             end
-            if speed > 25 then
-                speed = 25
+            if speed > _G.FlySpeed then
+                speed = _G.FlySpeed
             end
             pos.position = new.p
             if keys.w then
@@ -2795,6 +2800,10 @@ Player:Toggle("Fly", "", false, function (bool)
     start()
 end)
 
+Player:Slider("Fly Speed", "", 1, 100, _G.FlySpeed, function (speed)
+    _G.FlySpeed = speed
+end)
+
 Player:Slider("Walk Speed", "", 1, 1000, game.Players.LocalPlayer.Character.Humanoid.WalkSpeed, function (bool)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = bool
     while bool do wait(1)
@@ -2804,6 +2813,14 @@ end)
 
 Player:Slider("Jump Height", "", 1, 1000, game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower, function (bool)
     game:GetService("Players").LocalPlayer.Character.Humanoid.JumpPower = bool
+end)
+
+Player:Slider("Zoom Distant", "", 200, 5000, game.Players.LocalPlayer.CameraMaxZoomDistance, function (bool)
+    game.Players.LocalPlayer.CameraMaxZoomDistance = bool
+end)
+
+Player:Slider("Range Observation", "", 1, 5000, math.floor(game.Players.LocalPlayer.VisionRadius.Value), function (bool)
+    game.Players.LocalPlayer.VisionRadius.Value = bool
 end)
 
 local Misc = Main:Tab("Misc", "http://www.roblox.com/asset/?id=1291127785")
@@ -2930,6 +2947,7 @@ Misc:Button("Change To Marines Team", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 end)
 
+Misc:Line()
 Misc:Button("Open Inventory", "", function ()
     if Firstsea then
         chest1 = Vector3.new(1083.03, 18.8626, 1325.01)
@@ -2984,6 +3002,7 @@ Misc:Button("Open Color", "", function ()
     game:GetService("Players")["LocalPlayer"].PlayerGui.Main.Colors.Visible = true
 end)
 
+Misc:Line()
 Misc:Button("Remove Lava", "", function()
     for i, v in pairs(game.Workspace:GetDescendants()) do
         if v.Name == "Lava" then
@@ -3026,6 +3045,7 @@ statsCode = {
     "Sub2UncleKizaru"
 }
 
+Misc:Line()
 Misc:Button("Redeem All x2 Exp Code", "", function ()
     for i, v in pairs(expCode) do
         Funny("Code", v)
@@ -3040,6 +3060,7 @@ Misc:Dropdown("Stats Refund Code", statsCode, function (bool)
     Funny("Code", bool)
 end)
 
+Misc:Line()
 Misc:Toggle("Esp Player", "", _G.EspPlayer, function (bool)
     _G.EspPlayer = bool
 end)
@@ -3052,6 +3073,7 @@ Misc:Toggle("Esp Devil Fruit", "", _G.EspFruit, function (bool)
     _G.EspFruit = bool
 end)
 
+Misc:Line()
 Misc:Toggle("Auto Click", "", false, function(bool)
     AutoClick = bool
     if AutoClick == false then return end
@@ -3071,6 +3093,7 @@ Misc:Toggle("No Clip", "Fake Clip ;-;", false, function(bool)
     NoClip = bool
 end)
 
+Misc:Line()
 Misc:Button("FPS Boost", "", function()
     local decalsyeeted = true
     local g = game
@@ -3256,6 +3279,7 @@ if Secondsea or Thirdsea then
         _G.RaidHeight = bool
     end)
 
+    Dungeon:Line()
     Dungeon:Label("-- Buy Chip --")
     Dungeon:Dropdown("Select Chip", {
         "Flame",
@@ -3302,6 +3326,7 @@ Shop:Toggle("Auto Buy x2 Exp [50 Cannies]", "", false, function (bool)
     end
 end)
 
+Shop:Line()
 Shop:Button("Reset Stats [75 Candies]", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 1, 2)
 end)
@@ -3310,6 +3335,7 @@ Shop:Button("Recoll Race [100 Candies]", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 1, 3)
 end)
 
+Shop:Line()
 Shop:Button("Buy 300f [50 Candies]", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 2, 1)
 end)
@@ -3318,6 +3344,7 @@ Shop:Button("Buy 700f [100 Candies]", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 2, 2)
 end)
 
+Shop:Line()
 Shop:Button("Buy Elf Hat [250 Candies]", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Candies", "Buy", 3, 1)
 end)
@@ -3331,6 +3358,7 @@ Shop:Button("Buy Sleigh [1000 Candies]", "", function ()
 end)
 
 if Thirdsea then
+    Shop:Line()
     local Bone = Shop:Label("N/A")
     spawn(function ()
         while wait(.1) do
@@ -3373,6 +3401,7 @@ if Thirdsea then
 end
 
 if Secondsea or Thirdsea then
+    Shop:Line()
     Shop:Label("--[ Status ]--")
     Shop:Button("Stats Refund [2500 Fragment]", "", function ()
         local args = {[1] = "BlackbeardReward",[2] = "Refund",[3] = "1"}
@@ -3387,6 +3416,7 @@ if Secondsea or Thirdsea then
     end)
 end
 
+Shop:Line()
 Shop:Label("--[ Fighting Styles ]--")
 Shop:Button("Black Step", "", function ()
     local args = {[1] = "BuyBlackLeg"}
@@ -3437,6 +3467,7 @@ Shop:Button("Dragon Talon", "", function ()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 end)
 
+Shop:Line()
 Shop:Label("--[ Sword ]--")
 Shop:Button("Katana", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Katana")
@@ -3474,6 +3505,7 @@ Shop:Button("Soul Cane", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Soul Cane")
 end)
 
+Shop:Line()
 Shop:Label("--[ Gun ]--")
 Shop:Button("Slingshot", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Slingshot")
@@ -3500,6 +3532,7 @@ Shop:Button("Kabucha", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Slingshot","2")
 end)
 
+Shop:Line()
 Shop:Label("--[ Accesories ]--")
 Shop:Button("Black Cape", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Black Cape")
@@ -3513,6 +3546,7 @@ Shop:Button("Swordsman Hat", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Swordsman Hat")
 end)
 
+Shop:Line()
 Shop:Label("--[ Abilities ]--")
 Shop:Button("Skyjump", "", function()
     local args = {[1] = "BuyHaki", [2] = "Geppo"}
@@ -3534,6 +3568,7 @@ Shop:Button("Observation Haki", "", function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 end)
 
+Shop:Line()
 Shop:Toggle("Auto Abilities", "", false, function (bool)
     AutoAbilities = bool
     while AutoAbilities do wait(.1)
@@ -3894,7 +3929,7 @@ function All(type)
                                         if v.Name == nameMob then
                                             StartMagnet = true
                                             StartClick = true
-                                            repeat wait() levelCheck()
+                                            repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
                                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
                                                     repeat wait() until game.Players.LocalPlayer.Character break;
                                                 elseif string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
@@ -4075,7 +4110,7 @@ function All(type)
                         if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 300 then
                             StartMagnet = true
                             StartClick = true
-                            repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                            repeat game:GetService("RunService").Heartbeat:wait()
                                 if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                     repeat wait() until game.Players.LocalPlayer.Character break;
                                 else
@@ -4212,7 +4247,7 @@ function All(type)
                             for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                 if v.Name == _G.SelectedBoss then
                                     StartClick = true
-                                    repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                                    repeat game:GetService("RunService").Heartbeat:wait()
                                         if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                             repeat wait() until game.Players.LocalPlayer.Character break;
                                         else
@@ -4273,7 +4308,7 @@ function All(type)
                                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                         if v.Name == _G.SelectedBoss then
                                             StartClick = true
-                                            repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                                            repeat game:GetService("RunService").Heartbeat:wait()
                                                 if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                                     repeat wait() until game.Players.LocalPlayer.Character break;
                                                 else
@@ -4509,7 +4544,7 @@ function All(type)
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "rip_indra [Lv. 1500] [Boss]" then
                                 StartClick = true
-                                repeat game:GetService("RunService").RenderStepped:Wait(.5)
+                                repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
                                     else
@@ -4581,7 +4616,7 @@ function All(type)
                                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                             if v.Name == BartiloMob then
                                                 StartClick = true
-                                                repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                                                repeat game:GetService("RunService").Heartbeat:wait()
                                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                                         repeat wait() until game.Players.LocalPlayer.Character break;
                                                     else
@@ -4631,7 +4666,7 @@ function All(type)
                                                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                                             if v.Name == BartiloBoss then
                                                                 StartClick = true
-                                                                repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                                                                repeat game:GetService("RunService").Heartbeat:wait()
                                                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                                                         repeat wait() until game.Players.LocalPlayer.Character break;
                                                                     else
@@ -4825,7 +4860,7 @@ function All(type)
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Mob Leader [Lv. 120] [Boss]" then
                                 StartClick = true
-                                repeat game:GetService("RunService").RenderStepped:wait(.5)
+                                repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
                                     else
@@ -4889,7 +4924,7 @@ function All(type)
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Saber Expert [Lv. 200] [Boss]" then
                                 StartClick = true
-                                repeat game:GetService("RunService").RenderStepped:wait(.5)
+                                repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character
                                     else
@@ -5214,7 +5249,7 @@ spawn(function() -- Hit
 end)
 
 spawn(function () -- Magnet
-    while wait(.5) do
+    while game:GetService("RunService").RenderStepped:wait(0.2) do
         if StartMagnet then
             if _G.AutoFarm and _G.Magnet and PosMon ~= nil then
                 levelCheck()
