@@ -1747,6 +1747,20 @@ AutoFarm:Toggle("Mob Aura", "Kill Every Mob Near You", _G.MobAura, function (boo
     end
 end)
 
+AutoFarm:Toggle("Big Hitbox Mob Near", "Ez To Use", _G.BigHitbox, function (bool)
+    _G.BigHitbox = bool
+    while _G.BigHitbox do game:GetService("RunService").Heartbeat:wait()
+        for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+            if v.Parent and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 500 then
+                v.Humanoid.WalkSpeed = 1
+                v.HumanoidRootPart.CanCollide = false
+                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                v.HumanoidRootPart.Transparency = 1
+            end
+        end
+    end
+end)
+
 local WeaponDD = AutoFarm:Dropdown("Select Weapon", WeaponList, function (bool)
     _G.Weapon = bool
 end)
