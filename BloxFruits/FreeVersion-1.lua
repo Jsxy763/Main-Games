@@ -506,48 +506,51 @@ spawn(function ()
             end
             if KillAura then
                 for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5000
+                    if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 500
                     and game:GetService("Players").LocalPlayer.PlayerGui.Main.Timer.Visible == true
                     then
                         StartMagnet = true
                         StartClick = true
+                        CheckNextIsland = false
                         repeat game:GetService("RunService").RenderStepped:Wait(0.5)
-                            if NextIsland then
+                            if NextIsland and not CheckNextIsland then
                                 NextIsland = false
                                 CheckNextIsland = true
+                            end
+                            if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                repeat wait() until game.Players.LocalPlayer.Character break;
                             else
-                                CheckNextIsland = false
-                            end
-                            if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                repeat wait() until game.Players.LocalPlayer.Character
-                            end
-                            if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                            if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                            if _G.Weapon == "" or _G.Weapon == nil then
-                                for i, v in pairs(ListMelee) do
-                                    if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                        _G.Weapon = v
+                                if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
+                                    repeat wait() until game.Players.LocalPlayer.Character
+                                end
+                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                if _G.Weapon == "" or _G.Weapon == nil then
+                                    for i, v in pairs(ListMelee) do
+                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                            _G.Weapon = v
+                                        end
                                     end
                                 end
+                                Equip(_G.Weapon)
+                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                    local args = {[1] = "Buso"}
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                end
+                                if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                    v.Humanoid.WalkSpeed = 1
+                                    v.HumanoidRootPart.CanCollide = false
+                                    v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                    v.HumanoidRootPart.Transparency = 1
+                                    KillAuraPos = v.HumanoidRootPart.CFrame
+                                end
+                                if GodModeIsDone then
+                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0)
+                                else
+                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0), 300)
+                                end
+                                require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                             end
-                            Equip(_G.Weapon)
-                            if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                local args = {[1] = "Buso"}
-                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                            end
-                            if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                v.Humanoid.WalkSpeed = 1
-                                v.HumanoidRootPart.CanCollide = false
-                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                v.HumanoidRootPart.Transparency = 1
-                                KillAuraPos = v.HumanoidRootPart.CFrame
-                            end
-                            if GodModeIsDone then
-                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0)
-                            else
-                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 25, 0), 300)
-                            end
-                            require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                         until v.Humanoid.Health <= 0 or KillAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
                         StartMagnet = false
                         StartClick = false
@@ -668,27 +671,20 @@ spawn(function ()
 end)
 
 -- Function
+local FastAtackMod = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
 local PlrMouse = game.Players.LocalPlayer:GetMouse()
 PlrMouse.Button1Down:Connect(function()
     if _G.FastAttack then
-        local FastAtackMod = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
-        if FastAtackMod.activeController and FastAtackMod.activeController.anims and FastAtackMod.activeController.anims.basic then
-            FastAtackMod.activeController:attack()
+        -- if FastAtackMod.activeController and FastAtackMod.activeController.anims and FastAtackMod.activeController.anims.basic then
+        --     FastAtackMod.activeController:attack()
+        -- end
+        if FastAtackMod.activeController and (game.Players.LocalPlayer.Character.Humanoid.Health > 0 or GodModeIsDone) then
+            if FastAtackMod.activeController.timeToNextAttack and FastAtackMod.activeController.timeToNextAttack ~= 0 then
+                FastAtackMod.activeController.timeToNextAttack =  0
+            end
         end
     end
 end)
-
--- local NoCDATK = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
--- function Click()
---     if _G.FastAttack then
---         if NoCDATK.activeController and game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
---             if NoCDATK.activeController.timeToNextAttack and NoCDATK.activeController.timeToNextAttack ~= 0 then
---                 NoCDATK.activeController.timeToNextAttack =  0
---             end
---         end
---     end
--- end
--- game.Players.LocalPlayer:GetMouse().Button1Down:Connect(Click)
 
 function levelCheck() -- Check Level
     local MyLevel = game.Players.localPlayer.Data.Level.Value
@@ -2644,7 +2640,7 @@ Player:Toggle("Spectate Player", "", false, function (bool)
     Spectate = bool
     repeat wait(.5)
         game.Workspace.Camera.CameraSubject = game.Players:FindFirstChild(selectedPlayer).Character.Humanoid
-    until not Spectate
+    until not Spectate or not game.Players:FindFirstChild(selectedPlayer).Character
     game.Workspace.Camera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
 end)
 
@@ -2890,7 +2886,7 @@ local FruitList = {
     "Smoke-Smoke",
     "Spin-Spin",
     "Flame-Flame",
-    "Falcon-Falcon",
+    "Bird-Bird: Falcon",
     "Ice-Ice",
     "Sand-Sand",
     "Dark-Dark",
@@ -5601,29 +5597,10 @@ function MasteryFarm(type)
                                                         end
                                                         if v.Humanoid.Health <= HealthMin then
                                                             if StartClick then StartClick = false end
+                                                            UseFruit = true
                                                             Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
-                                                            game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(v.HumanoidRootPart.Position)
-                                                            if SkillZ then
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
-                                                                wait(ZHold)
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
-                                                            end
-                                                            if SkillX then
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
-                                                                wait(XHold)
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
-                                                            end
-                                                            if SkillC then
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "C", false, game)
-                                                                wait(CHold)
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "C", false, game)
-                                                            end
-                                                            if SkillV then
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(true, "V", false, game)
-                                                                wait(VHold)
-                                                                game:GetService("VirtualInputManager"):SendKeyEvent(false, "V", false, game)
-                                                            end
                                                         else
+                                                            if UseFruit then UseFruit = false end
                                                             StartClick = true
                                                             Equip(MasWeapon)
                                                         end
@@ -5641,11 +5618,20 @@ function MasteryFarm(type)
                                                             end
                                                             v.HumanoidRootPart.Transparency = 1
                                                             MasPos = v.HumanoidRootPart.CFrame
+                                                            MasMob = v.HumanoidRootPart.Position
                                                         end
                                                         if GodModeIsDone then
-                                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
+                                                            if v.Humanoid.Health <= HealthMin then
+                                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 25)
+                                                            else
+                                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
+                                                            end
                                                         else
-                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                                            if v.Humanoid.Health <= HealthMin then
+                                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 0, 25), 300)
+                                                            else
+                                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
+                                                            end
                                                         end
                                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                     else levelCheck()
@@ -5729,6 +5715,46 @@ do wait()
 end
 
 --[ SPAWN ]--
+spawn(function () -- Use Fruit Mastery Frarm
+    while wait() do
+        if UseFruit and FruitMastery and MasMob ~= nil then
+            if SkillZ then
+                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
+                wait(ZHold)
+                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
+            end
+            wait(1)
+            if SkillX then
+                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
+                wait(XHold)
+                game:GetService("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
+            end
+            wait(1)
+            if SkillC then
+                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, "C", false, game)
+                wait(CHold)
+                game:GetService("VirtualInputManager"):SendKeyEvent(false, "C", false, game)
+            end
+            wait(1)
+            if SkillV and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Dragon-Dragon" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Bird-Bird: Phoenix" then
+                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, "V", false, game)
+                wait(VHold)
+                game:GetService("VirtualInputManager"):SendKeyEvent(false, "V", false, game)
+            end
+            wait(1)
+            if SkillZ then
+                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
+                wait(ZHold)
+                game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
+            end
+        end
+    end
+end)
 spawn(function () -- Auto Electric Claw
     pcall(function ()
         while wait(.1) do
