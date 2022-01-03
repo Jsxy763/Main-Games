@@ -3705,10 +3705,10 @@ GameSetting:Toggle("Auto Ken Haki", "", _G.AutoKen, function (bool)
     _G.AutoKen = bool
 end)
 
-local AutoPvp = true
-GameSetting:Toggle("Auto PvP", "", AutoPvp, function (bool)
-    AutoPvp = bool
-    while AutoPvp do wait()
+local EnablePvP = true
+GameSetting:Toggle("Auto PvP", "", true, function (bool)
+    EnablePvP = bool
+    while EnablePvP do wait()
         game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("EnablePvp")
     end
 end)
