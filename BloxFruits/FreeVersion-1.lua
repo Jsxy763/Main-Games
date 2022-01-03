@@ -263,6 +263,7 @@ game:GetService("RunService").Stepped:Connect(function ()
     or AutoSea
     or GunMastery
     or FruitMastery
+    or _G.Observation
     then
         for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
             if v:IsA("BasePart") then
@@ -342,6 +343,7 @@ function Tween(Pos, Speed)
     or not AutoSea
     or not GunMastery
     or not FruitMastery
+    or not _G.Observation
     then
         Float = true
     end
@@ -380,6 +382,7 @@ function TweenTo(Pos, Speed)
         or not AutoSea
         or not GunMastery
         or not FruitMastery
+        or not _G.Observation
         then
             Float = true
         end
@@ -681,19 +684,42 @@ spawn(function ()
 end)
 
 -- Function
-local FastAtackMod = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
-local PlrMouse = game.Players.LocalPlayer:GetMouse()
-PlrMouse.Button1Down:Connect(function()
-    if _G.FastAttack then
-        -- if FastAtackMod.activeController and FastAtackMod.activeController.anims and FastAtackMod.activeController.anims.basic then
-        --     FastAtackMod.activeController:attack()
-        -- end
-        if FastAtackMod.activeController and (game.Players.LocalPlayer.Character.Humanoid.Health > 0 or GodModeIsDone) then
-            if FastAtackMod.activeController.timeToNextAttack and FastAtackMod.activeController.timeToNextAttack ~= 0 then
-                FastAtackMod.activeController.timeToNextAttack =  0
-            end
+-- local FastAtackMod = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
+-- local PlrMouse = game.Players.LocalPlayer:GetMouse()
+-- PlrMouse.Button1Down:Connect(function()
+--     if _G.FastAttack then
+--         -- if FastAtackMod.activeController and FastAtackMod.activeController.anims and FastAtackMod.activeController.anims.basic then
+--         --     FastAtackMod.activeController:attack()
+--         -- end
+--         if FastAtackMod.activeController and (game.Players.LocalPlayer.Character.Humanoid.Health > 0 or GodModeIsDone) then
+--             if FastAtackMod.activeController.timeToNextAttack and FastAtackMod.activeController.timeToNextAttack ~= 0 then
+--                 FastAtackMod.activeController.timeToNextAttack =  0
+--             end
+--         end
+--     end
+-- end)
+
+        
+spawn(function()
+    local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
+    local LocalCombatMod = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+    game:GetService('RunService').Heartbeat:Connect(function()
+        if _G.FastFarm then
+            pcall(function()
+                Camera:Stop()
+                LocalCombatMod.activeController.attacking = false
+                LocalCombatMod.activeController.timeToNextAttack = 0
+                LocalCombatMod.activeController.active = false
+                LocalCombatMod.activeController.hitboxMagnitude = 350
+                LocalCombatMod.activeController.increment = 3
+                LocalCombatMod.activeController.humanoid.AutoRotate = true
+                LocalCombatMod.activeController.blocking = false
+                LocalCombatMod.activeController.equipped = false
+                LocalCombatMod.activeController.timeToNextBlock = 0
+                LocalCombatMod.activeController.focusStart = 0
+            end)
         end
-    end
+    end)
 end)
 
 function levelCheck() -- Check Level
@@ -1898,7 +1924,20 @@ elseif Thirdsea then
 end
 
 AutoFarm:Line()
-AutoFarm:Label("--[ Mastery Farm ]--")
+AutoFarm:Label("--[ Mastery & Observation Farm ]--")
+AutoFarm:Toggle("Observation Haki Farm [HOP]", "Support Hop Function", _G.Observation, function (bool)
+    _G.Observation = bool
+    if _G.Observation then
+        if not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+            game:GetService('VirtualUser'):CaptureController()
+            game:GetService('VirtualUser'):SetKeyDown('0x65')
+            wait(2)
+            game:GetService('VirtualUser'):SetKeyUp('0x65')
+        end
+    else
+        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+    end
+end)
 AutoFarm:Toggle("Auto Gun Mastery Farm", "", false, function (bool)
     GunMastery = bool
     MasteryFarm("Gun")
@@ -2643,7 +2682,21 @@ Player:Button("Refresh Weapon", "", function ()
 end)
 
 Player:Line()
-Player:Label("Aimbot & Spectate")
+Player:Label("Aimbot & Spectate & Other")
+Player:Button("Big HitBox Selected Player", "", function ()
+    if game.Players:FindFirstChild(selectedPlayer).Character then
+        game.Players:FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+    end
+end)
+
+Player:Button("Big HitBox All Players", "", function ()
+    for i, v in pairs(game.Players:GetChildren()) do
+        if v.Character:FindFirstChild("Humanoid") and v.Character:FindFirstChild("HumanoidRootPart") and #v.Name == game.Players.LocalPlayer.Name then
+            v.Character:FindFirstChild("HumanoidRootPart").Size = Vector3.new(60, 60, 60)
+        end
+    end
+end)
+
 Player:Toggle("Spectate Player", "", false, function (bool)
     Spectate = bool
     repeat wait(.5)
@@ -3652,6 +3705,14 @@ GameSetting:Toggle("Auto Ken Haki", "", _G.AutoKen, function (bool)
     _G.AutoKen = bool
 end)
 
+local AutoPvp = true
+GameSetting:Toggle("Auto PvP", "", AutoPvp, function (bool)
+    AutoPvp = bool
+    while AutoPvp do wait()
+        game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("EnablePvp")
+    end
+end)
+
 GameSetting:Toggle("Damage Counter", "", true, function (bool)
     pcall(function ()
         game:GetService("ReplicatedStorage").Assets.GUI.DamageCounter.Enabled = bool
@@ -3722,6 +3783,11 @@ local ToggleFly = false
 GameSetting:Bind("Toggle Fly", Enum.KeyCode.B, function ()
     ToggleFly = not ToggleFly
     StartFly()
+end)
+
+GameSetting:Bind("Fast Reset Key", Enum.KeyCode.P, function ()
+    TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+    game.Players.LocalPlayer.Character:BreakJoints()
 end)
 
 GameSetting:Button("Destroy Gui", "", function ()
@@ -5755,6 +5821,7 @@ spawn(function () -- Use Fruit Mastery Frarm
         end
     end
 end)
+
 spawn(function () -- Auto Electric Claw
     pcall(function ()
         while wait(.1) do
@@ -5789,6 +5856,75 @@ spawn(function () -- Auto Electric Claw
             end
         end
     end)
+end)
+
+spawn(function () -- Farm Observation
+    while wait() do
+        if _G.Observation then
+            if Secondsea then
+                if game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]") then
+                    if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+                        repeat wait()
+                            TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
+                        until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                    else
+                        if _G.HOP then
+                            Teleport()
+                        else
+                            repeat wait()
+                                TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
+                            until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                        end
+                    end
+                end
+            elseif Firstsea then
+                if game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]") then
+                    if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+                        repeat wait()
+                            TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
+                        until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                    else
+                        if _G.HOP then
+                            Teleport()
+                        else
+                            repeat wait()
+                                TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
+                            until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                        end
+                    end
+                end
+            elseif Thirdsea then
+                if game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]") then
+                    if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+                        repeat wait()
+                            TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
+                        until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                    else
+                        if _G.HOP then
+                            Teleport()
+                        else
+                            repeat wait()
+                                TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
+                            until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+spawn(function() -- Cooldown Observation
+    while wait(60) do 
+        pcall(function()
+            if _G.Observation and not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+                game:GetService('VirtualUser'):CaptureController()
+                game:GetService('VirtualUser'):SetKeyDown('0x65')
+                wait(2)
+                game:GetService('VirtualUser'):SetKeyUp('0x65')
+            end
+        end)
+    end
 end)
 
 spawn(function() -- Hit
