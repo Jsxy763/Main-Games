@@ -5718,36 +5718,36 @@ end
 spawn(function () -- Use Fruit Mastery Frarm
     while wait() do
         if UseFruit and FruitMastery and MasMob ~= nil then
+            game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
             if SkillZ then
-                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
                 game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
                 wait(ZHold)
                 game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
             end
             wait(1)
+            game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
             if SkillX then
-                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
                 game:GetService("VirtualInputManager"):SendKeyEvent(true, "X", false, game)
                 wait(XHold)
                 game:GetService("VirtualInputManager"):SendKeyEvent(false, "X", false, game)
             end
             wait(1)
+            game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
             if SkillC then
-                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
                 game:GetService("VirtualInputManager"):SendKeyEvent(true, "C", false, game)
                 wait(CHold)
                 game:GetService("VirtualInputManager"):SendKeyEvent(false, "C", false, game)
             end
             wait(1)
+            game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
             if SkillV and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Dragon-Dragon" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Bird-Bird: Phoenix" then
-                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
                 game:GetService("VirtualInputManager"):SendKeyEvent(true, "V", false, game)
                 wait(VHold)
                 game:GetService("VirtualInputManager"):SendKeyEvent(false, "V", false, game)
             end
             wait(1)
+            game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
             if SkillZ then
-                game:GetService("Players").LocalPlayer.Character[game.Players.LocalPlayer.Data.DevilFruit.Value].RemoteEvent:FireServer(MasMob)
                 game:GetService("VirtualInputManager"):SendKeyEvent(true, "Z", false, game)
                 wait(ZHold)
                 game:GetService("VirtualInputManager"):SendKeyEvent(false, "Z", false, game)
