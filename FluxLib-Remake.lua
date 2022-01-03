@@ -2162,6 +2162,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 					BindLabel.Text = inputwait.KeyCode.Name
 					Key = inputwait.KeyCode.Name
 				end
+				game:GetService("UserInputService").InputEnded:wait()
 				TweenService:Create(Title, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 				TweenService:Create(BindLabel, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 				TweenService:Create(Circle,	TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),	{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}):Play()
