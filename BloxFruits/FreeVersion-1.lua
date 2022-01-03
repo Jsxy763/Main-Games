@@ -695,12 +695,11 @@ end)
 --     end
 -- end)
 
-        
 spawn(function()
     local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
     local LocalCombatMod = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
     game:GetService('RunService').Heartbeat:Connect(function()
-        if _G.FastFarm then
+        if _G.FastAttack then
             pcall(function()
                 Camera:Stop()
                 LocalCombatMod.activeController.attacking = false
