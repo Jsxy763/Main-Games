@@ -5656,9 +5656,15 @@ function MasteryFarm(type)
                                                             end
                                                         end
                                                         if v.Humanoid.Health <= HealthMin then
-                                                            if StartClick then StartClick = false end
-                                                            UseFruit = true
-                                                            Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
+                                                            if #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
+                                                                if StartClick then StartClick = false end
+                                                                UseFruit = true
+                                                                Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
+                                                            else
+                                                                if not StartClick then StartClick = true end
+                                                                if UseFruit then UseFruit = false end
+                                                                Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
+                                                            end
                                                         else
                                                             if UseFruit then UseFruit = false end
                                                             StartClick = true
