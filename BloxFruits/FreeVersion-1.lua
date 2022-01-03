@@ -228,7 +228,7 @@ end)
 
 local Part = nil;
 local Force = nil;
-local TweenType = false
+local TweenType = true
 if GodModeIsDone or GodModeIsDone == nil then GodModeIsDone = false end
 if TotalCounter or TotalCounter == nil then TotalCounter = true end
 game:GetService("RunService").Stepped:Connect(function ()
