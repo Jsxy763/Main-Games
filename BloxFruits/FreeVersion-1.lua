@@ -703,14 +703,13 @@ spawn(function()
             pcall(function()
                 Camera:Stop()
                 LocalCombatMod.activeController.attacking = false
-                LocalCombatMod.activeController.timeToNextAttack = 0
+                LocalCombatMod.activeController.timeToNextAttack = 0.2
                 LocalCombatMod.activeController.active = false
-                LocalCombatMod.activeController.hitboxMagnitude = 350
                 LocalCombatMod.activeController.increment = 3
                 LocalCombatMod.activeController.humanoid.AutoRotate = true
                 LocalCombatMod.activeController.blocking = false
                 LocalCombatMod.activeController.equipped = false
-                LocalCombatMod.activeController.timeToNextBlock = 0
+                LocalCombatMod.activeController.timeToNextBlock = 0.2
                 LocalCombatMod.activeController.focusStart = 0
             end)
         end
