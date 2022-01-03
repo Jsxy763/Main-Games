@@ -208,6 +208,16 @@ if req then
     })
 end
 
+-- Checking Team
+if _G.SetTeam == "Pirates" or _G.SetTeam == "Marines" then
+    local Button = game.Players.LocalPlayer.PlayerGui.Main.ChooseTeam.Container[_G.SetTeam].Frame.ViewportFrame.TextButton
+    for i,v in pairs(getconnections(Button.MouseButton1Click)) do
+        v.Function()
+    end
+    local args = {[1] = "Buso"}
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+end
+
 -- GUI
 local GuiColour =
     -- Color3.fromRGB(16, 100, 250) -- Light Blue
