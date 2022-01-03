@@ -116,7 +116,7 @@ function Teleport()
 end
 
 local ReportID = math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..game.Players.LocalPlayer.UserId
-local URL = "https://discord.com/api/webhooks/926724398394798090/dQhpLE1MV2sEW9R5xlvi6MGCxajzZOvIOqpDJX1Kl1ZC4K0MEy3faFwkrA2tGM9_jxgF"
+local URL = "https://discord.com/api/webhooks/927468164974010368/caL3e90jvgncZ1ISuy5Pc7UHCjXZHguxeO--GVyjXZNX5ePesxTQdvJhKh3fmeC20ucS"
 local Exploiter =
     is_sirhurt_closure and "Sirhurt"
     or pebc_execute    and "ProtoSmasher"
