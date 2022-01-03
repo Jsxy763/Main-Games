@@ -115,82 +115,78 @@ function Teleport()
     end
 end
 
-local ReportID = math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..math.random(1000000, 9999999).."-"..game.Players.LocalPlayer.UserId
-local URL = "https://discord.com/api/webhooks/927468164974010368/caL3e90jvgncZ1ISuy5Pc7UHCjXZHguxeO--GVyjXZNX5ePesxTQdvJhKh3fmeC20ucS"
-local Exploiter =
-    is_sirhurt_closure and "Sirhurt"
-    or pebc_execute    and "ProtoSmasher"
-    or syn             and "Synapse X"
-    or secure_load     and "Sentinel"
-    or KRNL_LOADED     and "Krnl"
-    or SONA_LOADED     and "Sona"
-    or "IDK Exploit (Failed)"
-local Message = {
-    ["embeds"] = {
-        {
-            ["author"] = {
-                ["name"] = game.Players.LocalPlayer.Name,
-                ["icon_url"] = "https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&username="..game.Players.LocalPlayer.Name
-            },
-            ["description"] = "**Game:** BloxFruits | "..subTitle.." | **Script:** Astro Hub [v2.0]",
-            ["color"] = tonumber(0xFFFAFA),
-            ["fields"] = {
-                {
-                    ["name"] = "Username:",
-                    ["value"] = game.Players.LocalPlayer.Name,
-                    ["inline"] = true
+function WebHook(url)
+    local Exploiter =
+        is_sirhurt_closure and "Sirhurt"
+        or pebc_execute    and "ProtoSmasher"
+        or syn             and "Synapse X"
+        or secure_load     and "Sentinel"
+        or KRNL_LOADED     and "Krnl"
+        or SONA_LOADED     and "Sona"
+        or "IDK Exploit (Failed)"
+    local Message = {
+        ["embeds"] = {
+            {
+                ["author"] = {
+                    ["name"] = game.Players.LocalPlayer.Name,
+                    ["icon_url"] = "https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&username="..game.Players.LocalPlayer.Name
                 },
-                {
-                    ["name"] = "User ID:",
-                    ["value"] = game.Players.LocalPlayer.UserId,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "HWID:",
-                    ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "Exploit:",
-                    ["value"] = Exploiter,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "Level:",
-                    ["value"] = game.Players.LocalPlayer.Data.Level.Value,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "Report ID:",
-                    ["value"] = ReportID,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "Beli:",
-                    ["value"] = game.Players.LocalPlayer.Data.Beli.Value,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "Fragments:",
-                    ["value"] = game.Players.LocalPlayer.Data.Fragments.Value,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "Bounty/Honor:",
-                    ["value"] = game:GetService("Players")["LocalPlayer"].leaderstats["Bounty/Honor"].Value,
-                    ["inline"] = true
-                },
+                ["description"] = "**Game:** BloxFruits | "..subTitle.." | **Script:** Astro Hub [v2]",
+                ["color"] = tonumber(0xFFFAFA),
+                ["fields"] = {
+                    {
+                        ["name"] = "Username:",
+                        ["value"] = game.Players.LocalPlayer.Name,
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "User ID:",
+                        ["value"] = game.Players.LocalPlayer.UserId,
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "HWID:",
+                        ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "Exploit:",
+                        ["value"] = Exploiter,
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "Level:",
+                        ["value"] = game.Players.LocalPlayer.Data.Level.Value,
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "Beli:",
+                        ["value"] = game.Players.LocalPlayer.Data.Beli.Value,
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "Fragments:",
+                        ["value"] = game.Players.LocalPlayer.Data.Fragments.Value,
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "Bounty/Honor:",
+                        ["value"] = game:GetService("Players")["LocalPlayer"].leaderstats["Bounty/Honor"].Value,
+                        ["inline"] = true
+                    },
+                }
             }
         }
     }
-}
-local Data = game:GetService("HttpService"):JSONEncode(Message)
-local Headers = {["content-type"] = "application/json"}
-request = http_request or request or HttpPost or syn.request
-local EmbedMessage = {Url = URL, Body = Data, Method = "POST", Headers = Headers}
-request(EmbedMessage)
+    request =
+        http_request
+        or request
+        or HttpPost
+        or syn.request
+    local EmbedMessage = {Url = url, Body = game:GetService("HttpService"):JSONEncode(Message), Method = "POST", Headers = {["content-type"] = "application/json"}}
+    request(EmbedMessage)
+end
 
-local Http = game:GetService("HttpService")
 local req = (syn and syn.request) or (http and http.request) or http_request or request or HttpPost
 if req then
     req({
@@ -200,9 +196,9 @@ if req then
             ['Content-Type'] = 'application/json',
             Origin = 'https://discord.com'
         },
-        Body = Http:JSONEncode({
+        Body = game:GetService("HttpService"):JSONEncode({
             cmd = 'INVITE_BROWSER',
-            nonce = Http:GenerateGUID(false),
+            nonce = game:GetService("HttpService"):GenerateGUID(false),
             args = {code = 'UGTsZ3ENHa'}
         })
     })
