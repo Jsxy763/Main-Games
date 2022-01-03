@@ -2099,8 +2099,6 @@ Mouse.Button1Down:Connect(function ()
             Plr.Character:MoveTo(Mouse.Hit.p)
         elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Mouse.Hit.p).magnitude <= 350 then
             Plr.Character:MoveTo(Mouse.Hit.p)
-        else
-            TweenTo(Mouse.Hit.p)
         end
     end
 end)
@@ -3425,14 +3423,6 @@ if Thirdsea then
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     end)
 
-    Shop:Button("Buy Reroll Race [Bone]", "", function()
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 3)
-    end)
-
-    Shop:Button("Buy Refund Stats [Bone]", "", function()
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 2)
-    end)
-
     Shop:Toggle("Auto Buy Surprise", "", false, function (bool)
         AutoSurprise = bool
         while AutoSurprise do wait()
@@ -3673,7 +3663,7 @@ GameSetting:Toggle("Hide Float Part", "", _G.HidePart, function (bool)
     _G.HidePart = bool
 end)
 
-if game.Players.LocalPlayer.Name == "HoangNam2k7VN" then
+if game.Players.LocalPlayer.Name == "AdMin_Roblox098" or game.Players.LocalPlayer.Name == "HoangNam2k7VN" or game.Players.LocalPlayer.Name == "AstroCyberVN" or game.Players.LocalPlayer.Name == "astrohub001" then
     GameSetting:Toggle("Total Counter", "", true, function (bool)
         TotalCounter = bool
     end)
