@@ -240,6 +240,7 @@ if _G.SetTeam == "Pirates" or _G.SetTeam == "Marines" then
     end
     local args = {[1] = "Buso"}
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    repeat wait(3) until game.Players.LocalPlayer.Character
 end
 
 -- GUI
@@ -259,6 +260,53 @@ spawn(function () wait()
         library:WinUpdate("ASTRO HUB", "TIME | "..os.date("%H")..":"..os.date("%M")..":"..os.date("%S"))
     end
 end)
+
+local FruitList = {
+    "Bomb-Bomb",
+    "Spike-Spike",
+    "Chop-Chop",
+    "Spring-Spring",
+    "Kilo-Kilo",
+    "Smoke-Smoke",
+    "Spin-Spin",
+    "Flame-Flame",
+    "Bird-Bird: Falcon",
+    "Ice-Ice",
+    "Sand-Sand",
+    "Dark-Dark",
+    "Revine-Revine",
+    "Diamond-Diamond",
+    "Light-Light",
+    "Love-Love",
+    "Rubber-Rubber",
+    "Barrier-Barrier",
+    "Magma-Magma",
+    "Door-Door",
+    "Quake-Quake",
+    "Human-Human: Buddha",
+    "String-String",
+    "Bird-Bird: Phoenix",
+    "Rumble-Rumble",
+    "Paw-Paw",
+    "Gravity-Gravity",
+    "Dough-Dough",
+    "Shadow-Shadow",
+    "Venom-Venom",
+    "Control-Control",
+    "Soul-Soul",
+    "Dragon-Dragon"
+}
+
+local LogiaFruit = {
+    "Smoke-Smoke",
+    "Flame-Flame",
+    "Ice-Ice",
+    "Sand-Sand",
+    "Dark-Dark",
+    "Light-Light",
+    "Magma-Magma",
+    "Rumble-Rumble"
+}
 
 local Part = nil;
 local Force = nil;
@@ -517,17 +565,6 @@ spawn(function ()
             if _G.EspPlayer then
                 ESP("Players")
             end
-            if _G.BringFruitNew then wait(.1)
-                for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-                    if string.find(v.Name, "Fruit") then
-                        if v:IsA("Tool") then
-                            v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0)
-                            wait(.2)
-                            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Handle, 0)
-                        end
-                    end
-                end
-            end
             if _G.AutoStore then
                 repeat wait(1)
                     local args = {[1] = "getInventoryFruits"}
@@ -547,16 +584,7 @@ spawn(function ()
                         local args = {[1] = "StoreFruit", [2] = v}
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                     end
-                    if _G.BringFruitNew then
-                        if _G.HOP then
-                            wait(10)
-                            Teleport()
-                        elseif _G.LowHop then
-                            wait(10)
-                            LowServerHop()
-                        end
-                    end
-                until not _G.AutoStore or StoredDone
+                until not _G.AutoStore
             end
             if _G.AutoSword then
                 local args = {[1] = "LegendarySwordDealer", [2] = "1"}
@@ -3018,53 +3046,6 @@ Misc:Toggle("Auto Buy Random Devil Fruit", "", false, function (bool)
     end
 end)
 
-local FruitList = {
-    "Bomb-Bomb",
-    "Spike-Spike",
-    "Chop-Chop",
-    "Spring-Spring",
-    "Kilo-Kilo",
-    "Smoke-Smoke",
-    "Spin-Spin",
-    "Flame-Flame",
-    "Bird-Bird: Falcon",
-    "Ice-Ice",
-    "Sand-Sand",
-    "Dark-Dark",
-    "Revine-Revine",
-    "Diamond-Diamond",
-    "Light-Light",
-    "Love-Love",
-    "Rubber-Rubber",
-    "Barrier-Barrier",
-    "Magma-Magma",
-    "Door-Door",
-    "Quake-Quake",
-    "Human-Human: Buddha",
-    "String-String",
-    "Bird-Bird: Phoenix",
-    "Rumble-Rumble",
-    "Paw-Paw",
-    "Gravity-Gravity",
-    "Dough-Dough",
-    "Shadow-Shadow",
-    "Venom-Venom",
-    "Control-Control",
-    "Soul-Soul",
-    "Dragon-Dragon"
-}
-
-local LogiaFruit = {
-    "Smoke-Smoke",
-    "Flame-Flame",
-    "Ice-Ice",
-    "Sand-Sand",
-    "Dark-Dark",
-    "Light-Light",
-    "Magma-Magma",
-    "Rumble-Rumble"
-}
-
 fruitSelected = ""
 Misc:Dropdown("Select Fruit Sniper", FruitList, function (bool)
     fruitSelected = bool
@@ -3090,10 +3071,6 @@ Misc:Toggle("Bring Fruit (Tween-TP)", "", _G.BringFruit, function (bool)
     if _G.BringFruit == false then wait(.5)
         StopTween()
     end
-end)
-
-Misc:Toggle("Bring Fruit [HOP]", "", _G.BringFruitNew, function (bool)
-    _G.BringFruitNew = bool
 end)
 
 Misc:Toggle("Auto Store All Fruit", "", _G.AutoStore, function (bool)
@@ -4411,19 +4388,17 @@ function All(type)
                     end
                 end
             elseif type == "Bring Fruit" and _G.BringFruit then
-                while _G.BringFruit do wait(.1)
-                    repeat wait()
-                        for i, v in pairs(game.Workspace:GetChildren()) do
-                            if v:IsA "Tool" then
-                                if (v.Handle.Position-game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 500 then
-                                    v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                                else
-                                    TweenTo(v.Handle.Position, 300)
-                                end
+                repeat wait()
+                    for i, v in pairs(game.Workspace:GetChildren()) do
+                        if v:IsA "Tool" then
+                            if (v.Handle.Position-game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 500 then
+                                v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                            else
+                                TweenTo(v.Handle.Position, 300)
                             end
                         end
-                    until not _G.BringFruit
-                end
+                    end
+                until not _G.BringFruit
             elseif type == "Farm Boss" and _G.BossFarm then
                 while _G.BossFarm do game:GetService'RunService'.RenderStepped:Wait()
                     BossCheck()
@@ -5883,6 +5858,15 @@ do wait()
     end
     if _G.Tushita then
         FarmTushita()
+    end
+    if _G.BringFruitHOP then
+        loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/Main-Games/main/BloxFruits/OtherFunction/BringFruit-HOP.lua')()
+        repeat wait() until _G.BringFruitHOP == false
+        if _G.HOP then
+            Teleport()
+        elseif _G.LowHop then
+            LowServerHop()
+        end
     end
 end
 
