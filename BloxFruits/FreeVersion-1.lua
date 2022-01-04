@@ -115,6 +115,55 @@ function Teleport()
     end
 end
 
+function LowServerHop()
+    if not game:IsLoaded() then
+        print("Game is loading waiting...")
+        repeat wait() until game:IsLoaded()
+    end
+    library:Notification("Finding Low Server...", "Ok, I Know")
+    local MaxPlayers = math.huge
+    local ServerMaxPlayer;
+    local GoodServer;
+    local GameLink = "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+
+    function Search()
+        for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink)).data) do
+            if type(v) == "table" and v.playing ~= nil and MaxPlayers > v.playing then
+                ServerMaxPlayer = v.maxPlayers
+                MaxPlayers = v.playing
+                GoodServer = v.id
+            end
+        end
+        print("Searched Server With Players: "..MaxPlayers.."")
+    end
+
+    function GetServer()
+        Search()
+        for i, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink))) do
+            if i == "nextPageCursor" then
+                if GameLink:find("&cursor=") then
+                    local A = GameLink:find("&cursor=")
+                    local B = GameLink:sub(A)
+                    GameLink = GameLink:gsub(B, "")
+                end
+                GameLink = GameLink.."&cursor="..v
+                GetServer()
+            end
+        end
+    end
+
+    GetServer()
+    print("Searched!")
+    print("Server: "..GoodServer.." Players: "..MaxPlayers.."/"..ServerMaxPlayer.."")
+    if #game:GetService("Players"):GetPlayers() - 4  == MaxPlayers then
+        return warn("Same Players")
+    elseif GoodServer == game.JobId then
+        return warn("Empty Server ATM")
+    end
+    print("Teleporting to: "..GoodServer)
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, GoodServer)
+end
+
 function WebHook(url)
     local Exploiter =
         is_sirhurt_closure and "Sirhurt"
@@ -321,6 +370,32 @@ game:GetService("RunService").Stepped:Connect(function ()
     end
 end)
 
+
+spawn(function() -- Hit
+    while game:GetService("RunService").RenderStepped:wait() do
+        if (StartClick or AutoClick or AutoClickTG)
+        and (_G.AutoFarm
+        or _G.MobAura
+        or _G.ChooseMob
+        or _G.BoneFarm
+        or _G.AutoElite
+        or _G.AutoRainbow
+        or _G.BossFarm
+        or _G.AllBoss
+        or KillPlr
+        or _G.CandyFarm
+        or GunMastery
+        or FruitMastery
+        or _G.Tushita
+        or AutoClick
+        or AutoClickTG)
+        then
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
+        end
+    end
+end)
+
 function Tween(Pos, Speed)
     if not _G.AutoFarm
     or not _G.MobAura
@@ -353,6 +428,8 @@ function Tween(Pos, Speed)
     local Tween, Err = pcall(function ()
         Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
         Tween:Play()
+        repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 5 or TweenStopped
+        Tween:Pause()
         if not Tween then return Err end
         if Float then Float = false end
     end)
@@ -393,7 +470,7 @@ function TweenTo(Pos, Speed)
         local Tween, Err = pcall(function ()
             Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
             Tween:Play()
-            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 250 or Pos == game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
+            repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 250 or Pos == game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position or TweenStopped
             Tween:Pause()
             if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 400 then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Pos) end
             if not Tween then return Err end
@@ -402,17 +479,13 @@ function TweenTo(Pos, Speed)
     end
 end
 
-local localPlayer = game:GetService("Players").LocalPlayer
-local PlrMouse = localPlayer:GetMouse()
-PlrMouse.Button1Down:Connect(function ()
-    if Aimbot and game.Players.LocalPlayer.Character:FindFirstChild(Gun) then
-        local args = {
-            [1] = game:GetService("Players"):FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position,
-            [2] = game:GetService("Players"):FindFirstChild(selectedPlayer).Character.HumanoidRootPart
-        }
-        game:GetService("Players").LocalPlayer.Character[Gun].RemoteFunctionShoot:InvokeServer(unpack(args))
+function StopTween()
+    if not TweenStopped then
+        TweenStopped = true
+        wait(1)
+        TweenStopped = false
     end
-end)
+end
 
 local Gun;
 local ListMelee = {
@@ -497,6 +570,9 @@ spawn(function ()
                 if _G.HOP and Secondsea then
                     wait(10)
                     Teleport()
+                elseif _G.LowHop and Secondsea then
+                    wait(10)
+                    LowServerHop()
                 end
             end
             if _G.HakiColor then
@@ -505,6 +581,9 @@ spawn(function ()
                 if _G.HOP and not Firstsea then
                     wait(10)
                     Teleport()
+                elseif _G.LowHop and not Firstsea then
+                    wait(10)
+                    LowServerHop()
                 end
             end
             if _G.AutoKen and not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
@@ -524,14 +603,10 @@ spawn(function ()
                     if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 500
                     and game:GetService("Players").LocalPlayer.PlayerGui.Main.Timer.Visible == true
                     then
-                        StartMagnet = true
-                        StartClick = true
-                        CheckNextIsland = false
+                        if KillAura then StartMagnet = true else StartMagnet = false end
+                        if KillAura then StartClick = true else StartClick = false end
+                        if KillAura and not StopNextIsland then StopNextIsland = true end
                         repeat game:GetService("RunService").Heartbeat:Wait()
-                            if NextIsland and not CheckNextIsland then
-                                NextIsland = false
-                                CheckNextIsland = true
-                            end
                             if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                 repeat wait() until game.Players.LocalPlayer.Character break;
                             else
@@ -567,9 +642,9 @@ spawn(function ()
                                 require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                             end
                         until v.Humanoid.Health <= 0 or KillAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
-                        StartMagnet = false
-                        StartClick = false
-                        if CheckNextIsland then NextIsland = true end
+                        if StartMagnet then StartMagnet = false end
+                        if StartClick then StartClick = false end
+                        if StopNextIsland then StopNextIsland = false end
                     end
                 end
                 -- pcall(function()
@@ -601,14 +676,16 @@ spawn(function ()
             if NextIsland then
                 local Locations = game:GetService("Workspace")["_WorldOrigin"].Locations
                 if game:GetService("Players").LocalPlayer.PlayerGui.Main.Timer.Visible == false then
-                    TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+                    StopTween()
                 elseif Locations:FindFirstChild("Island 5")
                 or Locations:FindFirstChild("Island 4")
                 or Locations:FindFirstChild("Island 3")
                 or Locations:FindFirstChild("Island 2")
                 or Locations:FindFirstChild("Island 1")
                 then
-                    if Locations:FindFirstChild("Island 5") then
+                    if StopNextIsland then
+                        repeat wait() until not StopNextIsland or NextIsland == false
+                    elseif Locations:FindFirstChild("Island 5") then
                         if GodModeIsDone then
                             game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Locations:FindFirstChild("Island 5").Position) * CFrame.new(0, _G.RaidHeight, 0)
                         else
@@ -1687,7 +1764,7 @@ AutoFarm:Toggle("Auto Farm", "Ez To Use", _G.AutoFarm, function (bool)
     _G.AutoFarm = bool
     All("Auto Farm")
     if _G.AutoFarm == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -1753,7 +1830,7 @@ if Secondsea or Thirdsea then
         _G.ChooseMob = bool
         All("Choose Mob")
         if _G.ChooseMob == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 end
@@ -1762,7 +1839,7 @@ AutoFarm:Toggle("Mob Aura", "Kill Every Mob Near You", _G.MobAura, function (boo
     _G.MobAura = bool
     All("Mob Aura")
     if _G.MobAura == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -1799,7 +1876,7 @@ if Firstsea then
         _G.Auto2nd = bool
         All("Second Sea")
         if _G.Auto2nd == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1807,7 +1884,7 @@ if Firstsea then
         _G.AutoSaber = bool
         All("Auto Saber")
         if _G.AutoSaber == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 elseif Secondsea then
@@ -1815,7 +1892,7 @@ elseif Secondsea then
         _G.Auto3rd = bool
         All("Third Sea")
         if _G.Auto3rd == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1831,14 +1908,14 @@ elseif Secondsea then
         _G.AutoBartilo = bool
         All("Bartilo")
         if _G.AutoBartilo == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
     AutoFarm:Toggle("Auto SeaBeast (Read Des Pls!)", "This Just Beta & Make Sure You Have Swan Boat", AutoSea, function (bool)
         AutoSea = bool
         AutoSeaBeast()
         if AutoSea == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 elseif Thirdsea then
@@ -1856,7 +1933,7 @@ elseif Thirdsea then
         _G.BoneFarm = bool
         All("Bone Farm")
         if _G.BoneFarm == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1864,7 +1941,7 @@ elseif Thirdsea then
         _G.CandyFarm = bool
         All("Candy Farm")
         if _G.CandyFarm == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1872,7 +1949,7 @@ elseif Thirdsea then
         _G.Tushita = bool
         FarmTushita()
         if _G.Tushita == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1880,7 +1957,7 @@ elseif Thirdsea then
         _G.AutoElite = bool
         All("Auto Elite")
         if _G.AutoElite == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1892,7 +1969,7 @@ elseif Thirdsea then
         _G.AutoRainbow = bool
         All("Rainbow Haki")
         if _G.AutoRainbow == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1903,7 +1980,7 @@ elseif Thirdsea then
     AutoFarm:Toggle("Auto Electric Claw [Beta]", "", false, function (bool)
         AutoElectric = bool
         if AutoElectric == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -1911,7 +1988,7 @@ elseif Thirdsea then
         AutoSea = bool
         AutoSeaBeast()
         if AutoSea == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 end
@@ -1928,14 +2005,14 @@ AutoFarm:Toggle("Observation Haki Farm [HOP]", "Support Hop Function", _G.Observ
             game:GetService('VirtualUser'):SetKeyUp('0x65')
         end
     else
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 AutoFarm:Toggle("Auto Gun Mastery Farm", "", false, function (bool)
     GunMastery = bool
     MasteryFarm("Gun")
     if GunMastery == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -1943,7 +2020,7 @@ AutoFarm:Toggle("Auto Devil Fruit Mastery Farm", "", false, function (bool)
     FruitMastery = bool
     MasteryFarm("Fruit")
     if FruitMastery == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -1989,7 +2066,7 @@ AutoFarm:Toggle("Farm All Boss", "", _G.AllBoss, function (bool)
     _G.AllBoss = bool
     All("All Boss")
     if _G.AllBoss == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -1997,7 +2074,7 @@ AutoFarm:Toggle("Boss Farm", "", _G.BossFarm, function (bool)
     _G.BossFarm = bool
     All("Farm Boss")
     if _G.BossFarm == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -2142,7 +2219,7 @@ end)
 
 Teleport:Button("Stop Tween", "", function ()
     wait(.5)
-    TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+    StopTween()
 end)
 
 if Secondsea or Thirdsea then
@@ -2631,7 +2708,7 @@ Player:Toggle("Kill Player (Melee-Sword)", "", KillPlr, function (bool)
     KillPlr = bool
     All("Kill Player Melee")
     if KillPlr == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -2639,7 +2716,7 @@ Player:Toggle("Kill Player (Gun)", "", KillPlr2, function (bool)
     KillPlr2 = bool
     All("Kill Player Gun")
     if KillPlr2 == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -2703,6 +2780,18 @@ Player:Toggle("Aimbot Gun", "", false, function (bool)
         library:Notification("Pls! Select Player", "Ok")
     else
         Aimbot = bool
+    end
+end)
+
+local localPlayer = game:GetService("Players").LocalPlayer
+local PlrMouse = localPlayer:GetMouse()
+PlrMouse.Button1Down:Connect(function ()
+    if Aimbot and game.Players.LocalPlayer.Character:FindFirstChild(Gun) then
+        local args = {
+            [1] = game:GetService("Players"):FindFirstChild(selectedPlayer).Character.HumanoidRootPart.Position,
+            [2] = game:GetService("Players"):FindFirstChild(selectedPlayer).Character.HumanoidRootPart
+        }
+        game:GetService("Players").LocalPlayer.Character[Gun].RemoteFunctionShoot:InvokeServer(unpack(args))
     end
 end)
 
@@ -3001,7 +3090,7 @@ Misc:Toggle("Bring Fruit (Tween-TP)", "", _G.BringFruit, function (bool)
     _G.BringFruit = bool
     All("Bring Fruit")
     if _G.BringFruit == false then wait(.5)
-        TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        StopTween()
     end
 end)
 
@@ -3339,7 +3428,7 @@ if Secondsea or Thirdsea then
             _G.FullyRaid = bool
             FullyRaid()
             if _G.FullyRaid == false then wait(.5)
-                TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+                StopTween()
             end
         end
     end)
@@ -3351,7 +3440,7 @@ if Secondsea or Thirdsea then
     Dungeon:Toggle("Auto Next Island", "", false, function (bool)
         NextIsland = bool
         if NextIsland == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -3362,7 +3451,7 @@ if Secondsea or Thirdsea then
     Dungeon:Toggle("Auto Join Raid (Tween)", "", false, function (bool)
         AutoJoinRaid = bool
         if AutoJoinRaid == false then wait(.5)
-            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+            StopTween()
         end
     end)
 
@@ -3672,6 +3761,10 @@ GameSetting:Toggle("HOP Function", "(Support Function [HOP])", _G.HOP, function 
     _G.HOP = bool
 end)
 
+GameSetting:Toggle("Low Hop Function", "(Support Function [HOP])", _G.LowHop, function (bool)
+    _G.LowHop = bool
+end)
+
 GameSetting:Line()
 GameSetting:Label("--[ Settings ]--")
 if _G.AutoSetSpawn == nil then _G.AutoSetSpawn = true end
@@ -3782,7 +3875,7 @@ GameSetting:Bind("Toggle Fly", Enum.KeyCode.B, function ()
 end)
 
 GameSetting:Bind("Fast Reset Key", Enum.KeyCode.P, function ()
-    TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+    StopTween()
     game.Players.LocalPlayer.Character:BreakJoints()
 end)
 
@@ -3803,52 +3896,7 @@ GameSetting:Button("Server Hop", "", function ()
 end)
 
 GameSetting:Button("Low Server Hop", "", function ()
-    if not game:IsLoaded() then
-        print("Game is loading waiting...")
-        repeat wait() until game:IsLoaded()
-    end
-    library:Notification("Finding Low Server...", "Ok, I Know")
-    local MaxPlayers = math.huge
-    local ServerMaxPlayer;
-    local GoodServer;
-    local GameLink = "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-
-    function Search()
-        for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink)).data) do
-            if type(v) == "table" and v.playing ~= nil and MaxPlayers > v.playing then
-                ServerMaxPlayer = v.maxPlayers
-                MaxPlayers = v.playing
-                GoodServer = v.id
-            end
-        end
-        print("Searched Server With Players: "..MaxPlayers.."")
-    end
-
-    function GetServer()
-        Search()
-        for i, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink))) do
-            if i == "nextPageCursor" then
-                if GameLink:find("&cursor=") then
-                    local A = GameLink:find("&cursor=")
-                    local B = GameLink:sub(A)
-                    GameLink = GameLink:gsub(B, "")
-                end
-                GameLink = GameLink.."&cursor="..v
-                GetServer()
-            end
-        end
-    end
-
-    GetServer()
-    print("Searched!")
-    print("Server: "..GoodServer.." Players: "..MaxPlayers.."/"..ServerMaxPlayer.."")
-    if #game:GetService("Players"):GetPlayers() - 4  == MaxPlayers then
-        return warn("Same Players")
-    elseif GoodServer == game.JobId then
-        return warn("Empty Server ATM")
-    end
-    print("Teleporting to: "..GoodServer)
-    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, GoodServer)
+    LowServerHop()
 end)
 
 --[ FUNCTION ]--
@@ -4086,8 +4134,8 @@ function All(type)
                             pcall(function ()
                                 for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
                                     if v.Name == nameMob then
-                                        StartMagnet = true
-                                        StartClick = true
+                                        if _G.AutoFarm then StartMagnet = true else StartMagnet = false end
+                                        if _G.AutoFarm then StartClick = true else StartClick = false end
                                         repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
                                             if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
                                                 if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
@@ -4134,8 +4182,8 @@ function All(type)
                                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                             end
                                         until v.Humanoid.Health <= 0 or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        StartMagnet = false
-                                        StartClick = false
+                                        if StartMagnet then StartMagnet = false end
+                                        if StartClick then StartClick = false end
                                     end
                                 end
                             end)
@@ -4171,8 +4219,8 @@ function All(type)
                         end
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if v.Name == CandyMob and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - Position).magnitude <= 350 then
-                                StartMagnet = true
-                                StartClick = true
+                                if _G.CandyFarm then StartMagnet = true else StartMagnet = false end
+                                if _G.CandyFarm then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4202,8 +4250,8 @@ function All(type)
                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
                                 until v.Humanoid.Health <= 0 or _G.CandyFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
-                                StartMagnet = false
-                                StartClick = false
+                                if StartMagnet then StartMagnet = false end
+                                if StartClick then StartClick = false end
                             end
                         end
                     end
@@ -4227,8 +4275,8 @@ function All(type)
                         end
                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if v.Name == BoneMob then
-                                StartMagnet = true
-                                StartClick = true
+                                if _G.BoneFarm then StartMagnet = true else StartMagnet = false end
+                                if _G.BoneFarm then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4258,8 +4306,8 @@ function All(type)
                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
                                 until v.Humanoid.Health <= 0 or _G.BoneFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
-                                StartMagnet = false
-                                StartClick = false
+                                if StartMagnet then StartMagnet = false end
+                                if StartClick then StartClick = false end
                             end
                         end
                     end
@@ -4268,8 +4316,8 @@ function All(type)
                 while _G.MobAura do game:GetService'RunService'.RenderStepped:Wait()
                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                         if (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 300 then
-                            StartMagnet = true
-                            StartClick = true
+                            if _G.MobAura then StartMagnet = true else StartMagnet = false end
+                            if _G.MobAura then StartClick = true else StartClick = false end
                             repeat game:GetService("RunService").Heartbeat:wait()
                                 if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                     repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4299,8 +4347,8 @@ function All(type)
                                     require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                 end
                             until v.Humanoid.Health <= 0 or _G.MobAura == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
-                            StartMagnet = false
-                            StartClick = false
+                            if StartMagnet then StartMagnet = false end
+                            if StartClick then StartClick = false end
                         end
                     end
                 end
@@ -4323,8 +4371,8 @@ function All(type)
                             if game:GetService("Workspace").Enemies:FindFirstChild(mobSelect) then
                                 for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                     if v.Name == mobSelect then
-                                        StartMagnet = true
-                                        StartClick = true
+                                        if _G.ChooseMob then StartMagnet = true else StartMagnet = false end
+                                        if _G.ChooseMob then StartClick = true else StartClick = false end
                                         repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                             if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                                 repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4358,8 +4406,8 @@ function All(type)
                                                 require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                             end
                                         until v.Humanoid.Health <= 0 or _G.ChooseMob == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                        StartMagnet = false
-                                        StartClick = false
+                                        if StartMagnet then StartMagnet = false end
+                                        if StartClick then StartClick = false end
                                     end
                                 end
                             else MobCheck()
@@ -4406,7 +4454,7 @@ function All(type)
                         if not needQuest or (string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameBoss) and needQuest) then
                             for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                 if v.Name == _G.SelectedBoss then
-                                    StartClick = true
+                                    if _G.BossFarm then StartClick = true else StartClick = false end
                                     repeat game:GetService("RunService").Heartbeat:wait()
                                         if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                             repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4438,7 +4486,7 @@ function All(type)
                                             end
                                         end
                                     until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.BossFarm == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
-                                    StartClick = false
+                                    if StartClick then StartClick = false end
                                 end
                             end
                         elseif needQuest then
@@ -4448,66 +4496,68 @@ function All(type)
                     end
                 end
             elseif type == "All Boss" and _G.AllBoss then
-                while _G.AllBoss do game:GetService'RunService'.RenderStepped:Wait()
+                while _G.AllBoss do wait()
                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                         if string.find(v.Name, "Boss") then
                             _G.SelectedBoss = v.Name
-                            BossCheck()
-                            if needQuest and game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posBossQuest)
-                                else
-                                    repeat wait()
-                                        TweenTo(posBossQuest, 300)
-                                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posBossQuest).magnitude <= 5
-                                end
-                                wait(.5)
-                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameBossQuest, levelBossQuest)
-                            elseif not needQuest or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true and needQuest) then BossCheck()
-                                if not needQuest or (string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameBoss) and needQuest) then
-                                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                                        if v.Name == _G.SelectedBoss then
-                                            StartClick = true
-                                            repeat game:GetService("RunService").Heartbeat:wait()
-                                                if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
-                                                    repeat wait() until game.Players.LocalPlayer.Character break;
-                                                else
-                                                    if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                                    if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                                    if _G.BossWeapon == "" or _G.BossWeapon == nil then
-                                                        for i, v in pairs(ListMelee) do
-                                                            if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                                _G.BossWeapon = v
+                            repeat game:GetService'RunService'.RenderStepped:Wait()
+                                BossCheck()
+                                if needQuest and game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+                                    if GodModeIsDone then
+                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posBossQuest)
+                                    else
+                                        repeat wait()
+                                            TweenTo(posBossQuest, 300)
+                                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posBossQuest).magnitude <= 5
+                                    end
+                                    wait(.5)
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameBossQuest, levelBossQuest)
+                                elseif not needQuest or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true and needQuest) then BossCheck()
+                                    if not needQuest or (string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameBoss) and needQuest) then
+                                        for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                                            if v.Name == _G.SelectedBoss then
+                                                if _G.AllBoss then StartClick = true else StartClick = false end
+                                                repeat game:GetService("RunService").Heartbeat:wait()
+                                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                                    else
+                                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                                        if _G.BossWeapon == "" or _G.BossWeapon == nil then
+                                                            for i, v in pairs(ListMelee) do
+                                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                                    _G.BossWeapon = v
+                                                                end
                                                             end
                                                         end
+                                                        Equip(_G.BossWeapon)
+                                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                                            local args = {[1] = "Buso"}
+                                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                        end
+                                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                                            v.Humanoid.WalkSpeed = 1
+                                                            v.HumanoidRootPart.CanCollide = false
+                                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                                            v.HumanoidRootPart.Transparency = 1
+                                                        end
+                                                        if GodModeIsDone then
+                                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                                        else
+                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                                        end
+                                                        require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                     end
-                                                    Equip(_G.BossWeapon)
-                                                    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                                        local args = {[1] = "Buso"}
-                                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                                    end
-                                                    if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                                        v.Humanoid.WalkSpeed = 1
-                                                        v.HumanoidRootPart.CanCollide = false
-                                                        v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                                        v.HumanoidRootPart.Transparency = 1
-                                                    end
-                                                    if GodModeIsDone then
-                                                        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
-                                                    else
-                                                        TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
-                                                    end
-                                                    require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                                end
-                                            until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AllBoss == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
-                                            StartClick = false
+                                                until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AllBoss == false or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and needQuest)
+                                                if StartClick then StartClick = false end
+                                            end
                                         end
+                                    elseif needQuest then
+                                        local args = {[1] = "AbandonQuest"}
+                                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                     end
-                                elseif needQuest then
-                                    local args = {[1] = "AbandonQuest"}
-                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                 end
-                            end
+                            until not game.Workspace.Enemies:FindFirstChild(_G.SelectedBoss) or _G.AllBoss == false
                         end
                     end
                 end
@@ -4528,7 +4578,7 @@ function All(type)
             elseif type == "Kill Player Melee" and KillPlr then
                 local Plr1 = game.Players.LocalPlayer
                 local Plr2 = game.Players:FindFirstChild(selectedPlayer)
-                StartClick = true
+                if KillPlr then StartClick = true else StartClick = false end
                 repeat wait()
                     Equip(WeaponPlayerFarm)
                     if GodModeIsDone then
@@ -4538,7 +4588,7 @@ function All(type)
                     end
                     Plr2.Character.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                 until KillPlr == false
-                StartClick = false
+                if StartClick then StartClick = false end
             elseif type == "Auto Elite" and _G.AutoElite and Thirdsea then
                 while _G.AutoElite do game:GetService("RunService").RenderStepped:Wait()
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
@@ -4563,7 +4613,7 @@ function All(type)
                                 or (v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v:IsA("Model") and string.find(v.Name, "Urban"))
                                 or (v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v:IsA("Model") and string.find(v.Name, "Deandre"))
                                 then
-                                    StartClick = true
+                                    if _G.AutoElite then StartClick = true else StartClick = false end
                                     repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                         if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                             repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4596,10 +4646,13 @@ function All(type)
                                             require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                         end
                                     until v.Humanoid.Health <= 0 or _G.AutoElite == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                    StartClick = false
+                                    if StartClick then StartClick = false end
                                     if _G.HOP and Thirdsea then
                                         wait(1.5)
                                         Teleport() break;
+                                    elseif _G.LowHop and Thirdsea then
+                                        wait(1.5)
+                                        LowServerHop() break;
                                     end
                                 end
                             end
@@ -4647,7 +4700,7 @@ function All(type)
                     then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Ice Admiral [Lv. 700] [Boss]" then
-                                StartClick = true
+                                if _G.Auto2nd then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").RenderStepped:Wait(.5)
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4680,7 +4733,7 @@ function All(type)
                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
                                 until v.Humanoid.Health <= 0 or _G.Auto2nd == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil
-                                StartClick = false
+                                if StartClick then StartClick = false end
                                 wait(.5)
                                 local args = {[1] = "TravelDressrosa"}
                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -4703,7 +4756,7 @@ function All(type)
                     if game.Workspace.Enemies:FindFirstChild("rip_indra [Lv. 1500] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "rip_indra [Lv. 1500] [Boss]" then
-                                StartClick = true
+                                if _G.Auto3rd then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4723,7 +4776,7 @@ function All(type)
                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
                                 until not v.Parent or v.Humanoid.Health <= 55000 or _G.Auto3rd == false
-                                StartClick = false
+                                if StartClick then StartClick = false end
                             end
                         end
 
@@ -4775,7 +4828,7 @@ function All(type)
                                     pcall(function ()
                                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                             if v.Name == BartiloMob then
-                                                StartClick = true
+                                                if _G.AutoBartilo then StartClick = true else StartClick = false end
                                                 repeat game:GetService("RunService").Heartbeat:wait()
                                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4809,7 +4862,7 @@ function All(type)
                                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                     end
                                                 until v.Humanoid.Health <= 0 or _G.AutoBartilo == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                                StartClick = false
+                                                if StartClick then StartClick = false end
                                                 wait(.5)
                                                 if GodModeIsDone then
                                                     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(BartiloQuest)
@@ -4825,7 +4878,7 @@ function All(type)
                                                     pcall(function ()
                                                         for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                                             if v.Name == BartiloBoss then
-                                                                StartClick = true
+                                                                if _G.AutoBartilo then StartClick = true else StartClick = false end
                                                                 repeat game:GetService("RunService").Heartbeat:wait()
                                                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4858,7 +4911,7 @@ function All(type)
                                                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                                     end
                                                                 until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.AutoBartilo == false or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                                                StartClick = false
+                                                                if StartClick then StartClick = false end
                                                                 wait(.5)
                                                                 for i, v in pairs(game:GetService("Workspace").Map.Dressrosa.BartiloPlates:GetDescendants()) do
                                                                     if v:IsA("TouchTransmitter") then
@@ -4957,7 +5010,7 @@ function All(type)
                         if game:GetService("Workspace").Enemies:FindFirstChild(AutoRainbow_Boss) then
                             for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                                 if v.Name == AutoRainbow_Boss then
-                                    StartClick = true
+                                    if _G.AutoRainbow then StartClick = true else StartClick = false end
                                     repeat game:GetService("RunService").Heartbeat:wait()
                                         if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                             repeat wait() until game.Players.LocalPlayer.Character break;
@@ -4980,12 +5033,15 @@ function All(type)
                                             require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                         end
                                     until _G.AutoRainbow == false or v.Humanoid.Health <= 0 or not v.Parent or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                    StartClick = false
+                                    if StartClick then StartClick = false end
                                 end
                             end
                         elseif _G.HOP and Thirdsea then
                             wait(1.5)
                             Teleport() break;
+                        elseif _G.LowHop and Thirdsea then
+                            wait(1.5)
+                            LowServerHop() break;
                         end
                     end
                 end
@@ -5019,7 +5075,7 @@ function All(type)
                     if game.Workspace.Enemies:FindFirstChild("Mob Leader [Lv. 120] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Mob Leader [Lv. 120] [Boss]" then
-                                StartClick = true
+                                if _G.AutoSaber then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -5052,7 +5108,7 @@ function All(type)
                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
                                 until not v.Parent or v.Humanoid.Health <= 0 or _G.AutoSaber == false or (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone)
-                                StartClick = false
+                                if StartClick then StartClick = false end
                             end
                         end
                     end
@@ -5083,7 +5139,7 @@ function All(type)
                     if game.Workspace.Enemies:FindFirstChild("Saber Expert [Lv. 200] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "Saber Expert [Lv. 200] [Boss]" then
-                                StartClick = true
+                                if _G.AutoSaber then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character
@@ -5116,7 +5172,7 @@ function All(type)
                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                     end
                                 until not v.Parent or v.Humanoid.Health <= 0 or _G.AutoSaber == false
-                                StartClick = false
+                                if StartClick then StartClick = false end
                             end
                         end
                     end
@@ -5543,7 +5599,7 @@ function MasteryFarm(type)
                                 pcall(function ()
                                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
                                         if v.Name == nameMob then
-                                            StartMagnet = true
+                                            if GunMastery then StartMagnet = true else StartMagnet = false end
                                             repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
                                                 HealthMin = v.Humanoid.MaxHealth * HealthPersen / 100
                                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
@@ -5596,8 +5652,8 @@ function MasteryFarm(type)
                                                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                                 end
                                             until v.Humanoid.Health <= 0 or GunMastery == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                            StartMagnet = false
-                                            StartClick = false
+                                            if StartMagnet then StartMagnet = false end
+                                            if StartClick then StartClick = false end
                                         end
                                     end
                                 end)
@@ -5641,7 +5697,7 @@ function MasteryFarm(type)
                                 pcall(function ()
                                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
                                         if v.Name == nameMob then
-                                            StartMagnet = true
+                                            if FruitMastery then StartMagnet = true else StartMagnet = false end
                                             repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
                                                 HealthMin = v.Humanoid.MaxHealth * HealthPersen / 100
                                                 if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
@@ -5714,8 +5770,8 @@ function MasteryFarm(type)
                                                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                                 end
                                             until v.Humanoid.Health <= 0 or FruitMastery == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                            StartMagnet = false
-                                            StartClick = false
+                                            if StartMagnet then StartMagnet = false end
+                                            if StartClick then StartClick = false end
                                         end
                                     end
                                 end)
@@ -5742,7 +5798,7 @@ function FarmTushita()
                     if game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v.Name == "Longma [Lv. 2000] [Boss]" then
-                                StartClick = true
+                                if _G.Tushita then StartClick = true else StartClick = false end
                                 repeat game:GetService("RunService").Heartbeat:wait()
                                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
                                         repeat wait() until game.Players.LocalPlayer.Character break;
@@ -5774,13 +5830,16 @@ function FarmTushita()
                                         end
                                     end
                                 until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
-                                StartClick = false
+                                if StartClick then StartClick = false end
                             end
                         end
                     else
                         if _G.HOP then
                             wait(10)
                             Teleport()
+                        elseif _G.LowHop then
+                            wait(10)
+                            LowServerHop()
                         end
                     end
                 end
@@ -5930,6 +5989,8 @@ spawn(function () -- Farm Observation
                     else
                         if _G.HOP then
                             Teleport()
+                        elseif _G.LowHop then
+                            LowServerHop()
                         else
                             repeat wait()
                                 TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
@@ -5946,6 +6007,8 @@ spawn(function () -- Farm Observation
                     else
                         if _G.HOP then
                             Teleport()
+                        elseif _G.LowHop then
+                            LowServerHop()
                         else
                             repeat wait()
                                 TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
@@ -5962,6 +6025,8 @@ spawn(function () -- Farm Observation
                     else
                         if _G.HOP then
                             Teleport()
+                        elseif _G.LowHop then
+                            LowServerHop()
                         else
                             repeat wait()
                                 TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
@@ -6003,15 +6068,6 @@ game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function ()
             FastAttackModule.activeController.active = false
             FastAttackModule.activeController.timeToNextAttack = 0.3
         end)
-    end
-end)
-
-spawn(function() -- Hit
-    while game:GetService("RunService").RenderStepped:wait() do
-        if StartClick or AutoClick or AutoClickTG then
-            VirtualUser:CaptureController()
-            VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
-        end
     end
 end)
 
