@@ -284,6 +284,7 @@ game:GetService("RunService").Stepped:Connect(function ()
                 Part.Material = "Neon"
                 Part.BrickColor = BrickColor.new"Deep orange"
                 while game.Workspace:FindFirstChild("TweenWalk") do
+                    if _G.HidePart then game.Workspace:FindFirstChild("TweenWalk").Transparency = 1 else game.Workspace:FindFirstChild("TweenWalk").Transparency = 0 end
                     local TS = game:GetService("TweenService")
                     local Info = TweenInfo.new((game.Workspace:FindFirstChild("TweenWalk").Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude / 500, Enum.EasingStyle.Linear)
                     local FloatPart, Err = pcall(function ()
@@ -291,11 +292,6 @@ game:GetService("RunService").Stepped:Connect(function ()
                         FloatPart:Play()
                         if not FloatPart then return Err end
                     end)
-                    if _G.HidePart then
-                        game.Workspace:FindFirstChild("TweenWalk").Transparency = 1
-                    else
-                        game.Workspace:FindFirstChild("TweenWalk").Transparency = 0
-                    end
                     game:GetService("RunService").Heartbeat:wait()
                 end
             end
@@ -3688,6 +3684,10 @@ GameSetting:Toggle("Fast Attack", "Really Fast", _G.FastAttack, function (bool)
     _G.FastAttack = bool
 end)
 
+GameSetting:Toggle("Fast Attack (New!)", "", _G.FastAttackNew, function (bool)
+    _G.FastAttackNew = bool
+end)
+
 if _G.Magnet == nil then _G.Magnet = true end
 GameSetting:Toggle("Bring Mob", "For Auto Farm, Mob Aura", _G.Magnet, function (bool)
     _G.Magnet = bool
@@ -5740,39 +5740,43 @@ function FarmTushita()
             if _G.Tushita then
                 while _G.Tushita do game:GetService'RunService'.RenderStepped:Wait()
                     if game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]") then
-                        StartClick = true
-                        repeat game:GetService("RunService").Heartbeat:wait()
-                            if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
-                                repeat wait() until game.Players.LocalPlayer.Character break;
-                            else
-                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                if _G.Weapon == "" or _G.Weapon == nil then
-                                    for i, v in pairs(ListMelee) do
-                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                            _G.Weapon = v break;
+                        for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                            if v.Name == "Longma [Lv. 2000] [Boss]" then
+                                StartClick = true
+                                repeat game:GetService("RunService").Heartbeat:wait()
+                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                    else
+                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                        if _G.Weapon == "" or _G.Weapon == nil then
+                                            for i, v in pairs(ListMelee) do
+                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                                    _G.Weapon = v break;
+                                                end
+                                            end
+                                        end
+                                        Equip(_G.Weapon)
+                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                            local args = {[1] = "Buso"}
+                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                        end
+                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
+                                            v.Humanoid.WalkSpeed = 1
+                                            v.HumanoidRootPart.CanCollide = false
+                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                            v.HumanoidRootPart.Transparency = 1
+                                        end
+                                        if GodModeIsDone then
+                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                        else
+                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
                                         end
                                     end
-                                end
-                                Equip(_G.Weapon)
-                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                    local args = {[1] = "Buso"}
-                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                end
-                                if game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"]:FindFirstChild("HumanoidRootPart") ~= nil then
-                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].Humanoid.WalkSpeed = 1
-                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].HumanoidRootPart.CanCollide = false
-                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].HumanoidRootPart.Transparency = 1
-                                end
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
-                                else
-                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
-                                end
+                                until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
+                                StartClick = false
                             end
-                        until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
-                        StartClick = false
+                        end
                     else
                         if _G.HOP then
                             wait(10)
@@ -5984,16 +5988,27 @@ spawn(function() -- Cooldown Observation
 end)
 
 local FastAttackModule = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function ()
+    if _G.FastAttackNew then
+        pcall(function ()
+            if FastAttackModule.activeController then
+                if FastAttackModule.activeController.timeToNextAttack and FastAttackModule.activeController.timeToNextAttack ~= 0 then
+                    FastAttackModule.activeController.timeToNextAttack = 0.3
+                end
+            end
+        end)
+    elseif _G.FastAttack then
+        pcall(function ()
+            FastAttackModule.activeController.attacking = false
+            FastAttackModule.activeController.active = false
+            FastAttackModule.activeController.timeToNextAttack = 0.3
+        end)
+    end
+end)
+
 spawn(function() -- Hit
     while game:GetService("RunService").RenderStepped:wait() do
         if StartClick or AutoClick or AutoClickTG then
-            if _G.FastAttack then
-                pcall(function ()
-                    FastAttackModule.activeController.attacking = false
-                    FastAttackModule.activeController.active = false
-                    FastAttackModule.activeController.timeToNextAttack = 0.2
-                end)
-            end
             VirtualUser:CaptureController()
             VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
         end
