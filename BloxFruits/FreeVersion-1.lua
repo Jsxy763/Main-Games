@@ -205,6 +205,7 @@ if req then
 end
 
 -- Checking Team
+if _G.SetTeam == nil then _G.SetTeam = "Pirates" end
 if _G.SetTeam == "Pirates" or _G.SetTeam == "Marines" then
     local Button = game.Players.LocalPlayer.PlayerGui.Main.ChooseTeam.Container[_G.SetTeam].Frame.ViewportFrame.TextButton
     for i,v in pairs(getconnections(Button.MouseButton1Click)) do
@@ -260,6 +261,7 @@ game:GetService("RunService").Stepped:Connect(function ()
     or GunMastery
     or FruitMastery
     or _G.Observation
+    or _G.Tushita
     then
         for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
             if v:IsA("BasePart") then
@@ -282,7 +284,13 @@ game:GetService("RunService").Stepped:Connect(function ()
                 Part.Material = "Neon"
                 Part.BrickColor = BrickColor.new"Deep orange"
                 while game.Workspace:FindFirstChild("TweenWalk") do
-                    game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
+                    local TS = game:GetService("TweenService")
+                    local Info = TweenInfo.new((game.Workspace:FindFirstChild("TweenWalk").Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude / 500, Enum.EasingStyle.Linear)
+                    local FloatPart, Err = pcall(function ()
+                        FloatPart = TS:Create(game.Workspace:FindFirstChild("TweenWalk").CFrame, Info, {CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame})
+                        FloatPart:Play()
+                        if not FloatPart then return Err end
+                    end)
                     if _G.HidePart then
                         game.Workspace:FindFirstChild("TweenWalk").Transparency = 1
                     else
@@ -340,6 +348,7 @@ function Tween(Pos, Speed)
     or not GunMastery
     or not FruitMastery
     or not _G.Observation
+    or not _G.Tushita
     then
         Float = true
     end
@@ -379,6 +388,7 @@ function TweenTo(Pos, Speed)
         or not GunMastery
         or not FruitMastery
         or not _G.Observation
+        or not _G.Tushita
         then
             Float = true
         end
@@ -521,7 +531,7 @@ spawn(function ()
                         StartMagnet = true
                         StartClick = true
                         CheckNextIsland = false
-                        repeat game:GetService("RunService").RenderStepped:Wait(0.5)
+                        repeat game:GetService("RunService").Heartbeat:Wait()
                             if NextIsland and not CheckNextIsland then
                                 NextIsland = false
                                 CheckNextIsland = true
@@ -680,41 +690,26 @@ spawn(function ()
 end)
 
 -- Function
--- local FastAtackMod = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
--- local PlrMouse = game.Players.LocalPlayer:GetMouse()
--- PlrMouse.Button1Down:Connect(function()
---     if _G.FastAttack then
---         -- if FastAtackMod.activeController and FastAtackMod.activeController.anims and FastAtackMod.activeController.anims.basic then
---         --     FastAtackMod.activeController:attack()
---         -- end
---         if FastAtackMod.activeController and (game.Players.LocalPlayer.Character.Humanoid.Health > 0 or GodModeIsDone) then
---             if FastAtackMod.activeController.timeToNextAttack and FastAtackMod.activeController.timeToNextAttack ~= 0 then
---                 FastAtackMod.activeController.timeToNextAttack =  0
---             end
+-- spawn(function()
+--     local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
+--     local LocalCombatMod = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+--     game:GetService('RunService').Heartbeat:Connect(function()
+--         if _G.FastAttack then
+--             pcall(function()
+--                 Camera:Stop()
+--                 LocalCombatMod.activeController.attacking = false
+--                 LocalCombatMod.activeController.timeToNextAttack = 0.2
+--                 LocalCombatMod.activeController.active = false
+--                 LocalCombatMod.activeController.increment = 3
+--                 LocalCombatMod.activeController.humanoid.AutoRotate = true
+--                 LocalCombatMod.activeController.blocking = false
+--                 LocalCombatMod.activeController.equipped = false
+--                 LocalCombatMod.activeController.timeToNextBlock = 0.2
+--                 LocalCombatMod.activeController.focusStart = 0
+--             end)
 --         end
---     end
+--     end)
 -- end)
-
-spawn(function()
-    local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
-    local LocalCombatMod = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-    game:GetService('RunService').Heartbeat:Connect(function()
-        if _G.FastAttack then
-            pcall(function()
-                Camera:Stop()
-                LocalCombatMod.activeController.attacking = false
-                LocalCombatMod.activeController.timeToNextAttack = 0.2
-                LocalCombatMod.activeController.active = false
-                LocalCombatMod.activeController.increment = 3
-                LocalCombatMod.activeController.humanoid.AutoRotate = true
-                LocalCombatMod.activeController.blocking = false
-                LocalCombatMod.activeController.equipped = false
-                LocalCombatMod.activeController.timeToNextBlock = 0.2
-                LocalCombatMod.activeController.focusStart = 0
-            end)
-        end
-    end)
-end)
 
 function levelCheck() -- Check Level
     local MyLevel = game.Players.localPlayer.Data.Level.Value
@@ -1873,6 +1868,14 @@ elseif Thirdsea then
         _G.CandyFarm = bool
         All("Candy Farm")
         if _G.CandyFarm == false then wait(.5)
+            TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
+        end
+    end)
+
+    AutoFarm:Toggle("Auto Tushita Farm [HOP]", "Third Sea Only", _G.Tushita, function (bool)
+        _G.Tushita = bool
+        FarmTushita()
+        if _G.Tushita == false then wait(.5)
             TweenTo(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, 300)
         end
     end)
@@ -4035,62 +4038,62 @@ function All(type)
     spawn(function ()
         pcall(function ()
             if type == "Auto Farm" and _G.AutoFarm then
-                while _G.AutoFarm do wait()
-                    if _G.AutoFarm then
-                        if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
-                            levelCheck()
-                            local MyLevel = game.Players.localPlayer.Data.Level.Value
-                            if MyLevel >= 375 and MyLevel < 450 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(61163.8515625, 11.6796875, 1819.7841796875)
-                                else
-                                    Entrance("Go to Underwater")
-                                end
-                            elseif MyLevel >= 450 and MyLevel < 700 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3864.6884765625, 6.7369503974915, -1926.2141113281)
-                                else
-                                    Entrance("Out Underwater")
-                                end
-                            elseif MyLevel >= 1250 and MyLevel < 1350 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(923.21252441406, 126.9760055542, 32852.83203125)
-                                else
-                                    Entrance("Go to Ship")
-                                end
-                            elseif MyLevel >= 1350 and MyLevel < 1500 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
-                                if GodModeIsDone then
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6508.5581054688, 89.034996032715, -132.83953857422)
-                                else
-                                    Entrance("Out Ship")
-                                end
-                            end
-                            repeat wait() until game:IsLoaded()
+                while _G.AutoFarm do game:GetService'RunService'.RenderStepped:Wait()
+                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+                        levelCheck()
+                        local MyLevel = game.Players.localPlayer.Data.Level.Value
+                        if MyLevel >= 375 and MyLevel < 450 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
                             if GodModeIsDone then
-                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posQuest)
+                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(61163.8515625, 11.6796875, 1819.7841796875)
                             else
-                                repeat wait()
-                                    TweenTo(posQuest, 300)
-                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5
+                                Entrance("Go to Underwater")
                             end
-                            wait(.5)
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
-                            if _G.AutoSetSpawn then
-                               local args = {[1] = "SetSpawnPoint"}
-                               game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                        elseif MyLevel >= 450 and MyLevel < 700 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            if GodModeIsDone then
+                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3864.6884765625, 6.7369503974915, -1926.2141113281)
+                            else
+                                Entrance("Out Underwater")
                             end
-                        elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true and _G.AutoFarm then levelCheck()
-                            if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
-                                pcall(function ()
-                                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
-                                        if v.Name == nameMob then
-                                            StartMagnet = true
-                                            StartClick = true
-                                            repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
-                                                if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
-                                                    repeat wait() until game.Players.LocalPlayer.Character break;
-                                                elseif string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
-                                                    if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
+                        elseif MyLevel >= 1250 and MyLevel < 1350 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            if GodModeIsDone then
+                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(923.21252441406, 126.9760055542, 32852.83203125)
+                            else
+                                Entrance("Go to Ship")
+                            end
+                        elseif MyLevel >= 1350 and MyLevel < 1500 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 then
+                            if GodModeIsDone then
+                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-6508.5581054688, 89.034996032715, -132.83953857422)
+                            else
+                                Entrance("Out Ship")
+                            end
+                        end
+                        repeat wait() until game:IsLoaded()
+                        if GodModeIsDone then
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posQuest)
+                        else
+                            repeat wait()
+                                TweenTo(posQuest, 300)
+                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5
+                        end
+                        wait(.5)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
+                        if _G.AutoSetSpawn then
+                           local args = {[1] = "SetSpawnPoint"}
+                           game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                        end
+                    elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true and _G.AutoFarm then levelCheck()
+                        if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
+                            pcall(function ()
+                                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do levelCheck()
+                                    if v.Name == nameMob then
+                                        StartMagnet = true
+                                        StartClick = true
+                                        repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
+                                            if string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
+                                                if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
+                                                    if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
+                                                        repeat wait() until game.Players.LocalPlayer.Character break;
+                                                    else
                                                         if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
                                                         if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
                                                         if _G.Weapon == "" or _G.Weapon == nil then
@@ -4118,29 +4121,29 @@ function All(type)
                                                             TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
                                                         end
                                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
-                                                    else levelCheck()
-                                                        if GodModeIsDone then
-                                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
-                                                        else
-                                                            TweenTo(waitPos, 300)
-                                                        end
                                                     end
-                                                else
-                                                    local args = {[1] = "AbandonQuest"}
-                                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                                else levelCheck()
+                                                    if GodModeIsDone then
+                                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
+                                                    else
+                                                        TweenTo(waitPos, 300)
+                                                    end
                                                 end
-                                            until v.Humanoid.Health <= 0 or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
-                                            StartMagnet = false
-                                            StartClick = false
-                                        end
+                                            else
+                                                local args = {[1] = "AbandonQuest"}
+                                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                            end
+                                        until v.Humanoid.Health <= 0 or _G.AutoFarm == false or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        StartMagnet = false
+                                        StartClick = false
                                     end
-                                end)
-                            else levelCheck()
-                                if GodModeIsDone then
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
-                                else
-                                    TweenTo(waitPos, 300)
                                 end
+                            end)
+                        else levelCheck()
+                            if GodModeIsDone then
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
+                            else
+                                TweenTo(waitPos, 300)
                             end
                         end
                     end
@@ -5731,6 +5734,57 @@ function MasteryFarm(type)
     end)
 end
 
+function FarmTushita()
+    spawn(function ()
+        pcall(function ()
+            if _G.Tushita then
+                while _G.Tushita do game:GetService'RunService'.RenderStepped:Wait()
+                    if game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]") then
+                        StartClick = true
+                        repeat game:GetService("RunService").Heartbeat:wait()
+                            if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                repeat wait() until game.Players.LocalPlayer.Character break;
+                            else
+                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                if _G.Weapon == "" or _G.Weapon == nil then
+                                    for i, v in pairs(ListMelee) do
+                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                            _G.Weapon = v break;
+                                        end
+                                    end
+                                end
+                                Equip(_G.Weapon)
+                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                    local args = {[1] = "Buso"}
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                end
+                                if game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"]:FindFirstChild("HumanoidRootPart") ~= nil then
+                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].Humanoid.WalkSpeed = 1
+                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].HumanoidRootPart.CanCollide = false
+                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                    game:GetService("Workspace").Enemies["Longma [Lv. 2000] [Boss]"].HumanoidRootPart.Transparency = 1
+                                end
+                                if GodModeIsDone then
+                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                else
+                                    TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                end
+                            end
+                        until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
+                        StartClick = false
+                    else
+                        if _G.HOP then
+                            wait(10)
+                            Teleport()
+                        end
+                    end
+                end
+            end
+        end)
+    end)
+end
+
 do wait()
     if _G.AutoSaber then
         All("Auto Saber")
@@ -5776,6 +5830,9 @@ do wait()
     end
     if _G.AutoRainbow then
         All("Rainbow Haki")
+    end
+    if _G.Tushita then
+        FarmTushita()
     end
 end
 
@@ -5926,9 +5983,17 @@ spawn(function() -- Cooldown Observation
     end
 end)
 
+local FastAttackModule = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
 spawn(function() -- Hit
-    while game:GetService("RunService").RenderStepped:wait(0.2) do
+    while game:GetService("RunService").RenderStepped:wait() do
         if StartClick or AutoClick or AutoClickTG then
+            if _G.FastAttack then
+                pcall(function ()
+                    FastAttackModule.activeController.attacking = false
+                    FastAttackModule.activeController.active = false
+                    FastAttackModule.activeController.timeToNextAttack = 0.2
+                end)
+            end
             VirtualUser:CaptureController()
             VirtualUser:ClickButton1(Vector2.new(851, 158), game:GetService("Workspace").Camera.CFrame)
         end
