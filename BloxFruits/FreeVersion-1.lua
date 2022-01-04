@@ -558,7 +558,26 @@ spawn(function ()
                         local args = {[1] = "StoreFruit", [2] = v}
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                     end
+                    if _G.BringFruitNew then StoredDone = true else StoredDone = false end
                 until not _G.AutoStore
+            end
+            if _G.BringFruitNew then wait(.1)
+                for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+                    if string.find(v.Name, "Fruit") then
+                        if v:IsA("Tool") then
+                            v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0)
+                            wait(.2)
+                            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Handle, 0)
+                        end
+                    end
+                end
+                if _G.HOP then
+                    repeat wait() until StoredDone
+                    Teleport()
+                elseif _G.LowHop then
+                    repeat wait() until StoredDone
+                    LowServerHop()
+                end
             end
             if _G.AutoSword then
                 local args = {[1] = "LegendarySwordDealer", [2] = "1"}
@@ -3094,19 +3113,8 @@ Misc:Toggle("Bring Fruit (Tween-TP)", "", _G.BringFruit, function (bool)
     end
 end)
 
-Misc:Toggle("Bring Fruit [Risk]", "", false, function (bool)
-    BringFruitRisk = bool
-    while BringFruitRisk do wait(.1)
-        for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-            if string.find(v.Name, "Fruit") then
-                if v:IsA("Tool") then
-                    v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0)
-                    wait(.2)
-                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Handle, 0)
-                end
-            end
-        end
-    end
+Misc:Toggle("Bring Fruit [HOP]", "", _G.BringFruitNew, function (bool)
+    _G.BringFruitNew = bool
 end)
 
 Misc:Toggle("Auto Store All Fruit", "", _G.AutoStore, function (bool)
@@ -5584,7 +5592,7 @@ function MasteryFarm(type)
                             elseif MyLevel >= 1350 and MyLevel < 1500 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 and not GodModeIsDone then
                                 Entrance("Out Ship")
                             end
-                            repeat wait(3) until game:IsLoaded()
+                            repeat wait() until game:IsLoaded()
                             if GodModeIsDone then
                                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posQuest)
                             else
