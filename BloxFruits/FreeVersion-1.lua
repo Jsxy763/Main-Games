@@ -5707,13 +5707,13 @@ function MasteryFarm(type)
                                                             MasMob = v.HumanoidRootPart.Position
                                                         end
                                                         if GodModeIsDone then
-                                                            if v.Humanoid.Health <= HealthMin then
+                                                            if v.Humanoid.Health <= HealthMin and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
                                                                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 35)
                                                             else
                                                                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
                                                             end
                                                         else
-                                                            if v.Humanoid.Health <= HealthMin then
+                                                            if v.Humanoid.Health <= HealthMin and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
                                                                 TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 0, 35), 300)
                                                             else
                                                                 TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
