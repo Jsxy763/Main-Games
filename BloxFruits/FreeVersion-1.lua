@@ -517,6 +517,24 @@ spawn(function ()
             if _G.EspPlayer then
                 ESP("Players")
             end
+            if _G.BringFruitNew then wait(.1)
+                for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+                    if string.find(v.Name, "Fruit") then
+                        if v:IsA("Tool") then
+                            v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0)
+                            wait(.2)
+                            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Handle, 0)
+                        end
+                    end
+                end
+                if _G.HOP then
+                    repeat wait() until StoredDone
+                    Teleport()
+                elseif _G.LowHop then
+                    repeat wait() until StoredDone
+                    LowServerHop()
+                end
+            end
             if _G.AutoStore then
                 repeat wait(1)
                     local args = {[1] = "getInventoryFruits"}
@@ -537,25 +555,7 @@ spawn(function ()
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                     end
                     if _G.BringFruitNew then StoredDone = true else StoredDone = false end
-                until not _G.AutoStore
-            end
-            if _G.BringFruitNew then wait(.1)
-                for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-                    if string.find(v.Name, "Fruit") then
-                        if v:IsA("Tool") then
-                            v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0)
-                            wait(.2)
-                            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Handle, 0)
-                        end
-                    end
-                end
-                if _G.HOP then
-                    repeat wait() until StoredDone
-                    Teleport()
-                elseif _G.LowHop then
-                    repeat wait() until StoredDone
-                    LowServerHop()
-                end
+                until not _G.AutoStore or StoredDone
             end
             if _G.AutoSword then
                 local args = {[1] = "LegendarySwordDealer", [2] = "1"}
