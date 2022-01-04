@@ -24,94 +24,98 @@ else
 end
 
 -- HOP FUNCTION
-local IDs = {}
-local FoundAny = ""
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
 local actualHour = os.date("!*t").hour
 local Deleted = false
+local File = pcall(function()
+    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+end)
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+end
+function TPReturner()
+    local Site;
+    if foundAnything == "" then
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+    else
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0;
+    for i,v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _,Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                wait()
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                    wait()
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+                end)
+                wait(4)
+            end
+        end
+    end
+end
+
 function Teleport()
     while wait() do
-        pcall(function ()
-            local Site;
-            if FoundAny == "" then
-                Site = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"))
-            else
-                Site = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100&cursor="..FoundAny))
-            end
-            local ID = ""
-            if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-                FoundAny = Site.nextPageCursor
-            end
-            local Number = 0;
-            for i, v in pairs(Site.data) do
-                local Possible = true
-                ID = tostring(v.id)
-                if tonumber(v.maxPlayers) > tonumber(v.playing) then
-                    for _, Existing in pairs(IDs) do
-                        if Number ~= 0 then
-                            if ID == tostring(Existing) then
-                                Possible = true
-                            end
-                        else
-                            if tonumber(actualHour) ~= tonumber(Existing) then
-                                local delFile = pcall(function ()
-                                    IDs = {}
-                                    table.insert(IDs, actualHour)
-                                end)
-                            end
-                        end
-                        Number = Number + 1
-                    end
-                    if Possible == true then
-                        table.insert(IDs, ID) wait()
-                        pcall(function () wait()
-                            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, ID, game.Players.LocalPlayer)
-                        end)
-                        wait(.1)
-                    end
-                end
-            end
-            if FoundAny ~= "" then
-                local Site;
-                if FoundAny == "" then
-                    Site = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"))
-                else
-                    Site = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100&cursor="..FoundAny))
-                end
-                local ID = ""
-                if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-                    FoundAny = Site.nextPageCursor
-                end
-                local Number = 0;
-                for i, v in pairs(Site.data) do
-                    local Possible = true
-                    ID = tostring(v.id)
-                    if tonumber(v.maxPlayers) > tonumber(v.playing) then
-                        for _, Existing in pairs(IDs) do
-                            if Number ~= 0 then
-                                if ID == tostring(Existing) then
-                                    Possible = true
-                                end
-                            else
-                                if tonumber(actualHour) ~= tonumber(Existing) then
-                                    local delFile = pcall(function ()
-                                        IDs = {}
-                                        table.insert(IDs, actualHour)
-                                    end)
-                                end
-                            end
-                            Number = Number + 1
-                        end
-                        if Possible == true then
-                            table.insert(IDs, ID) wait()
-                            pcall(function () wait()
-                                game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, ID, game.Players.LocalPlayer)
-                            end)
-                            wait(.1)
-                        end
-                    end
-                end
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
             end
         end)
+    end
+end
+
+function Search()
+    for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink)).data) do
+        if type(v) == "table" and v.playing ~= nil and MaxPlayers > v.playing then
+            ServerMaxPlayer = v.maxPlayers
+            MaxPlayers = v.playing
+            GoodServer = v.id
+        end
+    end
+    print("Searched Server With Players: "..MaxPlayers.."")
+end
+
+function GetServer()
+    Search()
+    for i, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink))) do
+        if i == "nextPageCursor" then
+            if GameLink:find("&cursor=") then
+                local A = GameLink:find("&cursor=")
+                local B = GameLink:sub(A)
+                GameLink = GameLink:gsub(B, "")
+            end
+            GameLink = GameLink.."&cursor="..v
+            GetServer()
+        end
     end
 end
 
@@ -125,32 +129,6 @@ function LowServerHop()
     local ServerMaxPlayer;
     local GoodServer;
     local GameLink = "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-
-    function Search()
-        for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink)).data) do
-            if type(v) == "table" and v.playing ~= nil and MaxPlayers > v.playing then
-                ServerMaxPlayer = v.maxPlayers
-                MaxPlayers = v.playing
-                GoodServer = v.id
-            end
-        end
-        print("Searched Server With Players: "..MaxPlayers.."")
-    end
-
-    function GetServer()
-        Search()
-        for i, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink))) do
-            if i == "nextPageCursor" then
-                if GameLink:find("&cursor=") then
-                    local A = GameLink:find("&cursor=")
-                    local B = GameLink:sub(A)
-                    GameLink = GameLink:gsub(B, "")
-                end
-                GameLink = GameLink.."&cursor="..v
-                GetServer()
-            end
-        end
-    end
 
     GetServer()
     print("Searched!")
