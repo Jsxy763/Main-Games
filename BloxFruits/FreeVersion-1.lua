@@ -527,13 +527,6 @@ spawn(function ()
                         end
                     end
                 end
-                if _G.HOP then
-                    repeat wait() until StoredDone
-                    Teleport()
-                elseif _G.LowHop then
-                    repeat wait() until StoredDone
-                    LowServerHop()
-                end
             end
             if _G.AutoStore then
                 repeat wait(1)
@@ -554,7 +547,15 @@ spawn(function ()
                         local args = {[1] = "StoreFruit", [2] = v}
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                     end
-                    if _G.BringFruitNew then StoredDone = true else StoredDone = false end
+                    if _G.BringFruitNew then
+                        if _G.HOP then
+                            wait(10)
+                            Teleport()
+                        elseif _G.LowHop then
+                            wait(10)
+                            LowServerHop()
+                        end
+                    end
                 until not _G.AutoStore or StoredDone
             end
             if _G.AutoSword then
