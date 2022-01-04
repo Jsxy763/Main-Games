@@ -5758,43 +5758,39 @@ function FarmTushita()
             if _G.Tushita then
                 while _G.Tushita do game:GetService'RunService'.RenderStepped:Wait()
                     if game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]") then
-                        for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                            if v.Name == "Longma [Lv. 2000] [Boss]" then
-                                if _G.Tushita then StartClick = true else StartClick = false end
-                                repeat game:GetService("RunService").Heartbeat:wait()
-                                    if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
-                                        repeat wait() until game.Players.LocalPlayer.Character break;
-                                    else
-                                        if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
-                                        if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
-                                        if _G.Weapon == "" or _G.Weapon == nil then
-                                            for i, v in pairs(ListMelee) do
-                                                if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
-                                                    _G.Weapon = v break;
-                                                end
-                                            end
-                                        end
-                                        Equip(_G.Weapon)
-                                        if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-                                            local args = {[1] = "Buso"}
-                                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                                        end
-                                        if v:FindFirstChild("HumanoidRootPart") ~= nil then
-                                            v.Humanoid.WalkSpeed = 1
-                                            v.HumanoidRootPart.CanCollide = false
-                                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                            v.HumanoidRootPart.Transparency = 1
-                                        end
-                                        if GodModeIsDone then
-                                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
-                                        else
-                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                        if _G.Tushita then StartClick = true else StartClick = false end
+                        repeat game:GetService("RunService").Heartbeat:wait()
+                            if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                repeat wait() until game.Players.LocalPlayer.Character break;
+                            else
+                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                if _G.BossWeapon == "" or _G.BossWeapon == nil then
+                                    for i, v in pairs(ListMelee) do
+                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                            _G.BossWeapon = v
                                         end
                                     end
-                                until v.Humanoid.Health <= 0 or not v.Parent or v:FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
-                                if StartClick then StartClick = false end
+                                end
+                                Equip(_G.BossWeapon)
+                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                    local args = {[1] = "Buso"}
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                end
+                                if game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]"):FindFirstChild("HumanoidRootPart") ~= nil then
+                                    vgame:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Humanoid.WalkSpeed = 1
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.CanCollide = false
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.Transparency = 1
+                                end
+                                if GodModeIsDone then
+                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                else
+                                    TweenTo(game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                end
                             end
-                        end
+                        until game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Humanoid.Health <= 0 or not game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Parent or game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]"):FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
+                        if StartClick then StartClick = false end
                     else
                         if _G.HOP then
                             wait(10)
