@@ -134,7 +134,7 @@ if _G.SetTeam == "Pirates" or _G.SetTeam == "Marines" then
     end
     local args = {[1] = "Buso"}
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    repeat wait(3) until game.Players.LocalPlayer.Character
+    repeat wait(1) until game.Players.LocalPlayer.Character
 end
 
 -- GUI
