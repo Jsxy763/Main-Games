@@ -4438,7 +4438,7 @@ function All(type)
             elseif type == "Kill Player Gun" and KillPlr2 then
                 local Plr1 = game.Players.LocalPlayer
                 local Plr2 = game.Players:FindFirstChild(selectedPlayer)
-                repeat wait()
+                repeat game:GetService("RunService").Heartbeat:wait()
                     Equip(Gun)
                     if GodModeIsDone then
                         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Plr2.Character.HumanoidRootPart.CFrame * CFrame.new(0, 70, -30)
@@ -4453,7 +4453,7 @@ function All(type)
                 local Plr1 = game.Players.LocalPlayer
                 local Plr2 = game.Players:FindFirstChild(selectedPlayer)
                 if KillPlr then StartClick = true else StartClick = false end
-                repeat wait()
+                repeat game:GetService("RunService").Heartbeat:wait()
                     Equip(WeaponPlayerFarm)
                     if GodModeIsDone then
                         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = Plr2.Character.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
