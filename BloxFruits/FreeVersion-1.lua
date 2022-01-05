@@ -23,125 +23,6 @@ else
     game.Players.LocalPlayer:Kick("Game Not Support :( | Join My Discord For More ! | Link Copied In Clipboard")
 end
 
--- HOP FUNCTION
-local PlaceID = game.PlaceId
-local AllIDs = {}
-local foundAnything = ""
-local actualHour = os.date("!*t").hour
-local Deleted = false
-local File = pcall(function()
-    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
-end)
-if not File then
-    table.insert(AllIDs, actualHour)
-    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-end
-function TPReturner()
-    local Site;
-    if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
-    else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-    end
-    local ID = ""
-    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-        foundAnything = Site.nextPageCursor
-    end
-    local num = 0;
-    for i,v in pairs(Site.data) do
-        local Possible = true
-        ID = tostring(v.id)
-        if tonumber(v.maxPlayers) > tonumber(v.playing) then
-            for _,Existing in pairs(AllIDs) do
-                if num ~= 0 then
-                    if ID == tostring(Existing) then
-                        Possible = false
-                    end
-                else
-                    if tonumber(actualHour) ~= tonumber(Existing) then
-                        local delFile = pcall(function()
-                            delfile("NotSameServers.json")
-                            AllIDs = {}
-                            table.insert(AllIDs, actualHour)
-                        end)
-                    end
-                end
-                num = num + 1
-            end
-            if Possible == true then
-                table.insert(AllIDs, ID)
-                wait()
-                pcall(function()
-                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-                    wait()
-                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
-                end)
-                wait(4)
-            end
-        end
-    end
-end
-
-function Teleport()
-    while wait() do
-        pcall(function()
-            TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
-    end
-end
-
-function Search()
-    for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink)).data) do
-        if type(v) == "table" and v.playing ~= nil and MaxPlayers > v.playing then
-            ServerMaxPlayer = v.maxPlayers
-            MaxPlayers = v.playing
-            GoodServer = v.id
-        end
-    end
-    print("Searched Server With Players: "..MaxPlayers.."")
-end
-
-function GetServer()
-    Search()
-    for i, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync(GameLink))) do
-        if i == "nextPageCursor" then
-            if GameLink:find("&cursor=") then
-                local A = GameLink:find("&cursor=")
-                local B = GameLink:sub(A)
-                GameLink = GameLink:gsub(B, "")
-            end
-            GameLink = GameLink.."&cursor="..v
-            GetServer()
-        end
-    end
-end
-
-function LowServerHop()
-    if not game:IsLoaded() then
-        print("Game is loading waiting...")
-        repeat wait() until game:IsLoaded()
-    end
-    library:Notification("Finding Low Server...", "Ok, I Know")
-    local MaxPlayers = math.huge
-    local ServerMaxPlayer;
-    local GoodServer;
-    local GameLink = "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
-
-    GetServer()
-    print("Searched!")
-    print("Server: "..GoodServer.." Players: "..MaxPlayers.."/"..ServerMaxPlayer.."")
-    if #game:GetService("Players"):GetPlayers() - 4  == MaxPlayers then
-        return warn("Same Players")
-    elseif GoodServer == game.JobId then
-        return warn("Empty Server ATM")
-    end
-    print("Teleporting to: "..GoodServer)
-    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, GoodServer)
-end
-
 function WebHook(url)
     local Exploiter =
         is_sirhurt_closure and "Sirhurt"
@@ -214,21 +95,34 @@ function WebHook(url)
     request(EmbedMessage)
 end
 
+_G.NoJoinDiscord = false
+local NewFile = "NoJoinDiscord.txt";
+function LoadData()
+    print("Loading Data...")
+    local HS = game:GetService("HttpService");
+    if (readfile and isfile and isfile(NewFile)) then
+        _G.NoJoinDiscord = HS:JSONDecode(readfile(NewFile));
+    end
+end
+
+LoadData()
 local req = (syn and syn.request) or (http and http.request) or http_request or request or HttpPost
-if req then
-    req({
-        Url = 'http://127.0.0.1:6463/rpc?v=1',
-        Method = 'POST',
-        Headers = {
-            ['Content-Type'] = 'application/json',
-            Origin = 'https://discord.com'
-        },
-        Body = game:GetService("HttpService"):JSONEncode({
-            cmd = 'INVITE_BROWSER',
-            nonce = game:GetService("HttpService"):GenerateGUID(false),
-            args = {code = 'UGTsZ3ENHa'}
+if _G.NoJoinDiscord == false then
+    if req then
+        req({
+            Url = 'http://127.0.0.1:6463/rpc?v=1',
+            Method = 'POST',
+            Headers = {
+                ['Content-Type'] = 'application/json',
+                Origin = 'https://discord.com'
+            },
+            Body = game:GetService("HttpService"):JSONEncode({
+                cmd = 'INVITE_BROWSER',
+                nonce = game:GetService("HttpService"):GenerateGUID(false),
+                args = {code = 'UGTsZ3ENHa'}
+            })
         })
-    })
+    end
 end
 
 -- Checking Team
@@ -337,6 +231,7 @@ game:GetService("RunService").Stepped:Connect(function ()
     or FruitMastery
     or _G.Observation
     or _G.Tushita
+    or _G.BuddySword
     then
         for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
             if v:IsA("BasePart") then
@@ -350,7 +245,7 @@ game:GetService("RunService").Stepped:Connect(function ()
                 Part.Anchored = true
                 Part.CanCollide = true
                 Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
-                Part.Size = Vector3.new(10, 1.3, 10)
+                Part.Size = Vector3.new(25, 1.3, 25)
                 if _G.HidePart then
                     Part.Transparency = 1
                 else
@@ -360,13 +255,7 @@ game:GetService("RunService").Stepped:Connect(function ()
                 Part.BrickColor = BrickColor.new"Deep orange"
                 while game.Workspace:FindFirstChild("TweenWalk") do
                     if _G.HidePart then game.Workspace:FindFirstChild("TweenWalk").Transparency = 1 else game.Workspace:FindFirstChild("TweenWalk").Transparency = 0 end
-                    local TS = game:GetService("TweenService")
-                    local Info = TweenInfo.new((game.Workspace:FindFirstChild("TweenWalk").Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude / 500, Enum.EasingStyle.Linear)
-                    local FloatPart, Err = pcall(function ()
-                        FloatPart = TS:Create(game.Workspace:FindFirstChild("TweenWalk").CFrame, Info, {CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame})
-                        FloatPart:Play()
-                        if not FloatPart then return Err end
-                    end)
+                    game.Workspace:FindFirstChild("TweenWalk").CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -4.3, 0)
                     game:GetService("RunService").Heartbeat:wait()
                 end
             end
@@ -413,6 +302,7 @@ spawn(function() -- Hit
         or GunMastery
         or FruitMastery
         or _G.Tushita
+        or _G.BuddySword
         or AutoClick
         or AutoClickTG)
         then
@@ -446,6 +336,7 @@ function Tween(Pos, Speed)
     or not FruitMastery
     or not _G.Observation
     or not _G.Tushita
+    or not _G.BuddySword
     then
         Float = true
     end
@@ -488,6 +379,7 @@ function TweenTo(Pos, Speed)
         or not FruitMastery
         or not _G.Observation
         or not _G.Tushita
+        or not _G.BuddySword
         then
             Float = true
         end
@@ -1748,7 +1640,7 @@ local ClientStatus = AutoFarm:Label("Client Status | N/A ")
 
 AutoFarm:Line()
 AutoFarm:Label("--[ OP! ]--")
-AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP) And Not Logia Fruit", function ()
+AutoFarm:Button("God Mode [OP!] (Read Des)", "Make Sure You Have Defense Point = 1 (100 HP)", function ()
     GodModeIsDone = false
     StartGodMode()
 end)
@@ -1977,6 +1869,11 @@ elseif Thirdsea then
         if _G.Tushita == false then wait(.5)
             StopTween()
         end
+    end)
+
+    AutoFarm:Toggle("Auto Buddy Sword [HOP]", "Third Sea 1ly", _G.BuddySword, function (bool)
+        _G.BuddySword = bool
+        FarmBuddySwordHOP()
     end)
 
     AutoFarm:Toggle("Auto Elite Boss [HOP]", "Hmm...", _G.AutoElite, function (bool)
@@ -3851,6 +3748,23 @@ GameSetting:Button("Copy Discord Link", "https://discord.gg/cbVrFSnyUr", functio
     setclipboard("https://discord.gg/cbVrFSnyUr")
 end)
 
+local NewFile = "NoJoinDiscord.txt";
+function SaveData()
+    print("Saving Data...")
+    local Json;
+    local HS = game:GetService("HttpService");
+    if (writefile) then
+        Json = HS:JSONEncode(_G.NoJoinDiscord)
+        writefile(NewFile, Json);
+    else
+        warn("Trash Exploit!")
+    end
+end
+GameSetting:Button("No Join Discord Again", "So Sad :(", function ()
+    _G.NoJoinDiscord = true
+    SaveData()
+end)
+
 GameSetting:Button("Rejoin", "", function ()
     game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
 end)
@@ -4085,7 +3999,7 @@ function All(type)
                         else
                             repeat wait()
                                 TweenTo(posQuest, 300)
-                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5
+                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5 or not _G.AutoFarm
                         end
                         wait(.5)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
@@ -4325,7 +4239,7 @@ function All(type)
                         else
                             repeat wait()
                                 TweenTo(posQuest, 300)
-                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5
+                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5 or not _G.ChooseMob
                         end
                         wait(.5)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
@@ -4391,11 +4305,9 @@ function All(type)
                 repeat wait()
                     for i, v in pairs(game.Workspace:GetChildren()) do
                         if v:IsA "Tool" then
-                            if (v.Handle.Position-game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 500 then
-                                v.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                            else
+                            repeat wait()
                                 TweenTo(v.Handle.Position, 300)
-                            end
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Handle.Position).magnitude <= 5 or not _G.BringFruit
                         end
                     end
                 until not _G.BringFruit
@@ -4408,7 +4320,7 @@ function All(type)
                         else
                             repeat wait()
                                 TweenTo(posBossQuest, 300)
-                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posBossQuest).magnitude <= 5
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posBossQuest).magnitude <= 5 or not _G.BossFarm
                         end
                         wait(.5)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameBossQuest, levelBossQuest)
@@ -4470,7 +4382,7 @@ function All(type)
                                     else
                                         repeat wait()
                                             TweenTo(posBossQuest, 300)
-                                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posBossQuest).magnitude <= 5
+                                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posBossQuest).magnitude <= 5 or not _G.AllBoss
                                     end
                                     wait(.5)
                                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameBossQuest, levelBossQuest)
@@ -4560,7 +4472,7 @@ function All(type)
                         else
                             repeat wait()
                                 TweenTo(EliteQuest, 300)
-                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - EliteQuest).magnitude <= 5
+                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - EliteQuest).magnitude <= 5 or not _G.AutoElite
                         end
                         wait(.5)
                         local args = {[1] = "EliteHunter"}
@@ -4631,7 +4543,7 @@ function All(type)
                     else
                         repeat wait()
                             TweenTo(Vector3.new(4849.29883, 5.65138149, 719.611877), 300)
-                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(4849.29883, 5.65138149, 719.611877)).magnitude <= 5
+                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(4849.29883, 5.65138149, 719.611877)).magnitude <= 5 or not _G.Auto2nd
                     end
 
                     wait(.5)
@@ -4644,7 +4556,7 @@ function All(type)
                     else
                         repeat wait()
                             TweenTo(Vector3.new(1347.7124, 37.3751602, -1325.6488), 300)
-                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(1347.7124, 37.3751602, -1325.6488)).magnitude <= 5
+                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(1347.7124, 37.3751602, -1325.6488)).magnitude <= 5 or not _G.Auto2nd
                     end
 
                     wait(.5)
@@ -4709,7 +4621,7 @@ function All(type)
                         else
                             repeat wait()
                                 TweenTo(Vector3.new(1347.7124, 37.3751602, -1325.6488), 300)
-                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(1347.7124, 37.3751602, -1325.6488)).magnitude <= 5
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(1347.7124, 37.3751602, -1325.6488)).magnitude <= 5 or not _G.Auto2nd
                         end
                     end
                 end
@@ -4777,7 +4689,7 @@ function All(type)
                             else
                                 repeat wait()
                                     TweenTo(BartiloQuest, 300)
-                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - BartiloQuest).magnitude <= 5
+                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - BartiloQuest).magnitude <= 5 or not _G.AutoBartilo
                             end
                             wait(.5)
                             local args = {[1] = "StartQuest", [2] = "BartiloQuest", [3] = 1}
@@ -4831,7 +4743,7 @@ function All(type)
                                                 else
                                                     repeat wait()
                                                         TweenTo(BartiloQuest, 300)
-                                                    until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - BartiloQuest).magnitude <= 5
+                                                    until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - BartiloQuest).magnitude <= 5 or not _G.AutoBartilo
                                                 end
                                                 wait(.5)
                                                 local args = {[1] = "BartiloQuestProgress", [2] = "Bartilo"}
@@ -5094,7 +5006,7 @@ function All(type)
                     else
                         repeat wait()
                             TweenTo(Vector3.new(-1403.92944, 29.8519993, 6.61151266), 300)
-                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-1403.92944, 29.8519993, 6.61151266)).magnitude <= 5
+                        until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-1403.92944, 29.8519993, 6.61151266)).magnitude <= 5 or not _G.AutoSaber
                     end
                     wait(.5)
 
@@ -5157,7 +5069,7 @@ function StartGodMode()
                 Logia = false
             end
         end
-        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 and Logia == false then
+        if not GodModeIsDone and game:GetService("Players").LocalPlayer.Data.Stats.Defense.Level.Value == 1 then
             local Players = game:GetService'Players'.LocalPlayer
             local OldFrame;
             local Holding = false
@@ -5193,16 +5105,33 @@ function StartGodMode()
             end)
 
             wait(1)
-            for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                if not Nearest then Nearest = v.HumanoidRootPart.Position end
-                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest).magnitude then
-                    Nearest = v.HumanoidRootPart.Position
+            if not Logia then
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if not Nearest then Nearest = v.HumanoidRootPart.Position end
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest).magnitude then
+                        Nearest = v.HumanoidRootPart.Position
+                    end
+                end
+
+                repeat wait()
+                    TweenTo(Nearest + Vector3.new(5, 0, 0), 300)
+                until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest).magnitude <= 25 or TweenStopped
+            elseif Logia then
+                if Thirdsea then
+                    repeat wait()
+                        TweenTo(game:GetService("Workspace").Enemies["Forest Pirate [Lv. 1825]"].HumanoidRootPart.Position + Vector3.new(5, 0, 0), 300)
+                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game:GetService("Workspace").Enemies["Forest Pirate [Lv. 1825]"].HumanoidRootPart.Position).magnitude <= 25 or TweenStopped
+                elseif Secondsea then
+                    repeat wait()
+                        TweenTo(game:GetService("Workspace").Enemies["Marine Captain [Lv. 900]"].HumanoidRootPart.Position + Vector3.new(5, 0, 0), 300)
+                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game:GetService("Workspace").Enemies["Marine Captain [Lv. 900]"].HumanoidRootPart.Position).magnitude <= 25 or TweenStopped
+                elseif Firstsea then
+                    repeat wait()
+                        TweenTo(game:GetService("Workspace").Enemies["Galley Captain [Lv. 650]"].HumanoidRootPart.Position + Vector3.new(5, 0, 0), 300)
+                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - game:GetService("Workspace").Enemies["Galley Captain [Lv. 650]"].HumanoidRootPart.Position).magnitude <= 25 or TweenStopped
                 end
             end
 
-            repeat wait()
-                TweenTo(Nearest + Vector3.new(5, 0, 0), 300)
-            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Nearest).magnitude <= 25
             wait(3)
             if game.Players.LocalPlayer.Character.Humanoid.Health < -1 then
                 GodModeIsDone = true
@@ -5214,8 +5143,6 @@ function StartGodMode()
             library:Notification("Make Sure Your Defense Point = 1", "Ok I Know")
         elseif GodModeIsDone then
             library:Notification("Player Has God Mode xD", "Ok Thanks")
-        elseif Logia then
-            library:Notification("Your Fruit Must Not Logia", "Ok")
         end
     end)
 end
@@ -5277,7 +5204,7 @@ function FullyRaid()
                                 else
                                     repeat wait()
                                         TweenTo(RaidPortal, 300)
-                                    until (game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - RaidPortal).magnitude <= 5
+                                    until (game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - RaidPortal).magnitude <= 5 or not _G.FullyRaid
                                 end
                                 if _G.AutoSetSpawn then
                                    local args = {[1] = "SetSpawnPoint"}
@@ -5293,7 +5220,7 @@ function FullyRaid()
                                 else
                                     repeat wait()
                                         TweenTo(RaidPortal, 300)
-                                    until (game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - RaidPortal).magnitude <= 5
+                                    until (game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - RaidPortal).magnitude <= 5 or not _G.FullyRaid
                                 end
                                 if _G.AutoSetSpawn then
                                    local args = {[1] = "SetSpawnPoint"}
@@ -5355,7 +5282,7 @@ function AutoSeaBeast()
                         repeat wait()
                             repeat wait()
                                 TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 50, 0))
-                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent or not AutoSea
                             for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
                                 if v:IsA("Tool") and v.ToolTip == "Melee" then
                                     Equip(v.Name)
@@ -5552,7 +5479,7 @@ function MasteryFarm(type)
                             else
                                 repeat wait()
                                     TweenTo(posQuest, 300)
-                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5
+                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5 or not GunMastery
                             end
                             wait(.5)
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
@@ -5644,13 +5571,13 @@ function MasteryFarm(type)
                             elseif MyLevel >= 1350 and MyLevel < 1500 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude > 10000 and not GodModeIsDone then
                                 Entrance("Out Ship")
                             end
-                            repeat wait(3) until game:IsLoaded()
+                            repeat wait() until game:IsLoaded()
                             if GodModeIsDone then
                                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posQuest)
                             else
                                 repeat wait()
                                     TweenTo(posQuest, 300)
-                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5
+                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5 or not FruitMastery
                             end
                             wait(.5)
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
@@ -5778,7 +5705,7 @@ function FarmTushita()
                                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                                 end
                                 if game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]"):FindFirstChild("HumanoidRootPart") ~= nil then
-                                    vgame:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Humanoid.WalkSpeed = 1
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Humanoid.WalkSpeed = 1
                                     game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.CanCollide = false
                                     game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                                     game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").HumanoidRootPart.Transparency = 1
@@ -5792,10 +5719,10 @@ function FarmTushita()
                         until game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Humanoid.Health <= 0 or not game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]").Parent or game:GetService("Workspace").Enemies:FindFirstChild("Longma [Lv. 2000] [Boss]"):FindFirstChild("HumanoidRootPart") == nil or _G.Tushita == false
                         if StartClick then StartClick = false end
                     else
-                        if _G.HOP then
+                        if _G.HOP and Thirdsea then
                             wait(10)
                             Teleport()
-                        elseif _G.LowHop then
+                        elseif _G.LowHop and Thirdsea then
                             wait(10)
                             LowServerHop()
                         end
@@ -5804,6 +5731,187 @@ function FarmTushita()
             end
         end)
     end)
+end
+
+function FarmBuddySwordHOP()
+    spawn(function ()
+        pcall(function ()
+            if _G.BuddySword then
+                while _G.BuddySword do game:GetService'RunService'.RenderStepped:Wait()
+                    if game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]") then
+                        if _G.BuddySword then StartClick = true else StartClick = false end
+                        repeat game:GetService("RunService").Heartbeat:wait()
+                            if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone then
+                                repeat wait() until game.Players.LocalPlayer.Character break;
+                            else
+                                if sethiddenproperty then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  10000) end
+                                if setsimulationradius then sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge) end
+                                if _G.BossWeapon == "" or _G.BossWeapon == nil then
+                                    for i, v in pairs(ListMelee) do
+                                        if game.Players.LocalPlayer.Backpack:FindFirstChild(v) ~= nil and game.Players.LocalPlayer.Character:FindFirstChild(v) == nil then
+                                            _G.BossWeapon = v
+                                        end
+                                    end
+                                end
+                                Equip(_G.BossWeapon)
+                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                    local args = {[1] = "Buso"}
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                                end
+                                if game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]"):FindFirstChild("HumanoidRootPart") ~= nil then
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").Humanoid.WalkSpeed = 1
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").HumanoidRootPart.CanCollide = false
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                    game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").HumanoidRootPart.Transparency = 1
+                                end
+                                if GodModeIsDone then
+                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").HumanoidRootPart.CFrame * CFrame.new(15, 25, 0)
+                                else
+                                    TweenTo(game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").HumanoidRootPart.Position + Vector3.new(15, 25, 0), 300)
+                                end
+                            end
+                        until game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").Humanoid.Health <= 0 or not game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]").Parent or game:GetService("Workspace").Enemies:FindFirstChild("Cake Queen [Lv. 2175] [Boss]"):FindFirstChild("HumanoidRootPart") == nil or _G.BuddySword == false
+                        if StartClick then StartClick = false end
+                    else
+                        if _G.HOP and Thirdsea then
+                            wait(10)
+                            Teleport()
+                        elseif _G.LowHop and Thirdsea then
+                            wait(10)
+                            LowServerHop()
+                        end
+                    end
+                end
+            end
+        end)
+    end)
+end
+
+-- HOP FUNCTION
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+local File = pcall(function()
+    AllIDs = game:GetService("HttpService"):JSONDecode(readfile("NotSameServers.json"))
+end)
+
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService("HttpService"):JSONEncode(AllIDs))
+end
+
+function TPReturner()
+    local Site
+    if foundAnything == "" then
+        Site =
+            game.HttpService:JSONDecode(
+            game:HttpGet(
+                "https://games.roblox.com/v1/games/" .. PlaceID .. "/servers/Public?sortOrder=Asc&limit=100"
+            )
+        )
+    else
+        Site =
+            game.HttpService:JSONDecode(
+            game:HttpGet(
+                "https://games.roblox.com/v1/games/" ..
+                    PlaceID .. "/servers/Public?sortOrder=Asc&limit=100&cursor=" .. foundAnything
+            )
+        )
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0
+    for i, v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _, Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                wait()
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService("HttpService"):JSONEncode(AllIDs))
+                    wait()
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(
+                        PlaceID,
+                        ID,
+                        game.Players.LocalPlayer
+                    )
+                end)
+                wait(4)
+            end
+        end
+    end
+end
+
+function Teleport()
+    while wait() do
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
+            end
+        end)
+    end
+end
+
+function LowServerHop()
+    library:Notification("Finding Lower Server...", "Ok")
+    local maxplayers, gamelink, goodserver, data_table = math.huge, "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+    if not _G.FailedServerID then _G.FailedServerID = {} end
+
+    local function serversearch()
+        data_table = game:GetService"HttpService":JSONDecode(game:HttpGetAsync(gamelink))
+        for _, v in pairs(data_table.data) do
+            pcall(function()
+                if type(v) == "table" and v.id and v.playing and tonumber(maxplayers) > tonumber(v.playing) and not table.find(_G.FailedServerID, v.id) then
+                    maxplayers = v.playing
+                    goodserver = v.id
+                end
+            end)
+        end
+    end
+
+    function getservers()
+        pcall(serversearch)
+        for i, v in pairs(data_table) do
+            if i == "nextPageCursor" then
+                if gamelink:find"&cursor=" then
+                    local a = gamelink:find"&cursor="
+                    local b = gamelink:sub(a)
+                    gamelink = gamelink:gsub(b, "")
+                end
+                gamelink = gamelink .. "&cursor=" .. v
+                pcall(getservers)
+            end
+        end
+    end
+
+    pcall(getservers)
+    wait()
+    if goodserver == game.JobId or maxplayers == #game:GetService"Players":GetChildren() - 1 then
+    end
+    table.insert(_G.FailedServerID, goodserver)
+    game:GetService"TeleportService":TeleportToPlaceInstance(game.PlaceId, goodserver)
 end
 
 do wait()
@@ -5854,6 +5962,9 @@ do wait()
     end
     if _G.Tushita then
         FarmTushita()
+    end
+    if _G.BuddySword then
+        FarmBuddySwordHOP()
     end
     if _G.BringFruitHOP then
         loadstring(game:HttpGet'https://raw.githubusercontent.com/AstroStorage/Main-Games/main/BloxFruits/OtherFunction/BringFruit-HOP.lua')()
@@ -5933,7 +6044,7 @@ spawn(function () -- Auto Electric Claw
                         else
                             repeat wait()
                                 TweenTo(Vector3.new(-10370.1, 331.654, -10129.5), 300)
-                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-10370.1, 331.654, -10129.5)).magnitude <= 5
+                            until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(-10370.1, 331.654, -10129.5)).magnitude <= 5 or not AutoElectric
                         end
                         wait(1.1)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectricClaw", "Start")
@@ -5946,7 +6057,7 @@ end)
 
 spawn(function () -- Farm Observation
     while wait() do
-        if _G.Observation then
+        if _G.Observation and not GodModeIsDone then
             if Secondsea then
                 if game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]") then
                     if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
@@ -6002,6 +6113,8 @@ spawn(function () -- Farm Observation
                     end
                 end
             end
+        elseif GodModeIsDone then
+            library:Notification("This Function Not Support God Mode", "Ok Thanks")
         end
     end
 end)
