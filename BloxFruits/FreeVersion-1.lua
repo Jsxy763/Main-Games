@@ -1941,7 +1941,11 @@ end)
 
 AutoFarm:Toggle("Auto Devil Fruit Mastery Farm", "", false, function (bool)
     FruitMastery = bool
-    MasteryFarm("Fruit")
+    if FruitMastery and not GodModeIsDone then
+        MasteryFarm("Fruit")
+    elseif GodModeIsDone then
+        library:Notification("This Function Not Support God Mode", "Ok")
+    end
     if FruitMastery == false then wait(.5)
         StopTween()
     end
@@ -4370,7 +4374,7 @@ function All(type)
                     end
                 end
             elseif type == "All Boss" and _G.AllBoss then
-                while _G.AllBoss do wait()
+                while _G.AllBoss do game:GetService'RunService'.RenderStepped:Wait()
                     for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                         if string.find(v.Name, "Boss") then
                             _G.SelectedBoss = v.Name
@@ -4537,7 +4541,7 @@ function All(type)
                     end
                 end
             elseif type == "Second Sea" and _G.Auto2nd and Firstsea then
-                while _G.Auto2nd do wait(.1)
+                while _G.Auto2nd do  game:GetService'RunService'.RenderStepped:Wait()
                     if GodModeIsDone then
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(4849.29883, 5.65138149, 719.611877)
                     else
@@ -4626,7 +4630,7 @@ function All(type)
                     end
                 end
             elseif type == "Third Sea" and _G.Auto3rd and Secondsea then
-                while _G.Auto3rd do wait(.1)
+                while _G.Auto3rd do game:GetService'RunService'.RenderStepped:Wait()
                     if game.Workspace.Enemies:FindFirstChild("rip_indra [Lv. 1500] [Boss]") then
                         for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v:IsA("Model") and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 and v.Name == "rip_indra [Lv. 1500] [Boss]" then
@@ -4663,7 +4667,7 @@ function All(type)
                     end
                 end
             elseif type == "Bartilo" and _G.AutoBartilo and Secondsea then
-                while _G.AutoBartilo do wait(.1)
+                while _G.AutoBartilo do game:GetService'RunService'.RenderStepped:Wait()
                     local MyLevel = game.Players.localPlayer.Data.Level.Value
                     if MyLevel < 850 then
                         library:Notification("Bartilo Quest", "You Need To Level 850 Or Above")
@@ -4854,7 +4858,7 @@ function All(type)
                     end
                 end
             elseif type == "Rainbow Haki" and _G.AutoRainbow and Thirdsea then
-                while _G.AutoRainbow do wait(.1)
+                while _G.AutoRainbow do game:GetService'RunService'.RenderStepped:Wait()
                     if game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false then
                         if GodModeIsDone then
                             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-11892.0703125, 930.57672119141, -8760.1591796875)
@@ -4920,7 +4924,7 @@ function All(type)
                     end
                 end
             elseif type == "Auto Saber" and _G.AutoSaber and Firstsea then
-                while _G.AutoSaber do wait(.1)
+                while _G.AutoSaber do game:GetService'RunService'.RenderStepped:Wait()
                     for i = 1, 5 do
                         local args = {[1] = "ProQuestProgress", [2] = "Plate", [3] = i}
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -5572,13 +5576,9 @@ function MasteryFarm(type)
                                 Entrance("Out Ship")
                             end
                             repeat wait() until game:IsLoaded()
-                            if GodModeIsDone then
-                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(posQuest)
-                            else
-                                repeat wait()
-                                    TweenTo(posQuest, 300)
-                                until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5 or not FruitMastery
-                            end
+                            repeat wait()
+                                TweenTo(posQuest, 300)
+                            until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - posQuest).magnitude <= 5 or not FruitMastery
                             wait(.5)
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", nameQuest, levelQuest)
                         elseif game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true and FruitMastery then levelCheck()
@@ -5589,7 +5589,7 @@ function MasteryFarm(type)
                                             if FruitMastery then StartMagnet = true else StartMagnet = false end
                                             repeat game:GetService("RunService").Heartbeat:wait() levelCheck()
                                                 HealthMin = v.Humanoid.MaxHealth * HealthPersen / 100
-                                                if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0 and not GodModeIsDone) then
+                                                if (game.Players.LocalPlayer.Character.Humanoid.Health <= 0) then
                                                     repeat wait() until game.Players.LocalPlayer.Character break;
                                                 elseif string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, nameMon) then
                                                     if game:GetService("Workspace").Enemies:FindFirstChild(nameMob) then
@@ -5603,16 +5603,16 @@ function MasteryFarm(type)
                                                             end
                                                         end
                                                         if v.Humanoid.Health <= HealthMin then
-                                                            if #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
-                                                                if StartClick then StartClick = false end
-                                                                UseFruit = true
-                                                                Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
-                                                            else
+                                                            if game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" or game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
                                                                 if not StartClick then StartClick = true end
                                                                 if UseFruit then UseFruit = false end
                                                                 Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
+                                                            else
+                                                                if StartClick then StartClick = false end
+                                                                UseFruit = true
+                                                                Equip(game.Players.LocalPlayer.Data.DevilFruit.Value)
                                                             end
-                                                        else
+                                                        elseif v.Humanoid.Health > HealthMin then
                                                             if UseFruit then UseFruit = false end
                                                             StartClick = true
                                                             Equip(MasWeapon)
@@ -5633,26 +5633,14 @@ function MasteryFarm(type)
                                                             MasPos = v.HumanoidRootPart.CFrame
                                                             MasMob = v.HumanoidRootPart.Position
                                                         end
-                                                        if GodModeIsDone then
-                                                            if v.Humanoid.Health <= HealthMin and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
-                                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 35)
-                                                            else
-                                                                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 35, 0)
-                                                            end
+                                                        if v.Humanoid.Health <= HealthMin and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
+                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 0, 35), 300)
                                                         else
-                                                            if v.Humanoid.Health <= HealthMin and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Light-Light" and #game.Players.LocalPlayer.Data.DevilFruit.Value == "Ice-Ice" then
-                                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 0, 35), 300)
-                                                            else
-                                                                TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
-                                                            end
+                                                            TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 35, 0), 300)
                                                         end
                                                         require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework).activeController.hitboxMagnitude = 1000
                                                     else levelCheck()
-                                                        if GodModeIsDone then
-                                                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
-                                                        else
-                                                            TweenTo(waitPos, 300)
-                                                        end
+                                                        TweenTo(waitPos, 300)
                                                     end
                                                 else
                                                     local args = {[1] = "AbandonQuest"}
@@ -5665,11 +5653,7 @@ function MasteryFarm(type)
                                     end
                                 end)
                             else levelCheck()
-                                if GodModeIsDone then
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(waitPos)
-                                else
-                                    TweenTo(waitPos, 300)
-                                end
+                                TweenTo(waitPos, 300)
                             end
                         end
                     end
