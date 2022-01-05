@@ -5720,10 +5720,10 @@ function FarmTushita()
                         if StartClick then StartClick = false end
                     else
                         if _G.HOP and Thirdsea then
-                            wait(10)
+                            wait(1.5)
                             Teleport()
                         elseif _G.LowHop and Thirdsea then
-                            wait(10)
+                            wait(1.5)
                             LowServerHop()
                         end
                     end
@@ -5774,10 +5774,10 @@ function FarmBuddySwordHOP()
                         if StartClick then StartClick = false end
                     else
                         if _G.HOP and Thirdsea then
-                            wait(10)
+                            wait(1.5)
                             Teleport()
                         elseif _G.LowHop and Thirdsea then
-                            wait(10)
+                            wait(1.5)
                             LowServerHop()
                         end
                     end
