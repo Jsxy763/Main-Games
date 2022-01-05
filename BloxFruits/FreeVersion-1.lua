@@ -1941,8 +1941,6 @@ AutoFarm:Toggle("Auto Devil Fruit Mastery Farm", "", false, function (bool)
     FruitMastery = bool
     if FruitMastery and not GodModeIsDone then
         MasteryFarm("Fruit")
-    elseif GodModeIsDone then
-        library:Notification("This Function Not Support God Mode", "Ok")
     end
     if FruitMastery == false then wait(.5)
         StopTween()
@@ -5360,8 +5358,6 @@ function AutoSeaBeast()
                         end
                     end
                 end
-            else
-                library:Notification("This Function Not Support God Mode :(", "Ok")
             end
         end
     end)
@@ -6095,8 +6091,6 @@ spawn(function () -- Farm Observation
                     end
                 end
             end
-        elseif GodModeIsDone then
-            library:Notification("This Function Not Support God Mode", "Ok Thanks")
         end
     end
 end)
