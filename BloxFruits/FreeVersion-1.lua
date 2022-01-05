@@ -345,8 +345,6 @@ function Tween(Pos, Speed)
     local Tween, Err = pcall(function ()
         Tween = TS:Create(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, Info, {CFrame = CFrame.new(Pos)})
         Tween:Play()
-        repeat wait() until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - Pos).magnitude <= 5 or TweenStopped
-        Tween:Pause()
         if not Tween then return Err end
         if Float then Float = false end
     end)
@@ -2154,11 +2152,11 @@ if Secondsea or Thirdsea then
         for i, v in pairs(game.Workspace.SeaBeasts:GetChildren()) do
             if v:FindFirstChild("HumanoidRootPart") then
                 if GodModeIsDone then
-                    game.Players.LocalPlayer.Character.Humanoid.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 100, 0))
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0, 100, 0))
                 else
                     repeat wait()
                         TweenTo(v.HumanoidRootPart.Position + Vector3.new(0, 100, 0))
-                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <= 5 or not v.Parent
+                    until (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position + Vector3.new(0, 100, 0)).magnitude <= 5 or not v.Parent
                 end
             end
         end
