@@ -1890,6 +1890,8 @@ elseif Thirdsea then
     end)
 end
 
+
+local AutoSea = false
 if Secondsea or Thirdsea then
     AutoFarm:Toggle("Auto Haki Color [HOP]", "", _G.HakiColor, function (bool)
         _G.HakiColor = bool
@@ -4523,7 +4525,6 @@ function All(type)
                 until KillPlr == false
                 if StartClick then StartClick = false end
             elseif type == "Auto Elite" and _G.AutoElite and Thirdsea then
-                CheckQuested = false
                 while _G.AutoElite do game:GetService("RunService").RenderStepped:Wait()
                     if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false then
                         EliteQuest = Vector3.new(-5419.21, 313.705, -2826.24)
@@ -4535,14 +4536,6 @@ function All(type)
                             until (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - EliteQuest).magnitude <= 5 or not _G.AutoElite
                         end
                         wait(.5)
-                        if _G.HOP and Thirdsea and game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and CheckQuested then
-                            wait(1.5)
-                            Teleport() break;
-                        elseif _G.LowHop and Thirdsea and game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == false and CheckQuested then
-                            wait(1.5)
-                            LowServerHop() break;
-                        end
-                        CheckQuested = true
                         if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - EliteQuest).magnitude <= 5 then
                             local args = {[1] = "EliteHunter"}
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
@@ -6201,64 +6194,66 @@ end)
 
 spawn(function () -- Farm Observation
     while wait() do
-        if _G.Observation and not GodModeIsDone then
-            if Secondsea then
-                if game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]") then
-                    if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
-                        repeat wait()
-                            TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
-                        until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
-                    else
-                        if _G.HOP then
-                            Teleport()
-                        elseif _G.LowHop then
-                            LowServerHop()
-                        else
+        if _G.Observation then
+            if not GodModeIsDone then
+                if Secondsea then
+                    if game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]") then
+                        if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
                             repeat wait()
-                                TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
-                            until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                                TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
+                            until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                        else
+                            if _G.HOP then
+                                Teleport()
+                            elseif _G.LowHop then
+                                LowServerHop()
+                            else
+                                repeat wait()
+                                    TweenTo(game.Workspace.Enemies:FindFirstChild("Marine Captain [Lv. 900]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
+                                until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                            end
+                        end
+                    end
+                elseif Firstsea then
+                    if game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]") then
+                        if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+                            repeat wait()
+                                TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
+                            until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                        else
+                            if _G.HOP then
+                                Teleport()
+                            elseif _G.LowHop then
+                                LowServerHop()
+                            else
+                                repeat wait()
+                                    TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
+                                until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                            end
+                        end
+                    end
+                elseif Thirdsea then
+                    if game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]") then
+                        if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
+                            repeat wait()
+                                TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
+                            until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                        else
+                            if _G.HOP then
+                                Teleport()
+                            elseif _G.LowHop then
+                                LowServerHop()
+                            else
+                                repeat wait()
+                                    TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
+                                until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
+                            end
                         end
                     end
                 end
-            elseif Firstsea then
-                if game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]") then
-                    if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
-                        repeat wait()
-                            TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
-                        until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
-                    else
-                        if _G.HOP then
-                            Teleport()
-                        elseif _G.LowHop then
-                            LowServerHop()
-                        else
-                            repeat wait()
-                                TweenTo(game.Workspace.Enemies:FindFirstChild("Galley Captain [Lv. 650]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
-                            until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
-                        end
-                    end
-                end
-            elseif Thirdsea then
-                if game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]") then
-                    if game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel") then
-                        repeat wait()
-                            TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(3, 0, 0), 300)
-                        until _G.Observation == false or not game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
-                    else
-                        if _G.HOP then
-                            Teleport()
-                        elseif _G.LowHop then
-                            LowServerHop()
-                        else
-                            repeat wait()
-                                TweenTo(game.Workspace.Enemies:FindFirstChild("Forest Pirate [Lv. 1825]").HumanoidRootPart.Position + Vector3.new(0, 15, 10), 300)
-                            until _G.Observation == false or game.Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("ImageLabel")
-                        end
-                    end
-                end
+            elseif GodModeIsDone then
+                library:Notification("This Function Not Support God Mode", "Ok Thanks")
             end
-        elseif GodModeIsDone then
-            library:Notification("This Function Not Support God Mode", "Ok Thanks")
         end
     end
 end)
